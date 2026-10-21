@@ -1,8 +1,9 @@
-# omsx_vram.tcl - Vuelca la VRAM (16 KB), los registros del VDP, la RAM y una
-# captura del cartucho en un MSX1 (C-BIOS_MSX1), para cotejar los dibujos que
-# montan las herramientas con los datos de la ROM.
+# omsx_vram.tcl - Vuelca la VRAM (entera: 128 KB en un MSX2), los registros y la
+# paleta del VDP, la RAM y una captura del cartucho, para cotejar lo que pintan
+# las herramientas con lo que pinta el cartucho en openMSX. Se lanza con
+# tools/lanza_vram.ps1 (un openMSX, fuera del sandbox):
 #
-#   "C:/Program Files/openMSX/openmsx.exe" -machine C-BIOS_MSX1 #       -carta kv2_msx1.rom -romtype KonamiSCC -script tools/omsx_vram.tcl
+#   "C:/Program Files/openMSX/openmsx.exe" -machine Sony_HB-F900 -carta contra.rom -romtype KonamiSCC -script tools/omsx_vram.tcl
 #
 # Variables: VRAM_SALIDA (work/omsx), VRAM_TIEMPOS ("30 45 60": segundos
 # emulados de cada volcado; sale despues del ultimo), VRAM_TECLAS

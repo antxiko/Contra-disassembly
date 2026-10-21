@@ -242,7 +242,9 @@ def recoge(f, segundos=25, tramo=None, vistos=None):
                     continue
                 tipo = tipos
                 im = pinta(m, ks)
-                if im is None or im.width < 6 or im.height < 6:
+                # un grupo de mas de 48 puntos junta sprites lejanos (el mayor de
+                # verdad, cuatro de 16 x 16, son 32 x 32): no es una figura
+                if im is None or im.width < 6 or im.height < 6 or im.width > 48 or im.height > 48:
                     continue
                 ya = vistos.setdefault(tipo, [])
                 if len(ya) < POR_TIPO and all(im.tobytes() != o.tobytes() for o in ya):

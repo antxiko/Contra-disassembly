@@ -4,7 +4,7 @@ entera y que no alcanza nadie.
 
 Para cada hueco de un banco de codigo se decodifica desde su primer byte. Se
 propone como punto de entrada solo si se cumplen las tres cosas que pide la
-norma (Circus Charlie, RC-712):
+norma de la serie:
   - el trazado no entra (es un hueco del presupuesto);
   - las instrucciones encajan hasta un `ret`, `jp`, `jr` sin condicion o
     `jp (hl)` antes del final del hueco o justo en el, sin bytes 0xFF de
