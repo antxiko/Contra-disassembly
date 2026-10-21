@@ -201,9 +201,9 @@ def comentario(b, filas, k, fichas, ventanas=None, medido=None):
             return "%s: %s" % hecho
     # los campos de la ficha del actor
     if fichas.get(k):
-        mm = re.search(r"\(ix\+0?([0-9a-f]+)h?\)", t)
+        mm = re.search(r"\(ix([+-])0?([0-9a-f]+)h?\)", t)
         if mm:
-            n = int(mm.group(1), 16)
+            n = int(mm.group(2), 16) * (-1 if mm.group(1) == "-" else 1)
             que = fichas[k].get(n)
             if que:
                 op = t.split()[0]

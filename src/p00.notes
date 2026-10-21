@@ -1,4 +1,425 @@
 
+
+# --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x402E sin interrupciones mientras se prepara la maquina
+C 0x402F la pila, debajo de la RAM de sistema
+C 0x4032 0xC9 = ret
+C 0x4034 H.KEYI a ret mientras tanto
+C 0x4037 y H.TIMI a ret para siempre
+C 0x403D A = los slots primarios de las cuatro paginas
+C 0x4040 A = la ranura de ESTE cartucho (la de la pagina 1), con H = 0x80
+C 0x4044 la pone tambien en 0x8000-0xBFFF: el cartucho entero en 0x4000-0xBFFF
+C 0x4048 la ranura queda en A' para guardarla luego en 0xE208
+C 0x404B el slot de la pagina 1: los bits 2-3 de RSLREG
+C 0x4052 EXPTBL: si ese slot esta expandido (bit 7)
+C 0x405C cuatro mas: SLTTBL, el subslot de ese slot
+C 0x4061 el subslot de la pagina 1 (bits 2-3)
+C 0x4063 A = expandido | subslot | slot, el formato de ENASLT
+C 0x4064 H = 0x80: la pagina 2 para ENASLT
+C 0x4068 0xC000-0xC2FF a cero (la RAM del sonido y el mapa de pantalla)
+C 0x4075 0xE000-0xF37F a cero (la RAM del juego)
+C 0x4082 los bancos de arranque: el 0 en 0x4000...
+C 0x4086 ...el 1 en 0x6000...
+C 0x408A ...el 2 en 0x8000...
+C 0x408E ...y el 3 en 0xA000; el 0 y el 3 ya no se cambian
+C 0x4092 la ranura de este cartucho, que estaba en A'
+C 0x4096 la pila otra vez arriba
+C 0x4099 SCREEN 5
+C 0x409B CHGMDP de la SUB-ROM: el modo y la paleta de la BIOS
+C 0x40A2 color 0 en el texto, el fondo y el borde
+C 0x40A6 RG8SAV con el bit 5 (TP): el color 0 se pinta, no es transparente
+C 0x40AF al registro 8 del VDP
+C 0x40B7 la paleta 0
+C 0x40BB la rutina 0x00F5 de la SUB-ROM
+C 0x40C2 el puerto 0x99 del VDP (el de la BIOS, + 1)
+C 0x40C7 RG9SAV con el bit 1: 212 lineas
+C 0x40CF al registro 9 del VDP
+C 0x40D5 la VRAM entera (BC = 0: 64 KB) a cero
+C 0x40E3 la interrupcion: H.KEYI salta a p00:4BD2
+C 0x40EF 0 en 0xF3DB (CLIKSW): sin el clic de las teclas
+C 0x40F2 guarda los bancos de 0x6000 y 0x8000...
+C 0x40FA ...pone el 4 y el 5 (el motor de sonido)...
+C 0x4103 ...lo pone a cero (p04:6000)...
+C 0x4106 ...y devuelve los bancos que habia
+C 0x410E 0xE200 y 0xE201 a cero: la interrupcion esta libre
+C 0x4116 ya puede llegar la interrupcion
+C 0x4117 cada partida empieza aqui: sin partida en marcha
+C 0x411B 0xFBD9 a cero
+C 0x4121 todo a color 0
+C 0x412A la tabla de sprites vacia
+C 0x4130 el logotipo de Konami: el banco 13 a la VRAM, arriba
+C 0x4135 con la paleta 7
+C 0x413A en la pagina 4 (0xE1AC suma 4 a la fila de la VRAM)...
+C 0x413F ...p03:BBA2 pinta la lista de piezas de p00:43C6
+C 0x4149 IX y IY: la y de origen y de destino de la orden de p00:43D7
+C 0x4151 la orden que va bajando el logotipo linea a linea
+C 0x415C 0x30 pasos
+C 0x415E cuenta de cuadros a cero
+C 0x4165 manda la orden (0x20 bytes de registros, desde el 32)
+C 0x4168 una linea mas abajo el origen...
+C 0x416B ...y el destino
+C 0x416E con el disparo se salta el logotipo
+C 0x4174 dos cuadros por paso (0xE1C0 lo sube la interrupcion)
+C 0x417E el logotipo quieto hasta el cuadro 0xE8, o el disparo
+C 0x418F las 32 fichas de objeto a cero
+C 0x419A la VRAM a 0xFF
+C 0x419D el titulo: el banco 11 a la VRAM, arriba
+C 0x41A2 la paleta 0
+C 0x41AC p03:BAF8 pinta las piezas del titulo
+C 0x41AF la hoja de la fila 0x40
+C 0x41B7 (c) KONAMI 1989
+C 0x41C0 PUSH SPACE KEY
+C 0x41C9 sin disparo pulsado
+C 0x41D4 la musica del titulo
+C 0x41D9 mientras suena (0xC000 es el primer canal del motor)...
+C 0x41DF ...espera al disparo
+C 0x41E5 con el disparo: la partida
+C 0x41F2 la primera demostracion la proxima vez
+C 0x41F5 0xE000 = 1: partida de verdad
+C 0x41F9 se acabo la musica sin disparo: la demostracion (0xE000 sigue a 0)
+C 0x41FE el sonido 1 calla todo
+C 0x4203 la grabacion de la demostracion: la 0 (p12:9C00)...
+C 0x420C ...la 1 (p12:9D60)...
+C 0x4213 ...o la 2 (p12:9EC0)
+C 0x4219 la VRAM a 0xFF
+C 0x421C 0xE020-0xE0CF a cero
+C 0x4224 0xE180-0xE1FF a cero
+C 0x4234 partida o demostracion
+C 0x423A la demostracion: una vida...
+C 0x423E ...y una de energia
+C 0x4245 la fase de cada demostracion: la 0...
+C 0x424F ...la 3...
+C 0x4253 ...o la 5, y vuelta a empezar
+C 0x425F la partida: tres vidas (REST/02 en el marcador)...
+C 0x4264 ...y la energia llena
+C 0x4277 cada fase empieza aqui; la cuenta de demostraciones sube
+C 0x4281 la paleta de la fase: la tabla p00:4652 (una por fase)
+C 0x428E los graficos de la fase: dos bancos por fase en p00:4666
+C 0x4297 el primero, arriba en la pagina de dibujos
+C 0x429D el segundo, en la linea 0x40
+C 0x42A0 la ficha del jugador
+C 0x42AC x = 0x30
+C 0x42B0 con el banco 12 en 0x8000: p12:9943 pone al jugador
+C 0x42B9 0xE19C: 0xAB en las fases de la lista p00:4558, 0xFF en las demas
+C 0x42CA la pantalla del tramo y sus objetos
+C 0x42D0 se enciende la pantalla
+C 0x42D3 a cero lo de la fase anterior: cuadros, disparo, palanca...
+C 0x42EC en la demostracion, 0xE006 = 1: la palanca sale de la grabacion
+C 0x4303 0xE094 = 1: la fase en marcha
+C 0x4307 el sonido 0x82: el motor para lo que sonaba
+C 0x430C la musica de la fase
+C 0x4311 (si 0xE080 no la prohibe)
+C 0x4316 la musica de cada fase: la tabla p00:4356
+C 0x4322 espera mientras dura la fase (la interrupcion hace el juego)
+C 0x4328 0xE207: si no es cero, no se mira si se acabo la fase
+C 0x432E 0xE184: fase superada
+C 0x4335 0xE183: sin vidas
+C 0x433C en la partida, a seguir esperando; la demostracion acaba aqui
+C 0x434E callado, y vuelta al titulo
+C 0x436A el color del texto, del fondo y del borde
+C 0x43E6 sin vidas: espera 0x50 cuadros (0xE1C3 la cuenta)
+C 0x43F8 el jugador fuera
+C 0x4403 callado
+C 0x440E la demostracion acaba aqui
+C 0x4415 GAME OVER
+C 0x441E la musica del fin de la partida
+C 0x4423 se acabo la partida
+C 0x4430 espera a que acabe la musica
+C 0x443A la paleta 0, la pantalla apagada y vuelta al titulo
+C 0x4446 fase superada: 0xE184 = 2
+C 0x444F con 0xE03F o 0xE035 no hay puntos de final de fase
+C 0x445B los puntos de la fase: 5 (centenas) hasta la 6 y 0x10 desde la 7...
+C 0x4469 ...y otros 0x10 mas si la suma pasa de 0x10
+C 0x4470 se escribe el marcador
+C 0x4473 espera a que acabe la musica de jefe destruido
+C 0x4479 callado
+C 0x447D la ficha del jugador a cero
+C 0x4496 la fase siguiente...
+C 0x449A ...pero la 8 (TRAP HANGAR) se salta siempre
+C 0x44A2 la 20 es el final
+C 0x44A6 el tramo con el que empieza la fase: la tabla p00:450E
+C 0x44B2 con 0xE03F a 0xFF (y si no es una base), el tramo de 0xE03E
+C 0x44C8 el rotulo de la fase (p12:9915)
+C 0x44D0 vuelta a cargar fase, hasta la 20
+C 0x44D8 el final: la partida acaba...
+C 0x44EB ...con la musica 0x03...
+C 0x44F0 ...y el final de p12:9400 (el texto de p12:9622)
+C 0x44F9 vuelta al titulo
+C 0x44FC suma B a los puntos (0xE037, cuatro cifras BCD)
+C 0x4522 callado y, con el banco 12, el rotulo de la fase (STAGE y su nombre)
+C 0x4541 las fases de la lista p00:4558 (5, 9, 19, 12 y 15)...
+C 0x454E ...ponen 0xAB en 0xE19C; las demas 0xFF
+C 0x455D el marcador entero: STAGE, REST, SCORE y LIFE
+C 0x456A STAGE/ en la fila de abajo
+C 0x4573 y el numero de fase:
+C 0x4576 el indice + 1 hasta la 7; desde la 9 el indice (la 8 se salta)
+C 0x457E de 10 en adelante, en BCD (+6)...
+C 0x4582 ...y la 20 (el final) es 0x20
+C 0x458C las dos cifras: la alta...
+C 0x4597 ...con la letra de la fila 0xD8...
+C 0x459A ...y la baja
+C 0x45A1 REST/
+C 0x45AA y las vidas menos la que se juega, en BCD
+C 0x45B5 SCORE/ y los puntos
+C 0x45C3 LIFE y la barra de energia, entera
+C 0x45CC 0xAA: dos puntos del color 10 por byte
+C 0x45D1 la barra empieza en el byte 0x609C de la VRAM
+C 0x45DA borra la barra desde la energia que queda hasta el final:
+C 0x45DC 0xFF, el color 15 (el negro de esta paleta)
+C 0x45E9 dos bytes (cuatro puntos) por punto de energia
+C 0x45ED los 8 que quedan hasta el final de la barra
+C 0x45F1 siete lineas de alto
+C 0x45F5 la direccion de la VRAM por el puerto 0x99: los bits altos a R#14...
+C 0x4605 ...y la baja, para escribir
+C 0x460E un byte de la barra y luego el de su borde (color 15 en la mitad baja)
+C 0x461B la linea siguiente: 128 bytes mas abajo
+C 0x4624 el siguiente punto de energia
+C 0x468E la paleta A: 32 bytes (16 colores) por paleta desde p00:46BE
+C 0x469C se copia a 0xE1D0
+C 0x46A4 los 16 colores, de dos en dos bytes...
+C 0x46AB A = rojo x 16 + azul, E = verde
+C 0x46B1 SETPLT de la SUB-ROM: el color D
+C 0x46BA el color siguiente
+C 0x47C4 HL = 0x6000: el banco se copia desde el principio
+C 0x47C7 0xE01C = 1: a la pagina 1 de la VRAM (la de los dibujos)
+C 0x47D0 a la linea 0 de la pagina
+C 0x47D6 con el banco 12, p12:98BF: la tabla de sprites del jugador
+C 0x47E2 a la linea 0x40 de la pagina
+C 0x47E8 la orden HMMC de p00:4843: 256 x 64 puntos, de la CPU a la VRAM
+C 0x47F3 la y de destino...
+C 0x47F9 ...y la pagina (el byte alto de la y)
+C 0x4801 el primer byte va con la orden (en R#44, el color)
+C 0x480C R#17 = 36 con autoincremento: los registros 36 a 46 seguidos
+C 0x481B los 11 bytes de la orden, al puerto 0x9B
+C 0x4820 S#2: mira el VDP
+C 0x482A CE a cero: la orden acabo
+C 0x482E TR a uno: quiere otro byte
+C 0x4832 el byte siguiente del banco, a R#44 (el puerto 0x9B)
+C 0x4834 R#17 = 44 sin autoincremento, para el siguiente
+C 0x483A S#0 otra vez en R#15
+C 0x484E la orden de p00:48A9: HMMM de 8 x 8 desde la pagina 1 (la de los dibujos)
+C 0x485E la misma con LMMM y TIMP (0x98): el color 0 no tapa lo de debajo
+C 0x4867 la orden de p00:48B8: HMMM de 8 x 8 desde la linea 0xD8 de la pagina 0 (las letras)
+C 0x4871 la casilla HL (fila x 32 + columna): la y de destino = fila x 8...
+C 0x487A ...en R#38-39...
+C 0x4881 ...y la x = columna x 8, en R#36
+C 0x488B el dibujo A: su fila de la hoja (A / 32) x 8...
+C 0x4891 ...mas la fila de la hoja (0xE01F), en R#34...
+C 0x4898 ...y la x = (A mod 32) x 8, en R#32
+C 0x48A1 los registros 32 a 46, y la orden
+C 0x48C7 una cifra con la letra de la fila 0xD8
+C 0x48D3 las letras estan en la linea 0xD8 de la pagina 0
+C 0x48DB cada byte de la cadena es un dibujo de la hoja; 0xFF acaba
+C 0x48E3 la casilla siguiente
+C 0x48E9 el mapa de 0xC300 (0x9C0 bytes) a 0x10
+C 0x48F7 0xE100-0xE1FF a cero
+C 0x4900 0xE220-0xE3FF a cero
+C 0x4909 las fichas del jugador con y = 0xEC: fuera de la pantalla
+C 0x491D sin disparo ni palanca
+C 0x492E 0xE500-0xE5FF a cero (los objetos de la fase)
+C 0x4937 las 28 fichas que no son del jugador a cero...
+C 0x4948 ...y fuera de la pantalla (y = 0xEC)
+C 0x494D y a la VRAM
+C 0x4950 los colores de los sprites del jugador: 0xC980...
+C 0x4958 ...o 0xC9A0
+C 0x495E 0x40 bytes a la tabla de colores de los sprites 0-3 (0x7400): el jugador
+C 0x4971 0x60 en la linea B de los colores...
+C 0x4973 ...y en la misma del sprite siguiente (16 mas)
+C 0x497B los colores de los 32 sprites (0x400 bytes)...
+C 0x4982 ...desde la tabla p00:4B2C: un color por sprite...
+C 0x4988 ...repetido en sus 16 lineas, en 0xC980
+C 0x4992 a la tabla de colores de los sprites de la VRAM (0x7400)
+C 0x499C tres lineas de colores de 0x741D a 0x6B...
+C 0x49A0 ...o a 0x67
+C 0x49AB los dibujos de sprite del banco 11...
+C 0x49B0 ...0x1A0 bytes de 0x6A40 a la tabla de dibujos de la VRAM (0x7880)
+C 0x49BC y los colores
+C 0x49BF con el banco 12 en 0x6000, mas dibujos de sprite segun 0xE097:
+C 0x49C4 la tabla p00:49D3 (8 destinos)
+C 0x49E9 0x480 bytes de 0x6480 a 0x7AC0 y 0x60 de 0x6D40 a 0x7F40
+C 0x4A07 0x140 de 0x6900 a 0x7E40, 0x20 de 0x6CC0 a 0x7F80 y 0x40 de 0x6CE0 a 0x7FC0
+C 0x4A2E 0x280 de 0x6A40 a 0x7AC0
+C 0x4A40 0x80 de 0x6FE0 a 0x7E40 y 0xC0 de 0x6EA0 a 0x7EC0
+C 0x4A5D 0x140 de 0x7060 a 0x7E40
+C 0x4A6E 0x80 de 0x6FE0 a 0x7E40 y 0x80 de 0x6F60 a 0x7EC0
+C 0x4A8B 0x80 de 0x6900 a 0x7E40 y 0xC0 de 0x71E0 a 0x7EC0
+C 0x4AC7 y en todas, 0x80 bytes de 0x7320 a 0x7A40
+C 0x4AD3 el banco 1 otra vez en 0x6000
+C 0x4AE4 lo comun a varias: 0x380 de 0x6000 a 0x7AC0, 0x100 de 0x6380 a 0x7E40...
+C 0x4AFC ...0x60 de 0x6DC0 a 0x7F40 y tres de 0x20 a 0x7FA0, 0x7FC0 y 0x7FE0
+C 0x4B4C los dibujos del jugador, del banco 11:
+C 0x4B51 la parte de arriba: el dibujo IX+0C (0x40 bytes cada uno)...
+C 0x4B61 ...a los dibujos de sprite 0-3 (0x7800)
+C 0x4B6A la de abajo: el dibujo IX+0D...
+C 0x4B7A ...a los dibujos 4-7 (0x7840)
+C 0x4B86 IX-1 (0xE31F) no cero: todos los sprites fuera
+C 0x4B8C IX-2 (0xE31E) impar: el jugador parpadea (sus 4 sprites fuera este cuadro)
+C 0x4BA4 los 32 atributos a la VRAM (0x7600)
+C 0x4BB0 todos los sprites con y = 0xEC (fuera)
+C 0x4BC3 y, x y dibujo de cada ficha...
+C 0x4BC9 ...el cuarto byte del atributo no se toca...
+C 0x4BCA ...y la ficha siguiente (16 bytes)
+C 0x4BD2 el retorno a la BIOS fuera: la interrupcion acaba aqui, no en la BIOS
+C 0x4BD3 lee S#0 del VDP (y con eso la interrupcion queda atendida)
+C 0x4BDA el cuadro del juego, con los bancos 1-2
+C 0x4BDF los registros que guardo la BIOS en 0x0038, al reves
+C 0x4BED y vuelta a lo que se interrumpio
+C 0x4BEF guarda los bancos de 0x6000 y 0x8000...
+C 0x4BF7 ...y pone el 1 y el 2
+C 0x4C03 el cuadro del juego (p00:4C0E)
+C 0x4C06 y los bancos que habia
+C 0x4C0E 0xE200: si el cuadro anterior no ha acabado, este no se hace
+C 0x4C20 el motor de sonido: bancos 4 y 5...
+C 0x4C29 ...su cuadro (p04:6006)...
+C 0x4C2C ...y otra vez el 2 y el 1
+C 0x4C3D el cuadro ya ha acabado
+C 0x4C41 en la demostracion, el disparo la acaba (0xE094 = 0)
+C 0x4C4B sin fase en marcha no hay mas que hacer
+C 0x4C52 0xE093 no cero: el cuadro del juego ya esta en marcha (la interrupcion lo pilla a medias)
+C 0x4C5E 0xE2C6: el juego parado
+C 0x4C6A 0xE2C1 no cero: p03:BEAC
+C 0x4C71 0xE2C2: se ha cogido una capsula (p02:9583)...
+C 0x4C77 ...y sube el contador que dice p00:4DB4 por 0xE030 (0xE033 las dos primeras, 0xE031 las dos siguientes; hasta 4)
+C 0x4C90 el sonido de coger la capsula
+C 0x4C9C los sprites a la VRAM y los dibujos del jugador
+C 0x4CA2 0xE207 no cero: la pausa
+C 0x4CA9 en la pausa, los sprites fuera
+C 0x4CAD la tecla S (fila 5, bit 0): grabar
+C 0x4CB6 la tecla L (fila 4, bit 1): cargar
+C 0x4CC0 sin el otro cartucho (el Game Master 2) no se carga nada
+C 0x4CC7 el nombre del fichero, CONTRA (p00:4E07), a 0xC200
+C 0x4CD2 la orden 0x0B del otro cartucho: cargar
+C 0x4CD7 si falla, el mensaje de error
+C 0x4CDB lo cargado: las vidas...
+C 0x4CE1 ...los puntos (solo las cifras altas)...
+C 0x4CEC LOAD COMPLETED
+C 0x4CF5 ...la fase (menos una: al acabar esta se suma)...
+C 0x4CFD ...y la energia
+C 0x4D03 la fase acaba ya, como superada (0xE184 = 1): se carga la guardada
+C 0x4D1A grabar: hace falta el otro cartucho...
+C 0x4D21 ...y energia
+C 0x4D28 lo que se graba: las vidas, la fase, la energia y el tramo, en 0xE03A-0xE03E...
+C 0x4D40 ...y 0xE03F = 0xFF: al cargar se empieza en ese tramo (p00:44B2)
+C 0x4D45 el nombre del fichero, CONTRA
+C 0x4D50 la orden 0x0A del otro cartucho: grabar
+C 0x4D54 si falla, el mensaje de error
+C 0x4D5A SAVE COMPLETED
+C 0x4D6A el mensaje de error que da el otro cartucho en A:
+C 0x4D6D 0: NO ERROR
+C 0x4D72 1: FILE ALREADY EXIT
+C 0x4D7B de 0xF6 en adelante, uno de la lista de p00:541B (16 bytes cada uno)
+C 0x4D8C en la fila 10 de la pantalla
+C 0x4D9E busca el otro cartucho: 'Y' en 0x4010 de cada ranura (0x80-0xFF, con subranura)
+C 0x4DAB 0x59 = 'Y'
+C 0x4DAF la ranura siguiente
+C 0x4DB2 no hay: A = 0
+C 0x4DBC y 'Z' en 0x4011
+C 0x4DBE la ranura que contesta
+C 0x4DC6 0x5A = 'Z': encontrado (A no es cero)
+C 0x4DCB la orden C al otro cartucho:
+C 0x4DCF su ranura en 0x8000-0xBFFF
+C 0x4DDD su banco 4 en 0x8000 (su mapper, 0x8000)...
+C 0x4DE2 ...DE = el nombre del fichero (0xC200)...
+C 0x4DE5 ...0x10 en su 0xA000...
+C 0x4DEA ...0xFF en 0xB240...
+C 0x4DEF ...y su rutina de 0x8000; vuelve con el error en A
+C 0x4DF3 este cartucho otra vez en 0x8000-0xBFFF
+C 0x4DFD y su banco de 0x8000
+C 0x4E18 fuera de la pausa: el jugador (p03:AE38)...
+C 0x4E21 ...cada ocho cuadros (0xE19C da la vuelta) p00:5DAC...
+C 0x4E2F ...los objetos (p00:528A) y los sprites
+C 0x4E35 el cuadro del juego acabo
+C 0x4E39 sin palanca, 0xE2C6 a cero
+C 0x4E47 ocho cuentas de cuadros (0xE1C0-0xE1C7) suben a la vez
+C 0x4E50 en la demostracion, F5 (fila 7, bit 1) calla la musica o la vuelve a poner (0xE080)
+C 0x4E89 en la demostracion, la palanca de la grabacion (p00:4F82)
+C 0x4E90 la pausa solo con la fase en marcha (o recien cargada una partida)
+C 0x4E9C F1 (fila 6, bit 5): la pausa
+C 0x4EA5 suelta: se puede volver a pulsar
+C 0x4EAB no hay pausa con la fase superada...
+C 0x4EB2 ...ni a medio cuadro...
+C 0x4EBE ...ni si F1 sigue pulsada desde la vez anterior
+C 0x4EC8 la pausa cambia de estado (bit 0 de 0xE207)
+C 0x4EDA en pausa: PAUSE en la pantalla
+C 0x4EF4 fuera de la pausa: se borra el letrero
+C 0x4F02 el disparo: el boton A del mando 1 (GTTRIG 1)...
+C 0x4F08 ...o el espacio (fila 8, bit 0)
+C 0x4F1A el disparo seguido: cada 0x20 cuadros se puede volver a disparar
+C 0x4F21 0xE060 = 0xFF: disparo nuevo este cuadro
+C 0x4F38 el salto: el boton B (GTTRIG 3)...
+C 0x4F3E ...o M o N (fila 4, bits 2 y 3)
+C 0x4F51 solo cuenta al pulsarlo (0xE063 recuerda que ya estaba)
+C 0x4F58 0xE062 = 0xFF: salto
+C 0x4F6E las dos palancas juntas; si salen mas de 8 (dos a la vez), ninguna
+C 0x4F82 la demostracion: cada 6 cuadros (0xE1C4) un paso de su grabacion
+C 0x4F9D cada byte de la grabacion vale para dos pasos (una cifra cada uno)
+C 0x4FA6 0xFF: la grabacion se acabo, y la demostracion con ella
+C 0x4FBD el byte siguiente de la grabacion
+C 0x4FCB la cifra de este paso a 0xE180 (p00:4FF8)
+C 0x4FD2 el disparo: el boton A del mando 1 o el espacio
+C 0x4FEA solo al pulsarlo
+C 0x4FF1 0xE066 = 0xFF: disparo nuevo
+C 0x4FF8 la cifra alta del byte de la grabacion en el primer paso, la baja en el segundo
+C 0x5008 la cifra del paso: la direccion (bits 0-2)...
+C 0x500D ...8 solo: salto
+C 0x5011 ...sin el bit 3, a la palanca
+C 0x5018 bit 3 a cero: dispara
+C 0x5022 bit 3 y bit 0: salta
+C 0x5052 pide un sonido: guarda los bancos...
+C 0x5060 ...pone el 4 y el 5 (el motor)...
+C 0x5069 ...el numero, a p04:6003...
+C 0x506D ...y devuelve los bancos
+C 0x507B la orden de 0xE0D0, a partir del registro B:
+C 0x5084 R#17 = B con autoincremento
+C 0x508A los registros de B a 46...
+C 0x5090 ...por el puerto 0x9B
+C 0x5094 S#2 en R#15 para mirar el VDP...
+C 0x509D ...lo lee...
+C 0x50A0 ...y deja otra vez S#0
+C 0x50B4 CE a uno: la orden sigue, se espera
+C 0x50C5 la VRAM 0-0x67FF a 0xFF
+C 0x50CC la VRAM 0-0x69FF a cero
+C 0x50D6 sin pantalla, y 0xE2D3-0xE2D4 a cero
+C 0x50E0 el menu de la pausa, con 0xE093 a 1 mientras se pinta
+C 0x50F6 la orden que guarda (0xE2DF = 1) o devuelve el trozo de pantalla del menu
+C 0x5111 al devolverlo no se escribe nada mas
+C 0x5118 la caja del menu (p00:5386)
+C 0x5128 NORMAL  GUN
+C 0x5131 MACHINE GUN: las dos de siempre
+C 0x513A REAR  GUN desde la fase 3 (la cuarta, HELL FALL)
+C 0x514A LASER GUN y FIRE GUN desde la 6 (TUNDRA AREA)
+C 0x5166 el cursor, en la primera arma
+C 0x517A quita el menu de la pausa, con 0xE093 a 1 mientras tanto
+C 0x518F la orden que devuelve el trozo de pantalla guardado (p00:53A0) o lo guarda (p00:5391)
+C 0x51AD y 0xE2C1-0xE2C4 a cero: sin menu
+C 0x51B2 B bytes a cero desde HL
+C 0x51B8 HL + A...
+C 0x51BD ...y A = lo que hay ahi
+C 0x51BF la orden de p00:5330, tres veces...
+C 0x51D2 ...16 puntos mas a la derecha cada vez
+C 0x51DD los dos dibujos de p00:527A y p00:5282 en la VRAM (p00:5238)
+C 0x51E0 y cuatro veces p00:51EA
+C 0x51EB la orden de p00:5229 con la x y la y de las tablas p00:521F y p00:5224
+C 0x520B 14 veces, 8 puntos mas a la derecha cada vez
+C 0x5238 dos dibujos de 8 lineas: p00:527A en 0xE400 de la VRAM y p00:5282 en 0xE404
+C 0x524C cada byte de la tabla son cuatro parejas de bits, cuatro bytes de VRAM:
+C 0x5252 el bit alto pone el color 10 a la izquierda (0xA0)...
+C 0x525B ...y el otro a la derecha (0x0A)
+C 0x5267 el byte siguiente de la VRAM
+C 0x528A solo en las bases 3D, cada 8 cuadros (0xE1C3):
+C 0x5293 (en la fase 14 tambien en el primer tramo)
+C 0x52A9 la orden de p00:533D...
+C 0x52B4 ...con los blancos de la sala por destruir (0xE18B) parpadea (0xE301 a ratos)...
+C 0x52CF ...y destruidos, se queda puesta (0xE8)
+C 0x52DD la vida de mas por puntos: con 0xE035 no hay
+C 0x52E6 la cifra alta de 0xE037 (los puntos)...
+C 0x52EE ...cuando pasa a 0 o a 5...
+C 0x52F9 ...y no es la de la vez anterior (0xE00F la recuerda)...
+C 0x5304 ...una vida mas, hasta 99
+C 0x5311 el sonido de la vida de mas, y REST en el marcador
+C 0x531B la fase en la lista de las bases (p00:532C)?
+# --- fin de lo escrito a mano ---
+
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
 L 0x402E init el arranque del cartucho (INIT de la cabecera AB): RAM a cero, bancos 0-1-2-3, SCREEN 5, sonido y bucle
 L 0x4117 bucle_partida el bucle de cada partida: titulo, demostracion o juego
@@ -31,6 +452,20 @@ L 0x50D6 apaga_pantalla apaga la pantalla (DISSCR)
 L 0x51B2 borra_b pone a cero B bytes desde HL
 L 0x51B8 lee_tabla HL = HL + A y A = (HL)
 L 0x531B es_base_3d acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+L 0x5A5A toca_al_jugador_2 como p00:5A68 con otro dano
+L 0x5A68 toca_al_jugador acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
+L 0x5AF8 le_da_un_disparo acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+L 0x5C53 avanza mueve la ficha IY un paso en su direccion
+L 0x5C75 velocidad la velocidad A del objeto IY
+L 0x5CB6 paso_de_direccion el paso en x y en y de la direccion IY+8 (32 direcciones)
+L 0x5D1D hacia_el_jugador A = la direccion desde la ficha IY hasta el jugador
+L 0x5E45 colores_ficha pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+L 0x5F19 suma_100 suma 1 a los puntos
+L 0x5F1D suma_200 suma 2 a los puntos
+L 0x5F21 suma_300 suma 3 a los puntos
+L 0x5F25 suma_400 suma 4 a los puntos
+L 0x5F2D suma_1000 suma 0x10 a los puntos
+L 0x5F33 suma_puntos suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 C 0x403A apaga_pantalla: apaga la pantalla (DISSCR)
 C 0x4083 el mapper: pone en 0x4000 el banco de A
 C 0x4087 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
@@ -41,26 +476,22 @@ C 0x40A3 pon_colores: pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a
 C 0x40B4 apaga_pantalla: apaga la pantalla (DISSCR)
 C 0x40B8 pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 C 0x40DF apaga_pantalla: apaga la pantalla (DISSCR)
-C 0x40F2 lee la copia del banco de 0x6000
 C 0x40F6 lee la copia del banco de 0x8000
 C 0x40FC el mapper: pone en 0x6000 el banco de A
 C 0x4100 el mapper: pone en 0x8000 el banco de A
 C 0x4107 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
 C 0x410B pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x4118 guarda 1 en una partida de verdad, 0 en la demostracion
 C 0x411E guarda 1 en la demostracion (la palanca sale de su grabacion)
-C 0x4121 pon_colores: pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a CHGCLR
 C 0x4124 borra_vram: pone a cero los 0x6A00 primeros bytes de la VRAM
 C 0x4127 borra_partida: pantalla apagada, mapa 0xC300 a 0x10 y RAM de la partida a cero
 C 0x4132 carga_graficos_arriba: copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
 C 0x4137 pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 C 0x4154 apunta a la orden del VDP que se manda (registros 32-46)
-C 0x4165 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
-C 0x416E lee el disparo pulsado
-C 0x417E lee el disparo pulsado
-C 0x418F apunta a las 32 fichas de objeto de 16 bytes (las 4 primeras, el jugador)
+C 0x415F guarda cuenta de cuadros (la sube la interrupcion)
+C 0x4184 lee cuenta de cuadros (la sube la interrupcion)
 C 0x4194 borra_b: pone a cero B bytes desde HL
 C 0x4197 apaga_pantalla: apaga la pantalla (DISSCR)
-C 0x419A borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
 C 0x419F carga_graficos_arriba: copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
 C 0x41A3 guarda los cuadros que le quedan al paso de la demostracion
 C 0x41A9 pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
@@ -69,68 +500,66 @@ C 0x41BD escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la l
 C 0x41C6 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x41CA guarda el disparo pulsado
 C 0x41D6 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
-C 0x41DF lee el disparo pulsado
-C 0x41E5 apaga_pantalla: apaga la pantalla (DISSCR)
 C 0x41E9 guarda el disparo pulsado
 C 0x41EF guarda 1 en la demostracion (la palanca sale de su grabacion)
+C 0x41F6 guarda 1 en una partida de verdad, 0 en la demostracion
 C 0x41FB pon_colores: pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a CHGCLR
 C 0x4200 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x4216 guarda el puntero de la grabacion de la demostracion y el byte siguiente (16 bits)
-C 0x4219 borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
-C 0x421C apunta a la fase (0-19; la 8 se salta)
 C 0x4221 borra_b: pone a cero B bytes desde HL
-C 0x4224 apunta a la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x4229 borra_b: pone a cero B bytes desde HL
 C 0x422C apaga_pantalla: apaga la pantalla (DISSCR)
 C 0x423B guarda las vidas que quedan (en BCD)
-C 0x423E guarda la energia del jugador
+C 0x4255 guarda la cuenta de demostraciones (cual toca)
 C 0x425A guarda la fase (0-19; la 8 se salta)
 C 0x4261 guarda las vidas que quedan (en BCD)
 C 0x4266 guarda la energia del jugador
 C 0x4269 borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x427B guarda la cuenta de demostraciones (cual toca)
 C 0x427E apaga_pantalla: apaga la pantalla (DISSCR)
 C 0x4284 lee la fase (0-19; la 8 se salta)
 C 0x4288 lee_tabla: HL = HL + A y A = (HL)
 C 0x428B pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 C 0x4293 lee_tabla: HL = HL + A y A = (HL)
-C 0x4297 carga_graficos_arriba: copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
-C 0x429D carga_graficos_abajo: copia el banco A a la VRAM en la linea 0x40 de la pagina de dibujos
-C 0x42B0 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0x42A4 el dibujo de arriba del jugador (p00:4B54) = 0x05
+C 0x42A8 el dibujo de abajo del jugador (p00:4B6D) = 0x10
 C 0x42B6 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0x42D7 guarda cuenta de cuadros (la sube la interrupcion)
 C 0x42E0 guarda el disparo pulsado
 C 0x42E3 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x42F3 guarda 1 en la demostracion (la palanca sale de su grabacion)
+C 0x42FA guarda fase superada (1; 2 ya contada)
+C 0x4304 guarda 1 mientras dura la fase
 C 0x4309 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
-C 0x4316 lee la fase (0-19; la 8 se salta)
 C 0x431C lee_tabla: HL = HL + A y A = (HL)
 C 0x431F pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x4350 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x4405 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x441B escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x4420 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4424 guarda sin vidas: se acaba la partida
+C 0x4427 guarda 1 en una partida de verdad, 0 en la demostracion
 C 0x442A guarda el disparo pulsado
-C 0x443A pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 C 0x443D apaga_pantalla: apaga la pantalla (DISSCR)
 C 0x4440 borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
 C 0x4443 bucle_partida: el bucle de cada partida: titulo, demostracion o juego
+C 0x4448 guarda fase superada (1; 2 ya contada)
 C 0x445D lee la fase (0-19; la 8 se salta)
 C 0x447A pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x448D vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
-C 0x4496 lee la fase (0-19; la 8 se salta)
 C 0x449F guarda la fase (0-19; la 8 se salta)
 C 0x44A9 lee_tabla: HL = HL + A y A = (HL)
 C 0x44AC guarda el tramo: la pantalla de la lista de la fase
 C 0x44AF borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
 C 0x44B9 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 C 0x44C1 guarda el tramo: la pantalla de la lista de la fase
-C 0x44D0 lee la fase (0-19; la 8 se salta)
 C 0x44D5 carga_fase: carga la fase de 0xE020: paleta, graficos (p00:4666), pantalla y musica
+C 0x44DF guarda 1 en una partida de verdad, 0 en la demostracion
 C 0x44E2 guarda el disparo pulsado
 C 0x44E5 guarda la fase (0-19; la 8 se salta)
 C 0x44ED pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
-C 0x44F0 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 C 0x44F6 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
-C 0x44F9 bucle_partida: el bucle de cada partida: titulo, demostracion o juego
+C 0x44FD apunta a los puntos (BCD; el marcador anade 00)
 C 0x4524 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x4527 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 C 0x452D lee el banco de 0x8000 guardado al poner el 12
@@ -138,13 +567,12 @@ C 0x4532 lee la copia del banco de 0x8000
 C 0x4535 guarda el banco de 0x8000 guardado al poner el 12
 C 0x453A guarda la copia del banco de 0x8000
 C 0x453D el mapper: pone en 0x8000 el banco de A
-C 0x4541 lee la fase (0-19; la 8 se salta)
 C 0x4570 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x4576 lee la fase (0-19; la 8 se salta)
 C 0x459E pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 C 0x45A7 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x45AD lee las vidas que quedan (en BCD)
 C 0x45BB escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x45BF suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 C 0x45C9 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x45D4 lee la energia del jugador
 C 0x45E2 lee la energia del jugador
@@ -153,22 +581,17 @@ C 0x4697 lee_tabla: HL = HL + A y A = (HL)
 C 0x47BE guarda el banco de graficos que se carga
 C 0x47C1 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 C 0x47CD carga_graficos: pone el banco A en 0x6000 y lo copia entero a la VRAM con HMMC
-C 0x47D6 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 C 0x47DC devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 C 0x47DF carga_graficos: pone el banco A en 0x6000 y lo copia entero a la VRAM con HMMC
 C 0x47EB apunta a la orden del VDP que se manda (registros 32-46)
 C 0x4816 apunta a la orden del VDP que se manda (registros 32-46)
 C 0x4853 apunta a la orden del VDP que se manda (registros 32-46)
-C 0x485E orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
-C 0x4891 lee la fila de la hoja de dibujos (0xD8 la de las letras)
 C 0x489E guarda la orden del VDP que se manda (registros 32-46)
 C 0x48A3 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
 C 0x48CA guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 C 0x48D5 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 C 0x48E0 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 C 0x48E6 apaga_pantalla: apaga la pantalla (DISSCR)
-C 0x48E9 apunta a el mapa de la pantalla: 32 x 24 dibujos
-C 0x48F7 apunta a la copia de los atributos de sprite (32 x 4 bytes)
 C 0x48FD borra: pone a cero BC bytes desde HL
 C 0x4906 borra: pone a cero BC bytes desde HL
 C 0x490B guarda las 32 fichas de objeto de 16 bytes (las 4 primeras, el jugador)
@@ -176,7 +599,6 @@ C 0x491E guarda el disparo pulsado
 C 0x492A guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x4934 borra: pone a cero BC bytes desde HL
 C 0x493D borra: pone a cero BC bytes desde HL
-C 0x494D vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
 C 0x4975 lee_tabla: HL = HL + A y A = (HL)
 C 0x49AD pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 C 0x49C1 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
@@ -188,7 +610,6 @@ C 0x4B98 guarda la copia de los atributos de sprite (32 x 4 bytes)
 C 0x4BA7 apunta a la copia de los atributos de sprite (32 x 4 bytes)
 C 0x4BBB apunta a las 32 fichas de objeto de 16 bytes (las 4 primeras, el jugador)
 C 0x4BBE apunta a la copia de los atributos de sprite (32 x 4 bytes)
-C 0x4BEF lee la copia del banco de 0x6000
 C 0x4BF3 lee la copia del banco de 0x8000
 C 0x4BF9 guarda la copia del banco de 0x6000
 C 0x4BFC el mapper: pone en 0x6000 el banco de A
@@ -199,51 +620,48 @@ C 0x4C22 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
 C 0x4C26 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
 C 0x4C2E pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
 C 0x4C32 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
-C 0x4C41 lee el disparo pulsado
+C 0x4C48 guarda 1 mientras dura la fase
 C 0x4C83 lee_tabla: HL = HL + A y A = (HL)
 C 0x4C92 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
-C 0x4C9C vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
 C 0x4CDE guarda las vidas que quedan (en BCD)
 C 0x4CF2 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x4CF5 apunta a la fase (0-19; la 8 se salta)
 C 0x4D00 guarda la energia del jugador
-C 0x4D21 lee la energia del jugador
-C 0x4D28 lee las vidas que quedan (en BCD)
+C 0x4D04 guarda 1 mientras dura la fase
+C 0x4D14 guarda fase superada (1; 2 ya contada)
 C 0x4D2E lee la fase (0-19; la 8 se salta)
 C 0x4D34 lee la energia del jugador
 C 0x4D3A lee el tramo: la pantalla de la lista de la fase
 C 0x4D60 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x4D8F escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x4DBE guarda la ranura del otro cartucho (el que contesta Y y Z por RDSLT)
 C 0x4DD2 lee la ranura del otro cartucho (el que contesta Y y Z por RDSLT)
 C 0x4DD9 lee la copia del banco de 0x8000
-C 0x4DF3 lee la ranura del cartucho (para devolverla tras usar el otro)
 C 0x4DFE pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
 C 0x4E32 copia_sprites: copia y, x y dibujo de las 32 fichas de 0xE300 a la tabla de 0xE100
-C 0x4E39 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x4E44 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
-C 0x4E50 lee 1 en la demostracion (la palanca sale de su grabacion)
 C 0x4E7B pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4E96 lee 1 mientras dura la fase
+C 0x4ECF guarda la pausa (bit 0)
 C 0x4ED7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x4EEF escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4EFB lee 1 en una partida de verdad, 0 en la demostracion
 C 0x4F62 guarda la palanca 0 (los cursores)
 C 0x4F6B lee la palanca 0 (los cursores)
 C 0x4F74 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x4F78 guarda el banco de graficos puesto en 0x6000
 C 0x4F7B el mapper: pone en 0x6000 el banco de A
 C 0x4F7E guarda la copia del banco de 0x6000
-C 0x4F82 lee 1 en la demostracion (la palanca sale de su grabacion)
 C 0x4F94 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 C 0x4F97 lee los cuadros que le quedan al paso de la demostracion
 C 0x4F9F guarda los cuadros que le quedan al paso de la demostracion
 C 0x4FA2 lee el puntero de la grabacion de la demostracion y el byte siguiente (16 bits)
+C 0x4FAC guarda sin vidas: se acaba la partida
+C 0x4FB0 guarda 1 mientras dura la fase
 C 0x4FB3 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 C 0x4FB8 lee_disparo: el disparo: GTTRIG(1) o el espacio (fila 8 de SNSMAT), en 0xE066
 C 0x4FC1 guarda el puntero de la grabacion de la demostracion y el byte siguiente (16 bits)
 C 0x4FC4 lee los cuadros que le quedan al paso de la demostracion
 C 0x4FC8 guarda los cuadros que le quedan al paso de la demostracion
 C 0x4FCE devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
-C 0x4FF1 guarda el disparo pulsado
 C 0x5014 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x5058 lee la copia del banco de 0x8000
 C 0x505C lee la copia del banco de 0x6000
@@ -251,7 +669,6 @@ C 0x5062 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
 C 0x5066 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
 C 0x506E pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
 C 0x5072 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
-C 0x507B apunta a la orden del VDP que se manda (registros 32-46)
 C 0x50F1 vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
 C 0x5104 apunta a la orden del VDP que se manda (registros 32-46)
 C 0x510E orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
@@ -259,9 +676,7 @@ C 0x511B apunta a la orden del VDP que se manda (registros 32-46)
 C 0x5125 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
 C 0x512E escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x5137 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x513A lee la fase (0-19; la 8 se salta)
 C 0x5147 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x514A lee la fase (0-19; la 8 se salta)
 C 0x5157 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x5160 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x516F pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
@@ -275,28 +690,49 @@ C 0x51FE guarda la orden del VDP que se manda (registros 32-46)
 C 0x5205 lee_tabla: HL = HL + A y A = (HL)
 C 0x5210 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
 C 0x526D lee_tabla: HL = HL + A y A = (HL)
-C 0x528A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
-C 0x5293 lee la fase (0-19; la 8 se salta)
 C 0x529A lee el tramo: la pantalla de la lista de la fase
 C 0x52AC apunta a la orden del VDP que se manda (registros 32-46)
 C 0x52C4 apunta a la orden del VDP que se manda (registros 32-46)
 C 0x52CB orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
-C 0x52CF apunta a la orden del VDP que se manda (registros 32-46)
 C 0x52D6 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
-C 0x5304 lee las vidas que quedan (en BCD)
 C 0x530E guarda las vidas que quedan (en BCD)
 C 0x5313 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
-C 0x531B lee la fase (0-19; la 8 se salta)
+C 0x54DC suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 C 0x54DF es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 C 0x54F7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x5506 despacha_e: salta por la tabla que va detras del call, con el indice en E
+C 0x5687 lee el dibujo del sprite
+C 0x56D2 lee el dibujo del sprite
+C 0x57C7 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x57CF velocidad: la velocidad A del objeto IY
+C 0x5802 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x580A velocidad: la velocidad A del objeto IY
+C 0x5818 avanza: mueve la ficha IY un paso en su direccion
+C 0x581B dentro_o_fuera: si la ficha IY sale de la pantalla la libera; acarreo si sigue dentro
+C 0x5840 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x5848 velocidad: la velocidad A del objeto IY
+C 0x5880 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x5888 velocidad: la velocidad A del objeto IY
+C 0x58B9 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x58C1 velocidad: la velocidad A del objeto IY
 C 0x58D1 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x58DF pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x5911 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x5A76 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x5AF8 lee los blancos de la sala que quedan (bases 3D)
+C 0x5B5A busca_una: IX = una ficha libre de 0xE380 (de 19); acarreo si no hay
+C 0x5B7B colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 C 0x5B8D lee la copia del banco de 0x6000
 C 0x5B9A pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x5C1A hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
 C 0x5DB1 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x5DF8 apunta a las fichas de los objetos de la fase (16 bytes)
+C 0x5E09 mueve_objetos: la rutina del objeto IY (de 0xE500) segun su tipo IY+4 (la tabla de detras)
+C 0x5E33 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x5E3B colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 C 0x5F0C lee la fase (0-19; la 8 se salta)
+C 0x5F38 lee 1 en una partida de verdad, 0 en la demostracion
+C 0x5F4C apunta a los puntos (BCD; el marcador anade 00)
+C 0x5F63 guarda los puntos (BCD; el marcador anade 00)
 C 0x5FE3 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 # --- fin de las anotaciones de anota.py ---

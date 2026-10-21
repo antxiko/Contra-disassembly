@@ -1,7 +1,39 @@
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x7826 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x782C paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x7834 velocidad: la velocidad A del objeto IY
+C 0x7858 pon_figura: pone la figura HL (dy, dx, dibujo) en la ficha IY y en la de debajo (IY+10, dibujo + 4)
+C 0x7867 libera_2: libera la ficha IY y la de debajo
+C 0x786D lee los blancos de la sala que quedan (bases 3D)
+C 0x7871 libera_2: libera la ficha IY y la de debajo
 C 0x7874 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x7891 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x7896 velocidad: la velocidad A del objeto IY
+C 0x78A7 avanza: mueve la ficha IY un paso en su direccion
+C 0x78AC cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x78C3 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x78C8 avanza: mueve la ficha IY un paso en su direccion
+C 0x78CD cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x78D6 velocidad: la velocidad A del objeto IY
+C 0x78E3 velocidad: la velocidad A del objeto IY
+C 0x791F le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x7955 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x7976 lee los blancos de la sala que quedan (bases 3D)
+C 0x797A libera_2: libera la ficha IY y la de debajo
 C 0x798A lee el tramo: la pantalla de la lista de la fase
+C 0x7997 espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
+C 0x79BE paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x79E9 libera_2: libera la ficha IY y la de debajo
+C 0x79F1 libera_2: libera la ficha IY y la de debajo
+C 0x79F6 libera_2: libera la ficha IY y la de debajo
+C 0x79FD toca_al_jugador_2: como p00:5A68 con otro dano
+C 0x7A01 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x7A08 explota: la ficha IY pasa a ser una explosion (tipo 0x0B)
+C 0x7A1A cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x7A30 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x7A5A pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x7A71 apunta a la orden del VDP que se manda (registros 32-46)
 C 0x7A7B orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x7A9C guarda los blancos de la sala que quedan (bases 3D)
 # --- fin de las anotaciones de anota.py ---

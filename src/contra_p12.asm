@@ -341,7 +341,7 @@ DATA_8000:
 L_9400:
 	xor a			;9400
 	ld (0e1c3h),a		;9401
-	ld (0e000h),a		;9404
+	ld (0e000h),a		;9404   ; guarda 1 en una partida de verdad, 0 en la demostracion
 	ld b,010h		;9407
 L_9409:
 	ld a,(0e1c3h)		;9409

@@ -423,12 +423,12 @@ L_7800:
 L_7820:
 	call 09a24h		;7820
 	ld bc,0a8d5h		;7823
-	call 05e45h		;7826
+	call 05e45h		;7826   ; colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 	ld a,(iy+008h)		;7829
-	call 05cb6h		;782c
+	call 05cb6h		;782c   ; paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 	call 05e40h		;782f
 	ld a,0feh		;7832
-	call 05c75h		;7834
+	call 05c75h		;7834   ; velocidad: la velocidad A del objeto IY
 	ret			;7837
 L_7838:
 	inc (iy+005h)		;7838
@@ -443,18 +443,18 @@ L_7838:
 	ld bc,0a8d5h		;784f
 	call 05e31h		;7852
 	ld hl,0a92ch		;7855
-	call 09ffah		;7858
+	call 09ffah		;7858   ; pon_figura: pone la figura HL (dy, dx, dibujo) en la ficha IY y en la de debajo (IY+10, dibujo + 4)
 	ld (iy+008h),0feh		;785b
 	ret			;785f
 L_7860:
 	ld a,(iy+001h)		;7860
 	sub 001h		;7863
 	cp 008h		;7865
-	jp c,0a8a9h		;7867
+	jp c,0a8a9h		;7867   ; libera_2: libera la ficha IY y la de debajo
 	ld (iy+001h),a		;786a
-	ld a,(0e18bh)		;786d
+	ld a,(0e18bh)		;786d   ; lee los blancos de la sala que quedan (bases 3D)
 	and a			;7870
-	jp nz,0a8a9h		;7871
+	jp nz,0a8a9h		;7871   ; libera_2: libera la ficha IY y la de debajo
 	call 0a03eh		;7874   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
@@ -474,17 +474,17 @@ L_7881:
 	inc (iy+005h)		;7889
 	ld a,000h		;788c
 	ld (iy+008h),a		;788e
-	call 05cb6h		;7891
+	call 05cb6h		;7891   ; paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 	ld a,004h		;7894
-	call 05c75h		;7896
+	call 05c75h		;7896   ; velocidad: la velocidad A del objeto IY
 	ld (iy+002h),090h		;7899
 	ld (iy+012h),094h		;789d
 	ld bc,07935h		;78a1
 	jp 05e31h		;78a4
 L_78A7:
-	call 05c53h		;78a7
+	call 05c53h		;78a7   ; avanza: mueve la ficha IY un paso en su direccion
 	ld a,002h		;78aa
-	call 09915h		;78ac
+	call 09915h		;78ac   ; cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 	jr nc,L_7914		;78af
 	ld a,(iy+006h)		;78b1
 	dec a			;78b4
@@ -495,22 +495,22 @@ L_78BB:
 	inc (iy+005h)		;78bb
 	ld a,010h		;78be
 	ld (iy+008h),a		;78c0
-	call 05cb6h		;78c3
+	call 05cb6h		;78c3   ; paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 	jr L_7914		;78c6
 L_78C8:
-	call 05c53h		;78c8
+	call 05c53h		;78c8   ; avanza: mueve la ficha IY un paso en su direccion
 	ld a,002h		;78cb
-	call 09915h		;78cd
+	call 09915h		;78cd   ; cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 	jr nc,L_7914		;78d0
 	ld a,(iy+006h)		;78d2
 	inc a			;78d5
-	call 05c75h		;78d6
+	call 05c75h		;78d6   ; velocidad: la velocidad A del objeto IY
 	ld a,(iy+000h)		;78d9
 	cp (iy+018h)		;78dc
 	jr nc,L_78E8		;78df
 	jr L_7914		;78e1
 L_78E3:
-	call 05c75h		;78e3
+	call 05c75h		;78e3   ; velocidad: la velocidad A del objeto IY
 	jr L_7914		;78e6
 L_78E8:
 	ld a,r		;78e8
@@ -540,7 +540,7 @@ L_7914:
 	push hl			;791a
 	call 05a61h		;791b
 	pop hl			;791e
-	call 05af8h		;791f
+	call 05af8h		;791f   ; le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
 	ret nc			;7922
 	call 09ff5h		;7923
 	ld (iy+004h),00bh		;7926
@@ -571,7 +571,7 @@ L_7937:
 	and 003h		;794e
 	add a,016h		;7950
 	ld (iy+008h),a		;7952
-	call 05cb6h		;7955
+	call 05cb6h		;7955   ; paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 	ld bc,07a0fh		;7958
 	call 05e31h		;795b
 	ld c,0ffh		;795e
@@ -588,9 +588,9 @@ L_7970:
 	ld (iy+00eh),c		;7972
 	ret			;7975
 L_7976:
-	ld a,(0e18bh)		;7976
+	ld a,(0e18bh)		;7976   ; lee los blancos de la sala que quedan (bases 3D)
 	and a			;7979
-	jp nz,0a8a9h		;797a
+	jp nz,0a8a9h		;797a   ; libera_2: libera la ficha IY y la de debajo
 	call 05ccch		;797d
 	call 05ccch		;7980
 	ld a,(iy+005h)		;7983
@@ -604,7 +604,7 @@ L_7976:
 L_7995:
 	ld a,050h		;7995
 L_7997:
-	call 0a869h		;7997
+	call 0a869h		;7997   ; espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
 	jr nc,L_79C1		;799a
 L_799C:
 	inc (iy+00ch)		;799c
@@ -620,7 +620,7 @@ L_799C:
 	add a,(iy+008h)		;79b6
 	and 01fh		;79b9
 	ld (iy+008h),a		;79bb
-	call 05cb6h		;79be
+	call 05cb6h		;79be   ; paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 L_79C1:
 	inc (iy+01bh)		;79c1
 	ld a,(iy+01bh)		;79c4
@@ -639,21 +639,21 @@ L_79D5:
 	cp 0e8h		;79e3
 	jr nc,L_79EC		;79e5
 	cp 0a8h		;79e7
-	jp nc,0a8a9h		;79e9
+	jp nc,0a8a9h		;79e9   ; libera_2: libera la ficha IY y la de debajo
 L_79EC:
 	ld a,(iy+001h)		;79ec
 	cp 004h		;79ef
-	jp c,0a8a9h		;79f1
+	jp c,0a8a9h		;79f1   ; libera_2: libera la ficha IY y la de debajo
 	cp 0f0h		;79f4
-	jp nc,0a8a9h		;79f6
+	jp nc,0a8a9h		;79f6   ; libera_2: libera la ficha IY y la de debajo
 	ld hl,07a0bh		;79f9
 	push hl			;79fc
-	call 05a5ah		;79fd
+	call 05a5ah		;79fd   ; toca_al_jugador_2: como p00:5A68 con otro dano
 	pop hl			;7a00
-	call 05af8h		;7a01
+	call 05af8h		;7a01   ; le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
 	ret nc			;7a04
 	call 09ff5h		;7a05
-	jp 0a0ffh		;7a08
+	jp 0a0ffh		;7a08   ; explota: la ficha IY pasa a ser una explosion (tipo 0x0B)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x7a0b..0x7a11  (6 bytes)
@@ -670,7 +670,7 @@ L_7A11:
 	cp 001h		;7a14
 	jr z,L_7A46		;7a16
 	ld a,010h		;7a18
-	call 09915h		;7a1a
+	call 09915h		;7a1a   ; cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 	ret nc			;7a1d
 	ld (iy+005h),001h		;7a1e
 	ld a,(iy+00fh)		;7a22
@@ -681,7 +681,7 @@ L_7A11:
 L_7A2D:
 	ld de,092bah		;7a2d
 L_7A30:
-	call 08400h		;7a30
+	call 08400h		;7a30   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 	ld a,020h		;7a33
 	add a,(iy+006h)		;7a35
 	ld (iy+006h),a		;7a38
@@ -700,7 +700,7 @@ L_7A46:
 	and a			;7a55
 	ret z			;7a56
 	ld de,092c4h		;7a57
-	call 08400h		;7a5a
+	call 08400h		;7a5a   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 	ld h,001h		;7a5d
 	ld l,09fh		;7a5f
 	ld a,010h		;7a61
@@ -724,7 +724,7 @@ L_7A87:
 	ld (iy+00dh),000h		;7a93
 	ld a,0ffh		;7a97
 	ld (0e5c2h),a		;7a99
-	ld (0e18bh),a		;7a9c
+	ld (0e18bh),a		;7a9c   ; guarda los blancos de la sala que quedan (bases 3D)
 	ret			;7a9f
 L_7AA0:
 	ld (iy+004h),024h		;7aa0

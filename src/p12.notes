@@ -1,5 +1,6 @@
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x9404 guarda 1 en una partida de verdad, 0 en la demostracion
 C 0x943C borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
 C 0x943F apunta a el mapa de la pantalla: 32 x 24 dibujos
 C 0x947C pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
