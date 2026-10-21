@@ -61,6 +61,36 @@ foreach k [opcion VRAM_BP {}] {
     set ::BPLOG [open [file join $::SALIDA "bp.txt"] w]
     debug breakpoint create -address $pc -command "poke $d $v; puts \$::BPLOG {bp $pc}; flush \$::BPLOG"
 }
+# VRAM_SALTA "pc:destino:direccion:valor ...": la primera vez que se ejecuta pc
+# con ese valor en esa direccion (y 0xE006 = 0: la partida, no la demostracion),
+# el programa sigue en destino
+proc salta {pc destino d v} {
+    if {$::saltado($pc)} return
+    if {[peek $d] != $v || [peek 0xE006] != 0} return
+    set ::saltado($pc) 1
+    reg PC $destino
+}
+foreach k [opcion VRAM_SALTA {}] {
+    lassign [split $k :] pc destino d v
+    set ::saltado($pc) 0
+    debug set_bp $pc {} [list salta $pc $destino $d $v]
+}
+# VRAM_SUPERA t: desde t segundos, la primera vez que la partida (0xE006 = 0)
+# espera en p00:4322, se hace lo que hace el jefe al caer (p02:8915-8933):
+# 0xE094 = 0, 0xE5C7 = 0, fase superada (0xE184 = 1) y la musica 0x0F
+# (call p00:5052 con A = 0x0F)
+set ::SUPERADA 0
+proc supera {} {
+    if {$::SUPERADA || [machine_info time] < [opcion VRAM_SUPERA 0] || [peek 0xE006] != 0} return
+    set ::SUPERADA 1
+    poke 0xE094 0; poke 0xE5C7 0; poke 0xE184 1
+    set sp [expr {[reg SP] - 2}]
+    reg SP $sp
+    poke16 $sp [reg PC]
+    reg A 0x0F
+    reg PC 0x5052
+}
+if {[opcion VRAM_SUPERA {}] ne ""} { debug set_bp 0x4322 {} supera }
 # VRAM_WP "direccion ...": apunta en wp.txt el PC de cada escritura
 set ::WPLOG [open [file join $::SALIDA "wp.txt"] w]
 foreach d [opcion VRAM_WP {}] {

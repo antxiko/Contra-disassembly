@@ -94,6 +94,7 @@ C 0x98DB ...y el bajo: 0x0A o 0x0F en la mitad derecha
 C 0x98E8 la pareja siguiente
 C 0x98F4 dos 0xFF seguidos: se acabo
 C 0x9907 la fila siguiente: 0x80 bytes mas abajo en la VRAM
+C 0x9914 huerfano: un ret suelto, delante del rotulo de la fase; no salta nadie aqui
 C 0x9915 el rotulo de la fase: STAGE...
 C 0x9918 STAGE en la casilla 0x109
 C 0x991E ...su numero (p00:4576)...
@@ -154,3 +155,116 @@ C 0x992B lee_tabla: HL = HL + A y A = (HL)
 C 0x9934 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 C 0x994B lee_tabla: HL = HL + A y A = (HL)
 # --- fin de las anotaciones de anota.py ---
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x95CC 0x95D2 tabla_95CC  tabla que se lee desde HL = 0x95CC con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p12:94DD (6 bytes)
+F 0x95CC 16
+D 0x95D8 0x95F6 sin_lector_95D8  dos ordenes del VDP de 15 bytes (los registros 32-46, con la orden 0xD0, HMMM), como las de p00:5368; no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (30 bytes)
+F 0x95D8 16
+D 0x95F6 0x95FC tabla_95F6  tabla que se lee desde HL = 0x95F6 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p12:94E4 (6 bytes)
+F 0x95F6 16
+D 0x95FC 0x9600 tabla_95FC  tabla que se lee desde HL = 0x95FC con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p12:94ED (4 bytes)
+F 0x95FC 16
+D 0x9600 0x9622 lineas_del_final  17 punteros a las lineas del texto del final (p12:94F4, por bloques); lo leen p12:94F4 (34 bytes)
+F 0x9600 w8
+D 0x9622 0x962D texto_9622  el texto "WELL DONE!" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (11 bytes)
+F 0x9622 11
+D 0x962D 0x9640 texto_962D  el texto "YOU HAVE COMPLETED" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (19 bytes)
+F 0x962D 19
+D 0x9640 0x964E texto_9640  el texto "YOUR MISSION." y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (14 bytes)
+F 0x9640 14
+D 0x964E 0x9664 texto_964E  el texto "YOU HAVE SUCCESSFULLY" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (22 bytes)
+F 0x964E 22
+D 0x9664 0x9678 texto_9664  el texto "FOILED RED FALCON'S" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (20 bytes)
+F 0x9664 20
+D 0x9678 0x9684 texto_9678  el texto "WICKED PLAN" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (12 bytes)
+F 0x9678 12
+D 0x9684 0x9693 texto_9684  el texto "' ARMAGEDDON '" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x9684 15
+D 0x9693 0x969E texto_9693  el texto "NOW WE CAN" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (11 bytes)
+F 0x9693 11
+D 0x969E 0x96B3 texto_969E  el texto "LIVE AT PEACE AGAIN." y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (21 bytes)
+F 0x969E 21
+D 0x96B3 0x96C5 texto_96B3  el texto "...BUT A TERRIBLE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (18 bytes)
+F 0x96B3 18
+D 0x96C5 0x96D4 texto_96C5  el texto "DOUBT REMAINS." y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x96C5 15
+D 0x96D4 0x96E3 texto_96D4  el texto "ARE THE ALIENS" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x96D4 15
+D 0x96E3 0x96F4 texto_96E3  el texto "REALLY DESTROYED" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (17 bytes)
+F 0x96E3 17
+D 0x96F4 0x9700 texto_96F4  el texto "...OR NOT ?" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (12 bytes)
+F 0x96F4 12
+D 0x9700 0x970F texto_9700  el texto "THIS IS A DIRE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x9700 15
+D 0x970F 0x971B texto_970F  el texto "POSSIBILITY" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (12 bytes)
+F 0x970F 12
+D 0x971B 0x9729 texto_971B  el texto "WHICH MUST BE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (14 bytes)
+F 0x971B 14
+D 0x9729 0x9736 texto_9729  el texto "INVESTIGATED" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (13 bytes)
+F 0x9729 13
+D 0x9736 0x974C texto_9736  el texto "BEFORE IT'S TOO LATE." y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (22 bytes)
+F 0x9736 22
+D 0x974C 0x9774 nombres_de_fase  20 punteros a los nombres de fase, uno por fase (p12:9927: 0x974C + 2 x 0xE020); lo leen p12:992E (40 bytes)
+F 0x974C w8
+D 0x9774 0x9784 texto_9774  el texto " ASPHALT JUNGLE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (16 bytes)
+F 0x9774 16
+D 0x9784 0x9794 texto_9784  el texto "  1ST UNDERPASS" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (16 bytes)
+F 0x9784 16
+D 0x9794 0x97A9 texto_9794  el texto "HOMICIDE CENSOR NO.1" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (21 bytes)
+F 0x9794 21
+D 0x97A9 0x97B7 texto_97A9  el texto "    HELL FALL" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (14 bytes)
+F 0x97A9 14
+D 0x97B7 0x97C7 texto_97B7  el texto "  2ND UNDERPASS" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (16 bytes)
+F 0x97B7 16
+D 0x97C7 0x97DC texto_97C7  el texto "HOMICIDE CENSOR NO.2" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (21 bytes)
+F 0x97C7 21
+D 0x97DC 0x97EB texto_97DC  el texto "  TUNDRA  AREA" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x97DC 15
+D 0x97EB 0x97FA texto_97EB  el texto "  ENERGY  ZONE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x97EB 15
+D 0x97FA 0x9809 texto_97FA  el texto "  TRAP  HANGAR" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (15 bytes)
+F 0x97FA 15
+D 0x9809 0x9817 texto_9809  el texto "   ALIEN ZONE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (14 bytes)
+F 0x9809 14
+D 0x9817 0x9823 texto_9817  el texto "     CAVERN" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (12 bytes)
+F 0x9817 12
+D 0x9823 0x9833 texto_9823  el texto " 1ST UNDER MAZE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (16 bytes)
+F 0x9823 16
+D 0x9833 0x9848 texto_9833  el texto "HOMICIDE CENSOR NO.3" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (21 bytes)
+F 0x9833 21
+D 0x9848 0x9856 texto_9848  el texto "   MAGMA AREA" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (14 bytes)
+F 0x9848 14
+D 0x9856 0x9866 texto_9856  el texto " 2ND UNDER MAZE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (16 bytes)
+F 0x9856 16
+D 0x9866 0x987B texto_9866  el texto "HOMICIDE CENSOR NO.4" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (21 bytes)
+F 0x9866 21
+D 0x987B 0x988C texto_987B  el texto "UNDERGROUND FALL" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (17 bytes)
+F 0x987B 17
+D 0x988C 0x989A texto_988C  el texto "   MAGMA AREA" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (14 bytes)
+F 0x988C 14
+D 0x989A 0x98AF texto_989A  el texto "UNDERGROUND FORTRESS" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (21 bytes)
+F 0x989A 21
+D 0x98AF 0x98BF texto_98AF  el texto " VICIOUS  SPACE" y su 0xFF (lo escribe p00:48D3); lo leen p00:48DB (16 bytes)
+F 0x98AF 16
+D 0x9A12 0x9A3A tabla_9A12  tabla que se lee desde HL = 0x9A12 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p12:9948 (40 bytes)
+F 0x9A12 16
+D 0x9A3A 0x9BEB leido_9A3A  433 bytes que leen 0x98C8, 0x98F5, 0x9900 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x98C8, 0x98F5, 0x9900 (433 bytes)
+F 0x9A3A 16
+D 0x9BEB 0x9C00 sin_lector_9BEB  restos de codigo (ld bc,0x0A11 / ld h,c / ret / ex de,hl / inc hl...) cortados por la grabacion de la primera demostracion (p12:9C00); no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (21 bytes)
+F 0x9BEB 16
+D 0x9C00 0x9D5D demo_0  la grabacion de la demostracion 0 (fase 0): 348 bytes de dos pasos de 6 cuadros cada uno (la cifra alta y la baja: direccion y botones, p00:4FF8) y el 0xFF que la acaba (p00:4FA6); lo leen p00:4FA5 (349 bytes)
+F 0x9C00 16
+D 0x9D5D 0x9D60 sin_lector_9D5D  tres bytes a 0 detras de la grabacion de p12:9C00: cada grabacion tiene 0x160 bytes (p12:9C00, 9D60 y 9EC0) y esta acaba antes; no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (3 bytes)
+F 0x9D5D 16
+D 0x9D60 0x9EBD demo_1  la grabacion de la demostracion 1 (fase 3): 348 bytes de dos pasos de 6 cuadros cada uno (la cifra alta y la baja: direccion y botones, p00:4FF8) y el 0xFF que la acaba (p00:4FA6); lo leen p00:4FA5 (349 bytes)
+F 0x9D60 16
+D 0x9EBD 0x9EC0 sin_lector_9EBD  tres bytes a 0 detras de la grabacion de p12:9D60, como los de p12:9D5D; no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (3 bytes)
+F 0x9EBD 16
+D 0x9EC0 0x9FD3 demo_2  la grabacion de la demostracion 2 (fase 5): 274 bytes de dos pasos de 6 cuadros cada uno (la cifra alta y la baja: direccion y botones, p00:4FF8) y el 0xFF que la acaba (p00:4FA6); lo leen p00:4FA5 (275 bytes)
+F 0x9EC0 16
+D 0x9FD3 0xA000 sin_lector_9FD3  45 bytes detras de la tercera grabacion (p12:9EC0) hasta el final del banco: casi todo 0xFF, con trozos sin formato; no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (45 bytes)
+F 0x9FD3 16
+D 0x8000 0x9400 resto_8000  lo apuntan con el banco puesto p00:453D (0x9000); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p00:453D (5120 bytes)
+F 0x8000 16
+# --- fin de los bloques de bloques.py ---

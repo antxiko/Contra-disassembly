@@ -19,14 +19,20 @@ mueve_sprites:		; la rutina del objeto IY (sprite) segun su tipo IY+4 (la tabla 
 	call 0a041h		;8003   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8006..0x8062  (92 bytes)
-DATA_8006:
-	defb 062h,080h,0e3h,09ch,00eh,0a6h,0d2h,0a6h,04ah,0a7h,0a5h,0a5h,0a4h,0a5h,035h,0a5h	; 8006  b.......J.....5.
-	defb 0aah,0a4h,04eh,0a3h,024h,0a4h,0e0h,0a3h,08bh,0a2h,007h,0a2h,09ch,0a1h,00ah,0a1h	; 8016  ..N.$...........
-	defb 0d5h,0a0h,0d0h,0a0h,0bfh,09bh,011h,0a8h,0ach,09bh,078h,09ch,0d8h,09ah,0c5h,09ch	; 8026  ..........x.....
-	defb 0d5h,09ah,031h,09ah,01dh,096h,099h,095h,01dh,096h,0d2h,09ah,083h,081h,086h,098h	; 8036  ..1.............
-	defb 014h,0a4h,0cah,096h,064h,098h,087h,098h,0d2h,094h,0edh,097h,029h,099h,0a5h,097h	; 8046  ....d.......)...
-	defb 062h,080h,08dh,097h,0f4h,093h,080h,081h,06bh,094h,062h,080h	; 8056  b.......k.b.
+; DATOS tabla_8006: 46 destinos del despachador p00:A03E (call en p02:8003, el
+;   indice en A): 8062, 9CE3, A60E, A6D2, A74A, A5A5, A5A4, A535, A4AA, A34E,
+;   A424, A3E0, A28B, A207, A19C, A10A, A0D5, A0D0, 9BBF, A811, 9BAC, 9C78,
+;   9AD8, 9CC5, 9AD5, 9A31, 961D, 9599, 961D, 9AD2, 8183, 9886, A414, 96CA,
+;   9864, 9887, 94D2, 97ED, 9929, 97A5, 8062, 978D, 93F4, 8180, 946B, 8062; lo
+;   leen p02:8003 (92 bytes)
+;   0x8006..0x8062  (92 bytes)
+DATA_tabla_8006:
+	defw 08062h,09ce3h,0a60eh,0a6d2h,0a74ah,0a5a5h,0a5a4h,0a535h	; 8006
+	defw 0a4aah,0a34eh,0a424h,0a3e0h,0a28bh,0a207h,0a19ch,0a10ah	; 8016
+	defw 0a0d5h,0a0d0h,09bbfh,0a811h,09bach,09c78h,09ad8h,09cc5h	; 8026
+	defw 09ad5h,09a31h,0961dh,09599h,0961dh,09ad2h,08183h,09886h	; 8036
+	defw 0a414h,096cah,09864h,09887h,094d2h,097edh,09929h,097a5h	; 8046
+	defw 08062h,0978dh,093f4h,08180h,0946bh,08062h	; 8056
 
 ; ======================================================================
 ; CODIGO 0x8062..0x8069  (7 bytes)
@@ -40,13 +46,18 @@ mueve_objetos:		; la rutina del objeto IY (de 0xE500) segun su tipo IY+4 (la tab
 	call 0a041h		;8066   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8069..0x80b3  (74 bytes)
-DATA_8069:
-	defb 0e4h,082h,0e4h,082h,098h,084h,0deh,084h,00eh,085h,070h,085h,013h,086h,054h,087h	; 8069  ..........p...T.
-	defb 0d1h,087h,0d2h,087h,0d3h,087h,0b7h,08fh,070h,088h,071h,088h,095h,08ah,080h,08bh	; 8079  ........p.q.....
-	defb 08bh,08ch,03bh,08dh,0bbh,089h,0a2h,08dh,00bh,08eh,071h,097h,0b8h,08fh,073h,08fh	; 8089  ..........q...s.
-	defb 0d0h,090h,03ah,091h,061h,091h,0b3h,080h,048h,092h,0d2h,092h,040h,081h,03eh,092h	; 8099  ..:.a...H...@.>.
-	defb 002h,089h,07fh,081h,076h,081h,0b3h,080h,0c2h,081h	; 80a9  ....v.....
+; DATOS tabla_8069: 37 destinos del despachador p00:A03E (call en p02:8066, el
+;   indice en A): 82E4, 82E4, 8498, 84DE, 850E, 8570, 8613, 8754, 87D1, 87D2,
+;   87D3, 8FB7, 8870, 8871, 8A95, 8B80, 8C8B, 8D3B, 89BB, 8DA2, 8E0B, 9771,
+;   8FB8, 8F73, 90D0, 913A, 9161, 80B3, 9248, 92D2, 8140, 923E, 8902, 817F,
+;   8176, 80B3, 81C2; lo leen p02:8066 (74 bytes)
+;   0x8069..0x80b3  (74 bytes)
+DATA_tabla_8069:
+	defw 082e4h,082e4h,08498h,084deh,0850eh,08570h,08613h,08754h	; 8069
+	defw 087d1h,087d2h,087d3h,08fb7h,08870h,08871h,08a95h,08b80h	; 8079
+	defw 08c8bh,08d3bh,089bbh,08da2h,08e0bh,09771h,08fb8h,08f73h	; 8089
+	defw 090d0h,0913ah,09161h,080b3h,09248h,092d2h,08140h,0923eh	; 8099
+	defw 08902h,0817fh,08176h,080b3h,081c2h	; 80a9
 
 ; ======================================================================
 ; CODIGO 0x80b3..0x8186  (211 bytes)
@@ -147,9 +158,11 @@ L_8183:
 	call 0a03eh		;8183   ; por su estado (IY+5), la tabla de detras
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8186..0x818a  (4 bytes)
-DATA_8186:
-	defb 08ah,081h,097h,081h	; 8186
+; DATOS tabla_8186: 2 destinos del despachador p00:A03E (call en p02:8183, el
+;   indice en A): 818A, 8197; lo leen p02:8183 (4 bytes)
+;   0x8186..0x818a  (4 bytes)
+DATA_tabla_8186:
+	defw 0818ah,08197h	; 8186  -> L_818A L_8197
 
 ; ======================================================================
 ; CODIGO 0x818a..0x81af  (37 bytes)
@@ -175,9 +188,20 @@ L_81A9:
 	jp 05a68h		;81ac   ; toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x81af..0x81b4  (5 bytes)
-DATA_81AF:
-	defb 00ch,008h,004h,008h,008h	; 81af
+; DATOS caja_81AF: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x81af..0x81b3  (4 bytes)
+DATA_caja_81AF:
+	defb 00ch,008h,004h,008h	; 81af
+
+; ----------------------------------------------------------------------
+; DATOS leido_81B3: 1 bytes que lee 0x5E48 al jugar (medido ejecutando el
+;   cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen
+;   0x5E48 (1 bytes)
+;   0x81b3..0x81b4  (1 bytes)
+DATA_leido_81B3:
+	defb 008h	; 81b3
 
 ; ======================================================================
 ; CODIGO 0x81b4..0x81c5  (17 bytes)
@@ -196,12 +220,14 @@ L_81C2:
 	call 0a03eh		;81c2   ; por su estado (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x81c5..0x81cd  (8 bytes)
-DATA_81C5:
-	defb 0cdh,081h,0fch,081h,00bh,082h,03eh,082h	; 81c5  ......>.
+; DATOS tabla_81C5: 4 destinos del despachador p00:A03E (call en p02:81C2, el
+;   indice en A): 81CD, 81FC, 820B, 823E; lo leen p02:81C2 (8 bytes)
+;   0x81c5..0x81cd  (8 bytes)
+DATA_tabla_81C5:
+	defw 081cdh,081fch,0820bh,0823eh	; 81c5  -> L_81CD L_81FC L_820B L_823E
 
 ; ======================================================================
-; CODIGO 0x81cd..0x8266  (153 bytes)
+; CODIGO 0x81cd..0x82e0  (275 bytes)
 ; ======================================================================
 
 
@@ -231,7 +257,7 @@ L_81FC:
 L_820B:
 	ld a,010h		;820b   ; cada 0x10 (la cuenta IY+0C)...
 	call cuenta_c		;820d   ; cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
-	jr nc,$+100		;8210   ; aun no
+	jr nc,L_8274		;8210   ; aun no
 	ld hl,0fa01h		;8212   ; ...busca sitio para un disparo (p02:8383)...
 	ld bc,0f40ch		;8215
 	call L_8383		;8218   ; un disparo (tipo 0x0C, dibujo 0xF4)
@@ -247,14 +273,14 @@ L_820B:
 	inc (iy+005h)		;8231   ; sube el estado del objeto (p03:A03E)
 L_8234:
 	call pinta_pieza		;8234   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
-	jr $+61		;8237
+	jr L_8274		;8237
 L_8239:
 	ld de,0ae28h		;8239   ; sin sitio: la pieza p03:AE28
 	jr L_8234		;823c
 L_823E:
 	ld a,030h		;823e   ; cada 0x30 cuadros...
 	call cuenta_c		;8240   ; cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
-	jr nc,$+49		;8243
+	jr nc,L_8274		;8243
 	ld (iy+005h),001h		;8245   ; el estado del objeto (p03:A03E) = 0x01
 	ld de,0ae28h		;8249
 	ld a,(ix+001h)		;824c   ; ...hacia donde esta el jugador: su x + 0x30 contra la suya
@@ -268,17 +294,13 @@ L_825C:
 L_8260:
 	ld (iy+005h),001h		;8260   ; el estado del objeto (p03:A03E) = 0x01
 	jr L_8234		;8264
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8266..0x8274  (14 bytes)
-DATA_8266:
-	defb 0fdh,036h,005h,001h,018h,008h,0cdh,000h,084h,0cdh,0bdh,0a8h,018h,01eh	; 8266  .6............
-
-; ======================================================================
-; CODIGO 0x8274..0x82a0  (44 bytes)
-; ======================================================================
-
-
+L_8266:
+	ld (iy+005h),001h		;8266   ; huerfano (no salta nadie aqui): estado 1 (IY+5) y a p02:8274
+	jr L_8274		;826a
+L_826C:
+	call pinta_pieza		;826c   ; huerfano (no salta nadie aqui): pinta la pieza, libera la ficha (p03:A8BD) y a p02:8292
+	call 0a8bdh		;826f
+	jr L_8292		;8272
 L_8274:
 	ld hl,08c87h		;8274   ; p00:5A61 con p02:8C87
 	call 05a61h		;8277   ; la caja p02:8C87 contra el jugador
@@ -297,17 +319,9 @@ L_8292:
 	ld a,000h		;829a
 	ld (0e045h),a		;829c   ; sin jefe: se puede salir
 	ret			;829f
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0x82a0..0x82a4  (4 bytes)
-DATA_82A0:
-	defb 0afh,0c3h,019h,05fh	; 82a0
-
-; ======================================================================
-; CODIGO 0x82a4..0x82e0  (60 bytes)
-; ======================================================================
-
-
+L_82A0:
+	xor a			;82a0   ; huerfano (no salta nadie aqui): A = 0 y suma_100 (p00:5F19)
+	jp 05f19h		;82a1
 L_82A4:
 	ld a,(iy+011h)		;82a4   ; se mueve: IY+11 + IY+10, entre 9 y 0x1F...
 	add a,(iy+010h)		;82a7
@@ -335,8 +349,11 @@ L_82DD:
 	jp pinta_pieza		;82dd   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x82e0..0x82e4  (4 bytes)
-DATA_82E0:
+; DATOS resto_82E0: lo apuntan con el banco puesto p02:827A (0x82E0); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:827A (4 bytes)
+;   0x82e0..0x82e4  (4 bytes)
+DATA_resto_82E0:
 	defb 018h,010h,010h,006h	; 82e0
 
 ; ======================================================================
@@ -348,9 +365,11 @@ L_82E4:
 	call 0a03eh		;82e4   ; por su estado (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x82e7..0x82ed  (6 bytes)
-DATA_82E7:
-	defb 0edh,082h,000h,083h,042h,083h	; 82e7
+; DATOS tabla_82E7: 3 destinos del despachador p00:A03E (call en p02:82E4, el
+;   indice en A): 82ED, 8300, 8342; lo leen p02:82E4 (6 bytes)
+;   0x82e7..0x82ed  (6 bytes)
+DATA_tabla_82E7:
+	defw 082edh,08300h,08342h	; 82e7  -> L_82ED L_8300 L_8342
 
 ; ======================================================================
 ; CODIGO 0x82ed..0x83e5  (248 bytes)
@@ -481,8 +500,11 @@ L_83E3:
 	ret			;83e4
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x83e5..0x83e9  (4 bytes)
-DATA_83E5:
+; DATOS caja_83E5: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x83e5..0x83e9  (4 bytes)
+DATA_caja_83E5:
 	defb 00ah,010h,000h,010h	; 83e5
 
 ; ======================================================================
@@ -646,8 +668,11 @@ L_84E5:
 	jp L_8B7A		;8507
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x850a..0x850e  (4 bytes)
-DATA_850A:
+; DATOS caja_850A: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x850a..0x850e  (4 bytes)
+DATA_caja_850A:
 	defb 00ch,00ch,0fch,008h	; 850a
 
 ; ======================================================================
@@ -659,9 +684,11 @@ L_850E:
 	call 0a03eh		;850e   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8511..0x8517  (6 bytes)
-DATA_8511:
-	defb 017h,085h,026h,085h,033h,085h	; 8511
+; DATOS tabla_8511: 3 destinos del despachador p00:A03E (call en p02:850E, el
+;   indice en A): 8517, 8526, 8533; lo leen p02:850E (6 bytes)
+;   0x8511..0x8517  (6 bytes)
+DATA_tabla_8511:
+	defw 08517h,08526h,08533h	; 8511  -> L_8517 L_8526 L_8533
 
 ; ======================================================================
 ; CODIGO 0x8517..0x856c  (85 bytes)
@@ -709,8 +736,11 @@ L_8564:
 	ret			;856b
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x856c..0x8570  (4 bytes)
-DATA_856C:
+; DATOS caja_856C: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x856c..0x8570  (4 bytes)
+DATA_caja_856C:
 	defb 002h,008h,000h,008h	; 856c
 
 ; ======================================================================
@@ -725,9 +755,11 @@ L_8570:
 	call 0a03eh		;8576   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8579..0x8581  (8 bytes)
-DATA_8579:
-	defb 081h,085h,095h,085h,0a2h,085h,0f1h,085h	; 8579  ........
+; DATOS tabla_8579: 4 destinos del despachador p00:A03E (call en p02:8576, el
+;   indice en A): 8581, 8595, 85A2, 85F1; lo leen p02:8576 (8 bytes)
+;   0x8579..0x8581  (8 bytes)
+DATA_tabla_8579:
+	defw 08581h,08595h,085a2h,085f1h	; 8579  -> L_8581 L_8595 L_85A2 L_85F1
 
 ; ======================================================================
 ; CODIGO 0x8581..0x860f  (142 bytes)
@@ -798,8 +830,11 @@ L_8601:
 	ret			;860e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x860f..0x8613  (4 bytes)
-DATA_860F:
+; DATOS caja_860F: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x860f..0x8613  (4 bytes)
+DATA_caja_860F:
 	defb 002h,008h,000h,008h	; 860f
 
 ; ======================================================================
@@ -811,9 +846,11 @@ L_8613:
 	call 0a03eh		;8613   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8616..0x8620  (10 bytes)
-DATA_8616:
-	defb 020h,086h,03fh,086h,079h,086h,0c3h,086h,0c7h,086h	; 8616   .?.y.....
+; DATOS tabla_8616: 5 destinos del despachador p00:A03E (call en p02:8613, el
+;   indice en A): 8620, 863F, 8679, 86C3, 86C7; lo leen p02:8613 (10 bytes)
+;   0x8616..0x8620  (10 bytes)
+DATA_tabla_8616:
+	defw 08620h,0863fh,08679h,086c3h,086c7h	; 8616
 
 ; ======================================================================
 ; CODIGO 0x8620..0x8728  (264 bytes)
@@ -941,11 +978,40 @@ L_8713:
 	ret			;8727
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8728..0x8754  (44 bytes)
-DATA_8728:
+; DATOS leido_8728: 16 bytes que leen 0x871B, 0x8723 al jugar (medido
+;   ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee
+;   seguido); lo leen 0x871B, 0x8723 (16 bytes)
+;   0x8728..0x8738  (16 bytes)
+DATA_leido_8728:
 	defb 0f8h,0f8h,0f8h,000h,000h,000h,008h,000h,008h,0f8h,008h,0f0h,000h,0f0h,0f8h,0f0h	; 8728  ................
-	defb 000h,001h,001h,001h,000h,0ffh,0ffh,0ffh,085h,0aah,08ch,0aah,093h,0aah,09ah,0aah	; 8738  ................
-	defb 0a1h,0aah,0a8h,0aah,0afh,0aah,0b6h,0aah,008h,00ch,0fah,00ch	; 8748  ............
+
+; ----------------------------------------------------------------------
+; DATOS tabla_8738: tabla que se lee desde HL = 0x8738 con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:866A (8 bytes)
+;   0x8738..0x8740  (8 bytes)
+DATA_tabla_8738:
+	defb 000h,001h,001h,001h,000h,0ffh,0ffh,0ffh	; 8738  ........
+
+; ----------------------------------------------------------------------
+; DATOS tabla_8740: tabla que se lee desde HL = 0x8740 con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:86D9 (16 bytes)
+;   0x8740..0x8750  (16 bytes)
+DATA_tabla_8740:
+	defb 085h,0aah,08ch,0aah,093h,0aah,09ah,0aah,0a1h,0aah,0a8h,0aah,0afh,0aah,0b6h,0aah	; 8740  ................
+
+; ----------------------------------------------------------------------
+; DATOS caja_8750: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8750..0x8754  (4 bytes)
+DATA_caja_8750:
+	defb 008h,00ch,0fah,00ch	; 8750
 
 ; ======================================================================
 ; CODIGO 0x8754..0x87cd  (121 bytes)
@@ -1007,8 +1073,11 @@ L_87AF:
 	jp 05052h		;87ca   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x87cd..0x87d1  (4 bytes)
-DATA_87CD:
+; DATOS caja_87CD: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x87cd..0x87d1  (4 bytes)
+DATA_caja_87CD:
 	defb 008h,008h,000h,006h	; 87cd
 
 ; ======================================================================
@@ -1024,9 +1093,11 @@ L_87D3:
 	call 0a03eh		;87d3   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x87d6..0x87dc  (6 bytes)
-DATA_87D6:
-	defb 0dch,087h,0e3h,087h,01eh,088h	; 87d6
+; DATOS tabla_87D6: 3 destinos del despachador p00:A03E (call en p02:87D3, el
+;   indice en A): 87DC, 87E3, 881E; lo leen p02:87D3 (6 bytes)
+;   0x87d6..0x87dc  (6 bytes)
+DATA_tabla_87D6:
+	defw 087dch,087e3h,0881eh	; 87d6  -> L_87DC L_87E3 L_881E
 
 ; ======================================================================
 ; CODIGO 0x87dc..0x886c  (144 bytes)
@@ -1100,8 +1171,11 @@ L_8866:
 	jp pinta_pieza		;8869   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x886c..0x8870  (4 bytes)
-DATA_886C:
+; DATOS caja_886C: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x886c..0x8870  (4 bytes)
+DATA_caja_886C:
 	defb 01ch,018h,0f4h,018h	; 886c
 
 ; ======================================================================
@@ -1115,9 +1189,11 @@ L_8871:
 	call 0a03eh		;8871   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8874..0x8878  (4 bytes)
-DATA_8874:
-	defb 078h,088h,093h,088h	; 8874
+; DATOS tabla_8874: 2 destinos del despachador p00:A03E (call en p02:8871, el
+;   indice en A): 8878, 8893; lo leen p02:8871 (4 bytes)
+;   0x8874..0x8878  (4 bytes)
+DATA_tabla_8874:
+	defw 08878h,08893h	; 8874  -> L_8878 L_8893
 
 ; ======================================================================
 ; CODIGO 0x8878..0x8977  (255 bytes)
@@ -1248,12 +1324,33 @@ L_8964:
 	jp pinta_pieza		;8974   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8977..0x89bb  (68 bytes)
-DATA_8977:
+; DATOS tabla_8977: tabla que se lee desde HL = 0x8977 con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:896C (32 bytes)
+;   0x8977..0x8997  (32 bytes)
+DATA_tabla_8977:
 	defb 02fh,02fh,02fh,02fh,030h,02eh,031h,02dh,032h,02ch,033h,02bh,034h,02ah,035h,029h	; 8977  ////0.1-2,3+4*5)
 	defb 036h,028h,036h,028h,035h,029h,034h,02ah,033h,02bh,032h,02ch,031h,02dh,030h,02eh	; 8987  6(6(5)4*3+2,1-0.
+
+; ----------------------------------------------------------------------
+; DATOS tabla_8997: tabla que se lee desde HL = 0x8997 con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:88C3 (32 bytes)
+;   0x8997..0x89b7  (32 bytes)
+DATA_tabla_8997:
 	defb 078h,078h,078h,078h,070h,080h,068h,088h,060h,090h,058h,098h,050h,0a0h,048h,0a8h	; 8997  xxxxp.h.`.X.P.H.
 	defb 040h,0b0h,040h,0b0h,048h,0a8h,050h,0a0h,058h,098h,060h,090h,068h,088h,070h,080h	; 89a7  @.@.H.P.X.`.h.p.
+
+; ----------------------------------------------------------------------
+; DATOS resto_89B7: lo apuntan con el banco puesto p02:88CE (0x89B7); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:88CE (4 bytes)
+;   0x89b7..0x89bb  (4 bytes)
+DATA_resto_89B7:
 	defb 010h,010h,002h,014h	; 89b7
 
 ; ======================================================================
@@ -1338,12 +1435,34 @@ L_8A44:
 	jp L_88FD		;8a5c
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8a5f..0x8a95  (54 bytes)
-DATA_8A5F:
+; DATOS tabla_8A5F: tabla que se lee desde HL = 0x8A5F con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:8A02 (25 bytes)
+;   0x8a5f..0x8a78  (25 bytes)
+DATA_tabla_8A5F:
 	defb 000h,001h,002h,003h,004h,005h,006h,005h,004h,003h,002h,001h,000h,0ffh,0feh,0fdh	; 8a5f  ................
-	defb 0fch,0fbh,0fah,0fbh,0fch,0fdh,0feh,0ffh,000h,080h,088h,090h,098h,0a0h,0a8h,0b0h	; 8a6f  ................
-	defb 0a8h,0a0h,098h,090h,088h,080h,078h,070h,068h,060h,058h,050h,058h,060h,068h,070h	; 8a7f  ......xph`XPX`hp
-	defb 078h,080h,010h,010h,0fch,012h	; 8a8f
+	defb 0fch,0fbh,0fah,0fbh,0fch,0fdh,0feh,0ffh,000h	; 8a6f  .........
+
+; ----------------------------------------------------------------------
+; DATOS tabla_8A78: tabla que se lee desde HL = 0x8A78 con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:8A0D (25 bytes)
+;   0x8a78..0x8a91  (25 bytes)
+DATA_tabla_8A78:
+	defb 080h,088h,090h,098h,0a0h,0a8h,0b0h,0a8h,0a0h,098h,090h,088h,080h,078h,070h,068h	; 8a78  .............xph
+	defb 060h,058h,050h,058h,060h,068h,070h,078h,080h	; 8a88  `XPX`hpx.
+
+; ----------------------------------------------------------------------
+; DATOS resto_8A91: lo apuntan con el banco puesto p02:8A44 (0x8A91); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:8A44 (4 bytes)
+;   0x8a91..0x8a95  (4 bytes)
+DATA_resto_8A91:
+	defb 010h,010h,0fch,012h	; 8a91
 
 ; ======================================================================
 ; CODIGO 0x8a95..0x8b6a  (213 bytes)
@@ -1441,9 +1560,20 @@ L_8B35:
 	jp L_8B72		;8b67
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8b6a..0x8b72  (8 bytes)
-DATA_8B6A:
-	defb 004h,010h,010h,010h,034h,040h,010h,010h	; 8b6a  ....4@..
+; DATOS caja_8B6A: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8b6a..0x8b6e  (4 bytes)
+DATA_caja_8B6A:
+	defb 004h,010h,010h,010h	; 8b6a
+
+; ----------------------------------------------------------------------
+; DATOS caja_8B6E: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8b6e..0x8b72  (4 bytes)
+DATA_caja_8B6E:
+	defb 034h,040h,010h,010h	; 8b6e
 
 ; ======================================================================
 ; CODIGO 0x8b72..0x8b83  (17 bytes)
@@ -1462,9 +1592,11 @@ L_8B80:
 	call 0a03eh		;8b80   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8b83..0x8b89  (6 bytes)
-DATA_8B83:
-	defb 089h,08bh,0b7h,08bh,0cfh,08bh	; 8b83
+; DATOS tabla_8B83: 3 destinos del despachador p00:A03E (call en p02:8B80, el
+;   indice en A): 8B89, 8BB7, 8BCF; lo leen p02:8B80 (6 bytes)
+;   0x8b83..0x8b89  (6 bytes)
+DATA_tabla_8B83:
+	defw 08b89h,08bb7h,08bcfh	; 8b83  -> L_8B89 L_8BB7 L_8BCF
 
 ; ======================================================================
 ; CODIGO 0x8b89..0x8c83  (250 bytes)
@@ -1583,9 +1715,21 @@ L_8C6F:
 	jp pinta_pieza		;8c80   ; pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8c83..0x8c8b  (8 bytes)
-DATA_8C83:
-	defb 010h,010h,000h,010h,030h,040h,008h,010h	; 8c83  ....0@..
+; DATOS sin_lector_8C83: cuatro bytes con la forma de una caja de choque (dy,
+;   alto, dx, ancho: 10 10 00 10), delante de la de p02:8C87; no lo lee nada:
+;   ni un puntero, ni una lista, orden o pieza, ni las partidas de
+;   tools/cobertura.py; lo leen nadie (4 bytes)
+;   0x8c83..0x8c87  (4 bytes)
+DATA_sin_lector_8C83:
+	defb 010h,010h,000h,010h	; 8c83
+
+; ----------------------------------------------------------------------
+; DATOS caja_8C87: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8c87..0x8c8b  (4 bytes)
+DATA_caja_8C87:
+	defb 030h,040h,008h,010h	; 8c87
 
 ; ======================================================================
 ; CODIGO 0x8c8b..0x8c8e  (3 bytes)
@@ -1596,9 +1740,12 @@ L_8C8B:
 	call 0a03eh		;8c8b   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8c8e..0x8c9c  (14 bytes)
-DATA_8C8E:
-	defb 09ch,08ch,0a2h,08ch,0afh,08ch,0bch,08ch,008h,08dh,0afh,08ch,013h,08dh	; 8c8e  ..............
+; DATOS tabla_8C8E: 7 destinos del despachador p00:A03E (call en p02:8C8B, el
+;   indice en A): 8C9C, 8CA2, 8CAF, 8CBC, 8D08, 8CAF, 8D13; lo leen p02:8C8B
+;   (14 bytes)
+;   0x8c8e..0x8c9c  (14 bytes)
+DATA_tabla_8C8E:
+	defw 08c9ch,08ca2h,08cafh,08cbch,08d08h,08cafh,08d13h	; 8c8e
 
 ; ======================================================================
 ; CODIGO 0x8c9c..0x8d2c  (144 bytes)
@@ -1667,9 +1814,20 @@ L_8D1E:
 	jp 0a0e4h		;8d29   ; rutina_banco_14: llama a p14:7800 con el banco 14 en 0x6000 (E = lo que hace) y devuelve el que habia
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8d2c..0x8d3b  (15 bytes)
-DATA_8D2C:
-	defb 006h,010h,0feh,028h,098h,000h,040h,000h,002h,000h,010h,000h,000h,000h,0c0h	; 8d2c  ...(..@........
+; DATOS caja_8D2C: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8d2c..0x8d30  (4 bytes)
+DATA_caja_8D2C:
+	defb 006h,010h,0feh,028h	; 8d2c
+
+; ----------------------------------------------------------------------
+; DATOS resto_8D30: lo apuntan con el banco puesto p14:7A6E (0x8D30); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p14:7A6E (11 bytes)
+;   0x8d30..0x8d3b  (11 bytes)
+DATA_resto_8D30:
+	defb 098h,000h,040h,000h,002h,000h,010h,000h,000h,000h,0c0h	; 8d30  ..@........
 
 ; ======================================================================
 ; CODIGO 0x8d3b..0x8e00  (197 bytes)
@@ -1765,9 +1923,20 @@ L_8DE4:
 	jp L_88FD		;8dfd
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8e00..0x8e0b  (11 bytes)
-DATA_8E00:
-	defb 040h,002h,002h,0ffh,0ffh,0ffh,0ffh,004h,010h,0f0h,010h	; 8e00  @..........
+; DATOS resto_8E00: lo apuntan con el banco puesto p02:8DE9 (0x8E00); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:8DE9 (7 bytes)
+;   0x8e00..0x8e07  (7 bytes)
+DATA_resto_8E00:
+	defb 040h,002h,002h,0ffh,0ffh,0ffh,0ffh	; 8e00
+
+; ----------------------------------------------------------------------
+; DATOS caja_8E07: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8e07..0x8e0b  (4 bytes)
+DATA_caja_8E07:
+	defb 004h,010h,0f0h,010h	; 8e07
 
 ; ======================================================================
 ; CODIGO 0x8e0b..0x8e19  (14 bytes)
@@ -1785,10 +1954,13 @@ L_8E10:
 	call 0a041h		;8e16   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8e19..0x8e37  (30 bytes)
-DATA_8E19:
-	defb 037h,08eh,0a6h,08eh,0b1h,08eh,0cbh,08eh,00ah,08fh,011h,08fh,034h,08fh,03dh,08fh	; 8e19  7...........4.=.
-	defb 03dh,08fh,040h,08fh,047h,08fh,047h,08fh,04eh,08fh,06bh,08fh,06ch,08fh	; 8e29  =.@.G.G.N.k.l.
+; DATOS tabla_8E19: 15 destinos del despachador p00:A03E (call en p02:8E16, el
+;   indice en A): 8E37, 8EA6, 8EB1, 8ECB, 8F0A, 8F11, 8F34, 8F3D, 8F3D, 8F40,
+;   8F47, 8F47, 8F4E, 8F6B, 8F6C; lo leen p02:8E16 (30 bytes)
+;   0x8e19..0x8e37  (30 bytes)
+DATA_tabla_8E19:
+	defw 08e37h,08ea6h,08eb1h,08ecbh,08f0ah,08f11h,08f34h,08f3dh	; 8e19
+	defw 08f3dh,08f40h,08f47h,08f47h,08f4eh,08f6bh,08f6ch	; 8e29
 
 ; ======================================================================
 ; CODIGO 0x8e37..0x8fb3  (380 bytes)
@@ -1981,8 +2153,11 @@ L_8F8D:
 	jp L_88FD		;8fb0
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8fb3..0x8fb7  (4 bytes)
-DATA_8FB3:
+; DATOS caja_8FB3: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x8fb3..0x8fb7  (4 bytes)
+DATA_caja_8FB3:
 	defb 011h,006h,004h,008h	; 8fb3
 
 ; ======================================================================
@@ -1996,9 +2171,11 @@ L_8FB8:
 	call 0a03eh		;8fb8   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8fbb..0x8fc3  (8 bytes)
-DATA_8FBB:
-	defb 0c3h,08fh,0eah,08fh,00bh,090h,039h,090h	; 8fbb  ......9.
+; DATOS tabla_8FBB: 4 destinos del despachador p00:A03E (call en p02:8FB8, el
+;   indice en A): 8FC3, 8FEA, 900B, 9039; lo leen p02:8FB8 (8 bytes)
+;   0x8fbb..0x8fc3  (8 bytes)
+DATA_tabla_8FBB:
+	defw 08fc3h,08feah,0900bh,09039h	; 8fbb  -> L_8FC3 L_8FEA L_900B L_9039
 
 ; ======================================================================
 ; CODIGO 0x8fc3..0x9081  (190 bytes)
@@ -2094,8 +2271,11 @@ L_906F:
 	jp L_8B7A		;907e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9081..0x9085  (4 bytes)
-DATA_9081:
+; DATOS caja_9081: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x9081..0x9085  (4 bytes)
+DATA_caja_9081:
 	defb 010h,008h,0fch,008h	; 9081
 
 ; ======================================================================
@@ -2145,8 +2325,11 @@ L_90B3:
 	ret			;90cb
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x90cc..0x90d0  (4 bytes)
-DATA_90CC:
+; DATOS caja_90CC: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x90cc..0x90d0  (4 bytes)
+DATA_caja_90CC:
 	defb 00eh,00ch,000h,00ch	; 90cc
 
 ; ======================================================================
@@ -2184,8 +2367,11 @@ L_90DF:
 	jp L_88FD		;9115
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9118..0x913a  (34 bytes)
-DATA_9118:
+; DATOS resto_9118: lo apuntan con el banco puesto p02:9105 (0x9118), p02:90EF
+;   (0x9127); el tamano es lo que hay hasta lo siguiente, no sale de
+;   recorrerlo; lo leen p02:9105, p02:90EF (34 bytes)
+;   0x9118..0x913a  (34 bytes)
+DATA_resto_9118:
 	defb 088h,000h,038h,000h,0b8h,000h,038h,000h,020h,000h,020h,000h,000h,000h,0d0h,041h	; 9118  ..8...8. . ....A
 	defb 004h,004h,001h,001h,001h,001h,001h,001h,001h,001h,001h,001h,001h,001h,001h,001h	; 9128  ................
 	defb 001h,001h	; 9138
@@ -2212,8 +2398,11 @@ L_9157:
 	jp 05af8h		;915a   ; le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x915d..0x9161  (4 bytes)
-DATA_915D:
+; DATOS caja_915D: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x915d..0x9161  (4 bytes)
+DATA_caja_915D:
 	defb 00ah,00ah,000h,010h	; 915d
 
 ; ======================================================================
@@ -2336,9 +2525,11 @@ L_9248:
 	call 0a03eh		;9248   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x924b..0x9251  (6 bytes)
-DATA_924B:
-	defb 051h,092h,066h,092h,0b5h,092h	; 924b
+; DATOS tabla_924B: 3 destinos del despachador p00:A03E (call en p02:9248, el
+;   indice en A): 9251, 9266, 92B5; lo leen p02:9248 (6 bytes)
+;   0x924b..0x9251  (6 bytes)
+DATA_tabla_924B:
+	defw 09251h,09266h,092b5h	; 924b  -> L_9251 L_9266 L_92B5
 
 ; ======================================================================
 ; CODIGO 0x9251..0x92ba  (105 bytes)
@@ -2400,8 +2591,11 @@ L_92B5:
 	jp 0a0e4h		;92b7   ; rutina_banco_14: llama a p14:7800 con el banco 14 en 0x6000 (E = lo que hace) y devuelve el que habia
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x92ba..0x92d2  (24 bytes)
-DATA_92BA:
+; DATOS resto_92BA: lo apuntan con el banco puesto p14:7A2D (0x92BA), p14:7A57
+;   (0x92C4), p14:7A28 (0x92CB); el tamano es lo que hay hasta lo siguiente,
+;   no sale de recorrerlo; lo leen p14:7A2D, p14:7A57, p14:7A28 (24 bytes)
+;   0x92ba..0x92d2  (24 bytes)
+DATA_resto_92BA:
 	defb 001h,001h,007h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,040h,001h,004h,09ch,09ch,09ch	; 92ba  ..........@.....
 	defb 09ch,001h,001h,004h,0ffh,0ffh,0ffh,0ffh	; 92ca  ........
 
@@ -2414,9 +2608,11 @@ L_92D2:
 	call 0a03eh		;92d2   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x92d5..0x92db  (6 bytes)
-DATA_92D5:
-	defb 0dbh,092h,051h,093h,073h,093h	; 92d5
+; DATOS tabla_92D5: 3 destinos del despachador p00:A03E (call en p02:92D2, el
+;   indice en A): 92DB, 9351, 9373; lo leen p02:92D2 (6 bytes)
+;   0x92d5..0x92db  (6 bytes)
+DATA_tabla_92D5:
+	defw 092dbh,09351h,09373h	; 92d5  -> L_92DB L_9351 L_9373
 
 ; ======================================================================
 ; CODIGO 0x92db..0x9385  (170 bytes)
@@ -2524,15 +2720,55 @@ L_9373:
 	ret			;9384
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9385..0x93f4  (111 bytes)
-DATA_9385:
-	defb 0fch,004h,006h,004h,0fch,0f8h,006h,0f8h,0fch,003h,006h,003h,010h,003h,0fch,0f6h	; 9385  ................
-	defb 006h,0f6h,010h,0f6h,0fch,004h,006h,004h,010h,004h,0fch,0f8h,006h,0f8h,010h,0f8h	; 9395  ................
-	defb 0fch,00ch,006h,00ch,010h,00ch,0feh,008h,0feh,012h,0feh,0feh,0feh,01ch,0feh,0f4h	; 93a5  ................
-	defb 0feh,024h,001h,004h,003h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 93b5  .$..............
-	defb 0ffh,001h,003h,003h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,001h,004h,004h	; 93c5  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 93d5  ................
-	defb 001h,002h,006h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 93e5  ...............
+; DATOS resto_9385: lo apuntan con el banco puesto p02:932B (0x9385); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:932B (8 bytes)
+;   0x9385..0x938d  (8 bytes)
+DATA_resto_9385:
+	defb 0fch,004h,006h,004h,0fch,0f8h,006h,0f8h	; 9385  ........
+
+; ----------------------------------------------------------------------
+; DATOS leido_938D: 12 bytes que leen 0x933F, 0x9341 al jugar (medido
+;   ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee
+;   seguido); lo leen 0x933F, 0x9341 (12 bytes)
+;   0x938d..0x9399  (12 bytes)
+DATA_leido_938D:
+	defb 0fch,003h,006h,003h,010h,003h,0fch,0f6h,006h,0f6h,010h,0f6h	; 938d  ............
+
+; ----------------------------------------------------------------------
+; DATOS leido_9399: 2 bytes que leen 0x933F, 0x9341 al jugar (medido
+;   ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee
+;   seguido); lo leen 0x933F, 0x9341 (2 bytes)
+;   0x9399..0x939b  (2 bytes)
+DATA_leido_9399:
+	defb 0fch,004h	; 9399
+
+; ----------------------------------------------------------------------
+; DATOS resto_939B: lo apuntan con el banco puesto p02:9332 (0x93AB); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:9332 (28 bytes)
+;   0x939b..0x93b7  (28 bytes)
+DATA_resto_939B:
+	defb 006h,004h,010h,004h,0fch,0f8h,006h,0f8h,010h,0f8h,0fch,00ch,006h,00ch,010h,00ch	; 939b  ................
+	defb 0feh,008h,0feh,012h,0feh,0feh,0feh,01ch,0feh,0f4h,0feh,024h	; 93ab  ...........$
+
+; ----------------------------------------------------------------------
+; DATOS leido_93B7: 15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar
+;   (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se
+;   lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+;   0x93b7..0x93c6  (15 bytes)
+DATA_leido_93B7:
+	defb 001h,004h,003h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 93b7  ...............
+
+; ----------------------------------------------------------------------
+; DATOS resto_93C6: lo apuntan con el banco puesto p02:935E (0x93C6), p02:9369
+;   (0x93D2), p02:9364 (0x93E5); el tamano es lo que hay hasta lo siguiente,
+;   no sale de recorrerlo; lo leen p02:935E, p02:9369, p02:9364 (46 bytes)
+;   0x93c6..0x93f4  (46 bytes)
+DATA_resto_93C6:
+	defb 001h,003h,003h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,001h,004h,004h,0ffh	; 93c6  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,001h	; 93d6  ................
+	defb 002h,006h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 93e6  ..............
 
 ; ======================================================================
 ; CODIGO 0x93f4..0x93f7  (3 bytes)
@@ -2543,9 +2779,12 @@ L_93F4:
 	call 0a03eh		;93f4   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x93f7..0x9407  (16 bytes)
-DATA_93F7:
-	defb 007h,094h,021h,094h,05eh,094h,012h,09fh,012h,09fh,012h,09fh,012h,09fh,021h,09fh	; 93f7  ..!.^.........!.
+; DATOS tabla_93F7: 8 destinos del despachador p00:A03E (call en p02:93F4, el
+;   indice en A): 9407, 9421, 945E, 9F12, 9F12, 9F12, 9F12, 9F21; lo leen
+;   p02:93F4 (16 bytes)
+;   0x93f7..0x9407  (16 bytes)
+DATA_tabla_93F7:
+	defw 09407h,09421h,0945eh,09f12h,09f12h,09f12h,09f12h,09f21h	; 93f7
 
 ; ======================================================================
 ; CODIGO 0x9407..0x946e  (103 bytes)
@@ -2595,9 +2834,12 @@ L_946B:
 	call 0a03eh		;946b   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x946e..0x947e  (16 bytes)
-DATA_946E:
-	defb 07eh,094h,095h,094h,05eh,094h,012h,09fh,012h,09fh,012h,09fh,012h,09fh,021h,09fh	; 946e  ~...^.........!.
+; DATOS tabla_946E: 8 destinos del despachador p00:A03E (call en p02:946B, el
+;   indice en A): 947E, 9495, 945E, 9F12, 9F12, 9F12, 9F12, 9F21; lo leen
+;   p02:946B (16 bytes)
+;   0x946e..0x947e  (16 bytes)
+DATA_tabla_946E:
+	defw 0947eh,09495h,0945eh,09f12h,09f12h,09f12h,09f12h,09f21h	; 946e
 
 ; ======================================================================
 ; CODIGO 0x947e..0x94d5  (87 bytes)
@@ -2639,12 +2881,14 @@ L_94D2:
 	call 0a03eh		;94d2   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x94d5..0x94df  (10 bytes)
-DATA_94D5:
-	defb 0dfh,094h,0f6h,094h,017h,095h,05ch,095h,075h,095h	; 94d5  ......\.u.
+; DATOS tabla_94D5: 5 destinos del despachador p00:A03E (call en p02:94D2, el
+;   indice en A): 94DF, 94F6, 9517, 955C, 9575; lo leen p02:94D2 (10 bytes)
+;   0x94d5..0x94df  (10 bytes)
+DATA_tabla_94D5:
+	defw 094dfh,094f6h,09517h,0955ch,09575h	; 94d5
 
 ; ======================================================================
-; CODIGO 0x94df..0x958b  (172 bytes)
+; CODIGO 0x94df..0x9595  (182 bytes)
 ; ======================================================================
 
 
@@ -2724,29 +2968,24 @@ L_9575:
 	ret nc			;957b
 	ld a,(iy+002h)		;957c   ; ...0xE2C2 = 1 (la capsula de arma) o, la de dibujo 0x2C, 0xE2C1 = 1
 	cp 02ch		;957f
-	jr z,$+12		;9581
+	jr z,L_958D		;9581
 	ld a,001h		;9583
 	ld (0e2c2h),a		;9585
 	jp 0a8bdh		;9588   ; y fuera (p03:A8BD)
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0x958b..0x958d  (2 bytes)
-DATA_958B:
-	defb 018h,005h	; 958b
-
-; ======================================================================
-; CODIGO 0x958d..0x9595  (8 bytes)
-; ======================================================================
-
-
+L_958B:
+	jr L_9592		;958b   ; huerfano: detras del jp de p02:9588, no se llega nunca
 L_958D:
 	ld a,001h		;958d
 	ld (0e2c1h),a		;958f
+L_9592:
 	jp 0a8bdh		;9592   ; libera: libera la ficha IY (a cero, y fuera de la pantalla)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9595..0x9599  (4 bytes)
-DATA_9595:
+; DATOS caja_9595: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x9595..0x9599  (4 bytes)
+DATA_caja_9595:
 	defb 00eh,00ch,000h,010h	; 9595
 
 ; ======================================================================
@@ -2758,9 +2997,12 @@ L_9599:
 	call 0a03eh		;9599   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x959c..0x95a8  (12 bytes)
-DATA_959C:
-	defb 0a8h,095h,0b7h,095h,0c7h,095h,0b7h,095h,0dbh,095h,0efh,095h	; 959c  ............
+; DATOS tabla_959C: 6 destinos del despachador p00:A03E (call en p02:9599, el
+;   indice en A): 95A8, 95B7, 95C7, 95B7, 95DB, 95EF; lo leen p02:9599 (12
+;   bytes)
+;   0x959c..0x95a8  (12 bytes)
+DATA_tabla_959C:
+	defw 095a8h,095b7h,095c7h,095b7h,095dbh,095efh	; 959c
 
 ; ======================================================================
 ; CODIGO 0x95a8..0x9619  (113 bytes)
@@ -2822,8 +3064,11 @@ L_95F3:
 	ret			;9618
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9619..0x961d  (4 bytes)
-DATA_9619:
+; DATOS resto_9619: lo apuntan con el banco puesto p02:95AF (0x9619); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:95AF (4 bytes)
+;   0x9619..0x961d  (4 bytes)
+DATA_resto_9619:
 	defb 003h,012h,003h,012h	; 9619
 
 ; ======================================================================
@@ -2835,9 +3080,11 @@ L_961D:
 	call 0a03eh		;961d   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9620..0x9626  (6 bytes)
-DATA_9620:
-	defb 026h,096h,062h,096h,069h,096h	; 9620
+; DATOS tabla_9620: 3 destinos del despachador p00:A03E (call en p02:961D, el
+;   indice en A): 9626, 9662, 9669; lo leen p02:961D (6 bytes)
+;   0x9620..0x9626  (6 bytes)
+DATA_tabla_9620:
+	defw 09626h,09662h,09669h	; 9620  -> L_9626 L_9662 L_9669
 
 ; ======================================================================
 ; CODIGO 0x9626..0x96c2  (156 bytes)
@@ -2915,9 +3162,20 @@ L_96BD:
 	jr L_96BA		;96c0
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x96c2..0x96ca  (8 bytes)
-DATA_96C2:
-	defb 000h,010h,004h,008h,004h,00ch,004h,008h	; 96c2  ........
+; DATOS caja_96C2: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x96c2..0x96c6  (4 bytes)
+DATA_caja_96C2:
+	defb 000h,010h,004h,008h	; 96c2
+
+; ----------------------------------------------------------------------
+; DATOS caja_96C6: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x96c6..0x96ca  (4 bytes)
+DATA_caja_96C6:
+	defb 004h,00ch,004h,008h	; 96c6
 
 ; ======================================================================
 ; CODIGO 0x96ca..0x976d  (163 bytes)
@@ -2996,8 +3254,11 @@ L_9738:
 	ret			;976c
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x976d..0x9771  (4 bytes)
-DATA_976D:
+; DATOS leido_976D: 4 bytes que lee 0x5E48 al jugar (medido ejecutando el
+;   cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen
+;   0x5E48 (4 bytes)
+;   0x976d..0x9771  (4 bytes)
+DATA_leido_976D:
 	defb 001h,06ch,001h,068h	; 976d
 
 ; ======================================================================
@@ -3060,8 +3321,11 @@ L_97C2:
 	ret			;97e8
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x97e9..0x97ed  (4 bytes)
-DATA_97E9:
+; DATOS resto_97E9: lo apuntan con el banco puesto p02:97D8 (0x97E9); el
+;   tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen
+;   p02:97D8 (4 bytes)
+;   0x97e9..0x97ed  (4 bytes)
+DATA_resto_97E9:
 	defb 00ah,004h,004h,008h	; 97e9
 
 ; ======================================================================
@@ -3184,8 +3448,11 @@ L_98CB:
 	jp 0a8bdh		;98cf   ; libera: libera la ficha IY (a cero, y fuera de la pantalla)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x98d2..0x98d6  (4 bytes)
-DATA_98D2:
+; DATOS caja_98D2: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x98d2..0x98d6  (4 bytes)
+DATA_caja_98D2:
 	defb 004h,004h,006h,004h	; 98d2
 
 ; ======================================================================
@@ -3237,9 +3504,12 @@ L_9929:
 	call 0a03eh		;9929   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x992c..0x993c  (16 bytes)
-DATA_992C:
-	defb 03ch,099h,04bh,099h,072h,099h,09ah,099h,02eh,09fh,02eh,09fh,02eh,09fh,02eh,09fh	; 992c  <.K.r...........
+; DATOS tabla_992C: 8 destinos del despachador p00:A03E (call en p02:9929, el
+;   indice en A): 993C, 994B, 9972, 999A, 9F2E, 9F2E, 9F2E, 9F2E; lo leen
+;   p02:9929 (16 bytes)
+;   0x992c..0x993c  (16 bytes)
+DATA_tabla_992C:
+	defw 0993ch,0994bh,09972h,0999ah,09f2eh,09f2eh,09f2eh,09f2eh	; 992c
 
 ; ======================================================================
 ; CODIGO 0x993c..0x9a14  (216 bytes)
@@ -3349,8 +3619,13 @@ L_9A02:
 	jp L_9FA1		;9a11   ; ...a las fichas
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9a14..0x9a24  (16 bytes)
-DATA_9A14:
+; DATOS tabla_9A14: tabla que se lee desde HL = 0x9A14 con un indice
+;   (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra
+;   tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que
+;   lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien
+;   llama; lo leen p02:99F5 (16 bytes)
+;   0x9a14..0x9a24  (16 bytes)
+DATA_tabla_9A14:
 	defb 0c8h,0a9h,0ceh,0a9h,0d4h,0a9h,0dah,0a9h,0e0h,0a9h,0e6h,0a9h,0ech,0a9h,0f2h,0a9h	; 9a14  ................
 
 ; ======================================================================
@@ -3368,9 +3643,11 @@ L_9A31:
 	call 0a03eh		;9a31   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9a34..0x9a3c  (8 bytes)
-DATA_9A34:
-	defb 03ch,09ah,053h,09ah,061h,09ah,085h,09ah	; 9a34  <.S.a...
+; DATOS tabla_9A34: 4 destinos del despachador p00:A03E (call en p02:9A31, el
+;   indice en A): 9A3C, 9A53, 9A61, 9A85; lo leen p02:9A31 (8 bytes)
+;   0x9a34..0x9a3c  (8 bytes)
+DATA_tabla_9A34:
+	defw 09a3ch,09a53h,09a61h,09a85h	; 9a34  -> L_9A3C L_9A53 L_9A61 L_9A85
 
 ; ======================================================================
 ; CODIGO 0x9a3c..0x9acc  (144 bytes)
@@ -3443,9 +3720,20 @@ L_9ABF:
 	ret			;9acb
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9acc..0x9ad2  (6 bytes)
-DATA_9ACC:
-	defb 010h,010h,000h,010h,008h,067h	; 9acc
+; DATOS caja_9ACC: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x9acc..0x9ad0  (4 bytes)
+DATA_caja_9ACC:
+	defb 010h,010h,000h,010h	; 9acc
+
+; ----------------------------------------------------------------------
+; DATOS leido_9AD0: 2 bytes que lee 0x5E48 al jugar (medido ejecutando el
+;   cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen
+;   0x5E48 (2 bytes)
+;   0x9ad0..0x9ad2  (2 bytes)
+DATA_leido_9AD0:
+	defb 008h,067h	; 9ad0
 
 ; ======================================================================
 ; CODIGO 0x9ad2..0x9adb  (9 bytes)
@@ -3460,9 +3748,11 @@ L_9AD8:
 	call 0a03eh		;9ad8   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9adb..0x9ae5  (10 bytes)
-DATA_9ADB:
-	defb 0e5h,09ah,004h,09bh,019h,09bh,057h,09bh,067h,09bh	; 9adb  ......W.g.
+; DATOS tabla_9ADB: 5 destinos del despachador p00:A03E (call en p02:9AD8, el
+;   indice en A): 9AE5, 9B04, 9B19, 9B57, 9B67; lo leen p02:9AD8 (10 bytes)
+;   0x9adb..0x9ae5  (10 bytes)
+DATA_tabla_9ADB:
+	defw 09ae5h,09b04h,09b19h,09b57h,09b67h	; 9adb
 
 ; ======================================================================
 ; CODIGO 0x9ae5..0x9ba8  (195 bytes)
@@ -3552,8 +3842,11 @@ L_9B7F:
 	jp 0a0ffh		;9ba5   ; explota: la ficha IY pasa a ser una explosion (tipo 0x0B)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9ba8..0x9bac  (4 bytes)
-DATA_9BA8:
+; DATOS resto_9BA8: lo apuntan con el banco puesto p02:9B8C (0x9BA8), p02:9B92
+;   (0x9BA8); el tamano es lo que hay hasta lo siguiente, no sale de
+;   recorrerlo; lo leen p02:9B8C, p02:9B92 (4 bytes)
+;   0x9ba8..0x9bac  (4 bytes)
+DATA_resto_9BA8:
 	defb 00eh,00ch,002h,00ch	; 9ba8
 
 ; ======================================================================
@@ -3565,9 +3858,12 @@ L_9BAC:
 	call 0a03eh		;9bac   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9baf..0x9bbf  (16 bytes)
-DATA_9BAF:
-	defb 0cbh,054h,024h,09dh,09dh,09eh,0a5h,09eh,00ah,09fh,024h,09dh,012h,09fh,021h,09fh	; 9baf  .T$.......$...!.
+; DATOS tabla_9BAF: 8 destinos del despachador p00:A03E (call en p02:9BAC, el
+;   indice en A): 54CB, 9D24, 9E9D, 9EA5, 9F0A, 9D24, 9F12, 9F21; lo leen
+;   p02:9BAC (16 bytes)
+;   0x9baf..0x9bbf  (16 bytes)
+DATA_tabla_9BAF:
+	defw 054cbh,09d24h,09e9dh,09ea5h,09f0ah,09d24h,09f12h,09f21h	; 9baf
 
 ; ======================================================================
 ; CODIGO 0x9bbf..0x9bc2  (3 bytes)
@@ -3578,9 +3874,11 @@ L_9BBF:
 	call 0a03eh		;9bbf   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9bc2..0x9bca  (8 bytes)
-DATA_9BC2:
-	defb 0cah,09bh,0e1h,09bh,004h,09ch,02fh,09ch	; 9bc2  ....../.
+; DATOS tabla_9BC2: 4 destinos del despachador p00:A03E (call en p02:9BBF, el
+;   indice en A): 9BCA, 9BE1, 9C04, 9C2F; lo leen p02:9BBF (8 bytes)
+;   0x9bc2..0x9bca  (8 bytes)
+DATA_tabla_9BC2:
+	defw 09bcah,09be1h,09c04h,09c2fh	; 9bc2  -> L_9BCA L_9BE1 L_9C04 L_9C2F
 
 ; ======================================================================
 ; CODIGO 0x9bca..0x9c70  (166 bytes)
@@ -3663,9 +3961,20 @@ L_9C59:
 	jp L_9F2E		;9c6d
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9c70..0x9c78  (8 bytes)
-DATA_9C70:
-	defb 010h,018h,002h,00ch,00bh,06ch,00bh,06ch	; 9c70  .....l.l
+; DATOS caja_9C70: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x9c70..0x9c74  (4 bytes)
+DATA_caja_9C70:
+	defb 010h,018h,002h,00ch	; 9c70
+
+; ----------------------------------------------------------------------
+; DATOS leido_9C74: 4 bytes que lee 0x5E48 al jugar (medido ejecutando el
+;   cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen
+;   0x5E48 (4 bytes)
+;   0x9c74..0x9c78  (4 bytes)
+DATA_leido_9C74:
+	defb 00bh,06ch,00bh,06ch	; 9c74
 
 ; ======================================================================
 ; CODIGO 0x9c78..0x9ceb  (115 bytes)
@@ -3724,9 +4033,12 @@ L_9CE3:
 	call 0a041h		;9ce8   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9ceb..0x9cfb  (16 bytes)
-DATA_9CEB:
-	defb 0fbh,09ch,024h,09dh,09dh,09eh,0a5h,09eh,00ah,09fh,024h,09dh,012h,09fh,021h,09fh	; 9ceb  ..$.......$...!.
+; DATOS tabla_9CEB: 8 destinos del despachador p00:A03E (call en p02:9CE8, el
+;   indice en A): 9CFB, 9D24, 9E9D, 9EA5, 9F0A, 9D24, 9F12, 9F21; lo leen
+;   p02:9CE8 (16 bytes)
+;   0x9ceb..0x9cfb  (16 bytes)
+DATA_tabla_9CEB:
+	defw 09cfbh,09d24h,09e9dh,09ea5h,09f0ah,09d24h,09f12h,09f21h	; 9ceb
 
 ; ======================================================================
 ; CODIGO 0x9cfb..0x9d18  (29 bytes)
@@ -3747,9 +4059,20 @@ L_9D0E:
 	jp L_9F6E		;9d15
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9d18..0x9d24  (12 bytes)
-DATA_9D18:
-	defb 00bh,06ch,00dh,06eh,002h,069h,004h,069h,002h,063h,001h,063h	; 9d18  .l.n.i.i.c.c
+; DATOS leido_9D18: 4 bytes que lee 0x5E48 al jugar (medido ejecutando el
+;   cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen
+;   0x5E48 (4 bytes)
+;   0x9d18..0x9d1c  (4 bytes)
+DATA_leido_9D18:
+	defb 00bh,06ch,00dh,06eh	; 9d18
+
+; ----------------------------------------------------------------------
+; DATOS resto_9D1C: lo apuntan con el banco puesto p02:9CDE (0x9D1C), p02:9942
+;   (0x9D20); el tamano es lo que hay hasta lo siguiente, no sale de
+;   recorrerlo; lo leen p02:9CDE, p02:9942 (8 bytes)
+;   0x9d1c..0x9d24  (8 bytes)
+DATA_resto_9D1C:
+	defb 002h,069h,004h,069h,002h,063h,001h,063h	; 9d1c  .i.i.c.c
 
 ; ======================================================================
 ; CODIGO 0x9d24..0x9ff1  (717 bytes)
@@ -4094,8 +4417,11 @@ L_9FC4:
 	jp L_9F2E		;9fee
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9ff1..0x9ff5  (4 bytes)
-DATA_9FF1:
+; DATOS caja_9FF1: una caja de choque (dy, alto, dx, ancho) que lee se_tocan
+;   (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4
+;   bytes)
+;   0x9ff1..0x9ff5  (4 bytes)
+DATA_caja_9FF1:
 	defb 008h,01eh,002h,00ch	; 9ff1
 
 ; ======================================================================
@@ -4111,6 +4437,9 @@ pon_figura:		; pone la figura HL (dy, dx, dibujo) en la ficha IY y en la de deba
 	defb 0fdh,086h,00ah		;9ffb
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9ffe..0xa000  (2 bytes)
-DATA_9FFE:
+; DATOS partida_9FFE: los 2 primeros bytes de una instruccion de 3 (FD 77 00)
+;   que sigue en el banco 3: el trazador de un solo banco no puede verla
+;   entera (tools/bancos.py); lo leen p02:9FFE (2 bytes)
+;   0x9ffe..0xa000  (2 bytes)
+DATA_partida_9FFE:
 	defb 0fdh,077h	; 9ffe

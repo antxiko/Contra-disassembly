@@ -14,7 +14,7 @@
 0xA001   # p02:9FFE sigue de largo (el codigo cruza la frontera de banco)
 0xA01A   # p02:9F6B jp
 0xA03E   # p02:81C2 call
-0xA041   # p00:5506 call
+0xA041   # p02:8066 call
 0xA04C   # p02:9DB4 call
 0xA079   # p02:9DC0 call
 0xA0D0   # p02:8003 entrada 17 de la tabla de 0x8006 (call 0xA03E en 0x8003)
@@ -32,6 +32,7 @@
 0xA29B   # p03:A292 entrada 0 de la tabla de 0xA295 (call 0xA03E en 0xA292)
 0xA2E0   # p03:A292 entrada 1 de la tabla de 0xA295 (call 0xA03E en 0xA292)
 0xA2E8   # p03:A292 entrada 2 de la tabla de 0xA295 (call 0xA03E en 0xA292)
+0xA33F   # codigo huerfano: 15 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xA33F
 0xA34E   # p02:8003 entrada 9 de la tabla de 0x8006 (call 0xA03E en 0x8003)
 0xA3E0   # p02:8003 entrada 11 de la tabla de 0x8006 (call 0xA03E en 0x8003)
 0xA414   # p02:8003 entrada 32 de la tabla de 0x8006 (call 0xA03E en 0x8003)
@@ -55,11 +56,12 @@
 0xA6DB   # p03:A6D2 entrada 0 de la tabla de 0xA6D5 (call 0xA03E en 0xA6D2)
 0xA6E9   # p03:A6D2 entrada 1 de la tabla de 0xA6D5 (call 0xA03E en 0xA6D2)
 0xA6FD   # p03:A6D2 entrada 2 de la tabla de 0xA6D5 (call 0xA03E en 0xA6D2)
+0xA730   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xA730
 0xA74A   # p02:8003 entrada 4 de la tabla de 0x8006 (call 0xA03E en 0x8003)
 0xA753   # p03:A74A entrada 0 de la tabla de 0xA74D (call 0xA03E en 0xA74A)
 0xA772   # p03:A74A entrada 1 de la tabla de 0xA74D (call 0xA03E en 0xA74A)
 0xA78B   # p03:A74A entrada 2 de la tabla de 0xA74D (call 0xA03E en 0xA74A)
-0xA7B9   # p00:581B jp
+0xA7B9   # p02:9825 call
 0xA7F1   # p02:9FC1 call
 0xA7F3   # p02:9FBC call
 0xA811   # p02:8003 entrada 19 de la tabla de 0x8006 (call 0xA03E en 0x8003)
@@ -69,6 +71,7 @@
 0xA881   # p02:9F1C call
 0xA88F   # p02:9F4E jp
 0xA8A9   # p14:797A jp cc
+0xA8BD   # p02:8180 jp
 0xAF98   # entrada 0 de la tabla p03:AF86
 0xAFAF   # entrada 1 de la tabla p03:AF86
 0xAFEA   # entrada 5 de la tabla p03:AF86
@@ -88,7 +91,8 @@
 0xB90B   # entrada 6 de la tabla p03:B7F3
 0xB926   # entrada 7 de la tabla p03:B7F3
 0xB94B   # entrada 8 de la tabla p03:B7F3
-0xBA4F   # p00:572B jp
+0xBA3D   # codigo huerfano: mira la y y la x de IY (0xB0, 5, 0xF4) y sigue en p03:BA4F
 0xBAF8   # p00:41AC call
+0xBB06   # codigo huerfano: pone el tramo guardado (0xE03E) en 0xE022 y sigue en pantalla_nueva (p03:BB0C)
 0xBD1F   # p02:8410 call
 0xBEAC   # p00:4C6E jp cc

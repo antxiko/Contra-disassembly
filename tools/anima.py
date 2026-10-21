@@ -78,7 +78,7 @@ def clip(f, segundos=8, tramo=None, cada=2, espera=fases.PULSA + 160):
 
 def guarda_gif(ims, salida, cada=2, escala=1):
     if escala != 1:
-        ims = [i.resize((i.width * escala, i.height * escala)) for i in ims]
+        ims = [i.resize((i.width * escala, i.height * escala), 0) for i in ims]   # 0: NEAREST
     q = [i.convert("P", palette=1, colors=255) for i in ims]
     q[0].save(salida, save_all=True, append_images=q[1:], duration=int(1000 * cada / 60),
               loop=0, optimize=True, disposal=1)

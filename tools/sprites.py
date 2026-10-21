@@ -15,7 +15,11 @@ Los registros 0 a 3 (0xE300-0xE33F) son el jugador: dos parejas CC de 16 x 16,
 una encima de otra (medido: y 144 y 160 con la misma x); el resto del
 codigo lleva su estado con IX = 0xE320. Van aparte.
 
+Los tipos son de una sola tabla para todo el cartucho (p02:8000), asi que
+`todas` junta en una hoja lo que se ve en todas las fases y todos sus tramos.
+
 Uso: sprites.py fase <fase> <salida.png> [segundos] [tramo]
+     sprites.py todas <salida.png> [segundos por tramo]
 """
 import os
 import sys
@@ -214,9 +218,9 @@ def pinta(m, ks):
     return im
 
 
-def recoge(f, segundos=25, tramo=None):
+def recoge(f, segundos=25, tramo=None, vistos=None):
     """{tipo: [imagenes distintas]} de los objetos que se ven en la fase."""
-    vistos = {}
+    vistos = {} if vistos is None else vistos
     m = anima.partida(f, tramo)
     m.apunta = False
     n = [0]
@@ -269,6 +273,15 @@ def hoja(vistos, escala=3, fondo=(40, 40, 48)):
 
 
 def main(argv):
+    if len(argv) >= 3 and argv[1] == "todas":
+        seg = int(argv[3]) if len(argv) > 3 else 10
+        vistos = {}
+        for f in fases.FASES:
+            for tramo in range(len(fases.lista(f)[2])):
+                recoge(f, seg, tramo, vistos)
+                print("fase %d tramo %d: %d tipos" % (f, tramo, len(vistos)), flush=True)
+                hoja(vistos).save(argv[2])
+        return
     if len(argv) < 4 or argv[1] != "fase":
         sys.exit(__doc__)
     f, salida = int(argv[2]), argv[3]

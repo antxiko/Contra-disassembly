@@ -114,6 +114,8 @@ C 0xA320 en la fase 6...
 C 0xA327 por abajo (0xB0), fuera
 C 0xA32C si toca al jugador (p00:5BD1)
 C 0xA335 ...por debajo de 0x5C se hace del tipo 0x20
+C 0xA33F huerfana (no la llama nadie): la ficha IY vuelve a la x guardada (IY+0B)...
+C 0xA345 ...y a la y guardada (IY+0A) menos 0x10
 C 0xA34E el que vuela en zigzag: sus colores, a un lado al azar...
 C 0xA352 ya en marcha: p03:A37F
 C 0xA368 ...hacia arriba o hacia abajo segun su y, sin velocidad
@@ -164,6 +166,7 @@ C 0xA6DB la bala que sube: sus colores y el dibujo 0xF8
 C 0xA6E9 sube dos por cuadro; arriba (0x18) estalla en tres (estado 2, 8 cuadros)
 C 0xA6FD el dibujo parpadea (0x18/0x1C) mientras estalla...
 C 0xA70E ...y salen tres trozos: a la izquierda, recto y a la derecha (IX+0E -1, 0 y 1)
+C 0xA730 huerfano: un ret suelto; no salta nadie aqui
 C 0xA731 un trozo: en su sitio, tipo 4, dibujo 0xF8
 C 0xA753 el que va de lado y vuelve: velocidad 6, direccion 0, dibujo 0xFC
 C 0xA772 cada IY+0D cuadros frena hasta -6 y da la vuelta (direccion 0x10)...
@@ -489,6 +492,9 @@ C 0xB9F2 su direccion, la del disparo
 C 0xB9FB hacia el fondo de la base con las armas 6 y 7: estado 0
 C 0xBA10 las balas del jugador, cada cuadro (p00:54DF): las dos de 0xE340...
 C 0xBA26 ...y las cuatro de 0xE4C0
+C 0xBA3D huerfano (no salta nadie aqui): con la y (IY+0) desde 0xB0, fuera: p03:BA4F...
+C 0xBA44 ...con la x (IY+1) por debajo de 5, tambien...
+C 0xBA4C ...y por debajo de 0xF4 sigue dentro (ret); si no, fuera (p03:BA4F)
 C 0xBA4F libera la bala: sus 16 bytes y fuera de la pantalla
 C 0xBA5C la caida: saltando no
 C 0xBA67 en el agua (y >= 0xB0), sigue cayendo (p03:BAAD)
@@ -501,6 +507,8 @@ C 0xBABD ...y en las fases verticales (p03:BAB9: 3, 10, 16 y 18) la pantalla de 
 C 0xBAD2 con el jugador arriba del todo (y 0x10)
 C 0xBADB el parpadeo del jugador baja (IX-2)
 C 0xBAF8 el titulo: el banco 14 en 0x6000 y la lista de piezas de 0xE023 en p14:6040
+C 0xBB06 huerfano (no salta nadie aqui): el tramo guardado al grabar (0xE03E) pasa a ser el de ahora...
+C 0xBB09 ...y sigue en pantalla_nueva
 C 0xBB0C la pantalla nueva: con 0xE093 a 1 mientras se construye
 C 0xBB15 el fondo (p03:BB3C)...
 C 0xBB18 ...en las bases, en la primera sala, p00:51BF (la del principio)
@@ -573,7 +581,7 @@ C 0xBE1E los dibujos de sprite de la pantalla: en las fases 6, 9, 10, 16 y 17 po
 C 0xBE44 ...en las demas, uno por fase (p03:BE6F)
 C 0xBE52 si cambian (0xE097), se cargan (p00:49BF)
 C 0xBE60 los sprites otra vez, el banco 1 en 0x6000 y la pantalla encendida
-C 0xBEAC el menu de armas de la pausa (0xE2C1): 0xE283 = 2 lo cierra
+C 0xBEAC el menu de armas (0xE2C1: lo abre la capsula de dibujo 0x2C, p02:958D): 0xE283 = 2 lo cierra
 C 0xBEB4 la primera vez se pinta (p00:50E0) con el sonido 0x21
 C 0xBEC9 la palanca: arriba o abajo mueve el cursor (0xE2C4, la fila de 0x42 a 0xC2)
 C 0xBED9 arriba: una fila (0x20) menos...
@@ -1131,3 +1139,260 @@ C 0xBFD4 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 C 0xBFE4 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 C 0xBFEA pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 # --- fin de las anotaciones de anota.py ---
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA001 partida_A000  los 1 ultimos bytes de la instruccion de p02:9FFE (FD 77 00), que empieza en el banco 2; lo leen p02:9FFE (1 bytes)
+F 0xA000 1
+D 0xA0A0 0xA0B0 tabla_A0A0  tabla que se lee desde HL = 0xA0A0 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p03:A06C (16 bytes)
+F 0xA0A0 16
+D 0xA0B0 0xA0BF leido_A0B0  15 bytes que lee 0xA072 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xA072 (15 bytes)
+F 0xA0B0 16
+D 0xA0C2 0xA0D0 leido_A0C2  14 bytes que leen 0x871B, 0x8723 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido, con 4 sin leer entre lecturas de la misma rutina, o detras hasta el codigo o la tabla siguiente: entradas de la misma tabla que las partidas no han pedido); lo leen 0x871B, 0x8723 (14 bytes)
+F 0xA0C2 16
+D 0xA10D 0xA115 tabla_A10D  4 destinos del despachador p00:A03E (call en p03:A10A, el indice en A): A115, A11A, A12A, A160; lo leen p03:A10A (8 bytes)
+F 0xA10D w4
+D 0xA196 0xA198 leido_A196  2 bytes que leen 0x871B, 0x8723 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x871B, 0x8723 (2 bytes)
+F 0xA196 16
+D 0xA198 0xA19C caja_A198  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA198 4
+D 0xA287 0xA28B caja_A287  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA287 4
+D 0xA295 0xA29B tabla_A295  3 destinos del despachador p00:A03E (call en p03:A292, el indice en A): A29B, A2E0, A2E8; lo leen p03:A292 (6 bytes)
+F 0xA295 w3
+D 0xA3B2 0xA3B6 caja_A3B2  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA3B2 4
+D 0xA420 0xA424 caja_A420  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA420 4
+D 0xA4A6 0xA4AA caja_A4A6  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA4A6 4
+D 0xA4C0 0xA4C6 tabla_A4C0  3 destinos del despachador p00:A03E (call en p03:A4BD, el indice en A): A4C6, A4DC, A4FD; lo leen p03:A4BD (6 bytes)
+F 0xA4C0 w3
+D 0xA531 0xA535 caja_A531  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA531 4
+D 0xA608 0xA60C caja_A608  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0xA608 4
+D 0xA60C 0xA60E leido_A60C  2 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido, con 1 sin leer entre lecturas de la misma rutina, o detras hasta el codigo o la tabla siguiente: entradas de la misma tabla que las partidas no han pedido); lo leen 0x5E48 (2 bytes)
+F 0xA60C 16
+D 0xA611 0xA61F tabla_A611  7 destinos del despachador p00:A03E (call en p03:A60E, el indice en A): A61F, A646, A66A, A67B, A682, A692, A69D; lo leen p03:A60E (14 bytes)
+F 0xA611 w7
+D 0xA6D5 0xA6DB tabla_A6D5  3 destinos del despachador p00:A03E (call en p03:A6D2, el indice en A): A6DB, A6E9, A6FD; lo leen p03:A6D2 (6 bytes)
+F 0xA6D5 w3
+D 0xA74D 0xA753 tabla_A74D  3 destinos del despachador p00:A03E (call en p03:A74A, el indice en A): A753, A772, A78B; lo leen p03:A74A (6 bytes)
+F 0xA74D w3
+D 0xA865 0xA869 leido_A865  4 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (4 bytes)
+F 0xA865 16
+D 0xA8D3 0xA8D5 leido_A8D3  2 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido, con 1 sin leer entre lecturas de la misma rutina, o detras hasta el codigo o la tabla siguiente: entradas de la misma tabla que las partidas no han pedido); lo leen 0x5E48 (2 bytes)
+F 0xA8D3 16
+D 0xA8D5 0xA8D9 leido_A8D5  4 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido, con 2 sin leer entre lecturas de la misma rutina, o detras hasta el codigo o la tabla siguiente: entradas de la misma tabla que las partidas no han pedido); lo leen 0x5E48 (4 bytes)
+F 0xA8D5 16
+D 0xA8D9 0xA8DC leido_A8D9  3 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (3 bytes)
+F 0xA8D9 16
+D 0xA8E5 0xA8E9 leido_A8E5  4 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (4 bytes)
+F 0xA8E5 16
+D 0xA8E9 0xA8ED sin_lector_A8E9  0A 6B 0A 6B, entre los colores que lee colores_ficha (p00:5E45) y la tabla p03:A8ED; no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (4 bytes)
+F 0xA8E9 16
+D 0xA8ED 0xA8EE tabla_A8ED  tabla que se lee desde HL = 0xA8ED con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:9F87 (1 bytes)
+F 0xA8ED 16
+D 0xA8EE 0xA8F3 leido_A8EE  5 bytes que leen 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (5 bytes)
+F 0xA8EE 16
+D 0xA8F3 0xA8FF leido_A8F3  12 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (12 bytes)
+F 0xA8F3 16
+D 0xA8FF 0xA905 leido_A8FF  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA8FF 16
+D 0xA905 0xA906 tabla_A905  tabla que se lee desde HL = 0xA905 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:9E68 (1 bytes)
+F 0xA905 16
+D 0xA906 0xA923 leido_A906  29 bytes que leen 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034, 0x9FFA al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido, con 6 sin leer entre lecturas de la misma rutina, o detras hasta el codigo o la tabla siguiente: entradas de la misma tabla que las partidas no han pedido); lo leen 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034, 0x9FFA (29 bytes)
+F 0xA906 16
+D 0xA923 0xA92C leido_A923  9 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido, con 3 sin leer entre lecturas de la misma rutina, o detras hasta el codigo o la tabla siguiente: entradas de la misma tabla que las partidas no han pedido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (9 bytes)
+F 0xA923 16
+D 0xA92C 0xA92F leido_A92C  3 bytes que leen 0x9FFA, 0xA005, 0xA010 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010 (3 bytes)
+F 0xA92C 16
+D 0xA92F 0xA932 leido_A92F  3 bytes que leen 0x9FFA, 0xA005, 0xA010 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010 (3 bytes)
+F 0xA92F 16
+D 0xA932 0xA956 sin_lector_A932  doce figuras de un sprite (dy 0xF0, dx 0 y el dibujo: FC 58 60 68 70 78 58 78 58 90 98 A0) entre las que lee pon_figura (p02:9FFA); no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (36 bytes)
+F 0xA932 16
+D 0xA956 0xA95C leido_A956  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA956 16
+D 0xA95C 0xA962 leido_A95C  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA95C 16
+D 0xA96E 0xA974 leido_A96E  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA96E 16
+D 0xA974 0xA975 tabla_A974  tabla que se lee desde HL = 0xA974 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:9F5D (1 bytes)
+F 0xA974 16
+D 0xA975 0xA97A leido_A975  5 bytes que leen 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (5 bytes)
+F 0xA975 16
+D 0xA97A 0xA986 leido_A97A  12 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (12 bytes)
+F 0xA97A 16
+D 0xA986 0xA98C leido_A986  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA986 16
+D 0xA9B0 0xA9B6 leido_A9B0  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA9B0 16
+D 0xA9B6 0xA9BC leido_A9B6  6 bytes que leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x9FFA, 0xA005, 0xA010, 0xA01E, 0xA029, 0xA034 (6 bytes)
+F 0xA9B6 16
+D 0xAA0B 0xAA14 leido_AA0B  9 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (9 bytes)
+F 0xAA0B 16
+D 0xAA14 0xAA1D leido_AA14  9 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (9 bytes)
+F 0xAA14 16
+D 0xAA26 0xAA2D leido_AA26  7 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (7 bytes)
+F 0xAA26 16
+D 0xAA2D 0xAA34 leido_AA2D  7 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (7 bytes)
+F 0xAA2D 16
+D 0xAA34 0xAA3B leido_AA34  7 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (7 bytes)
+F 0xAA34 16
+D 0xAA3B 0xAA42 leido_AA3B  7 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (7 bytes)
+F 0xAA3B 16
+D 0xAA49 0xAA58 leido_AA49  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAA49 16
+D 0xAA58 0xAA67 leido_AA58  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAA58 16
+D 0xAA67 0xAA76 leido_AA67  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAA67 16
+D 0xAA76 0xAABD leido_AA76  71 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (71 bytes)
+F 0xAA76 16
+D 0xAAC4 0xAAD3 leido_AAC4  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAAC4 16
+D 0xAAD3 0xAAE2 leido_AAD3  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAAD3 16
+D 0xAAF1 0xAB00 leido_AAF1  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAAF1 16
+D 0xAB00 0xAB0F leido_AB00  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAB00 16
+D 0xAB1E 0xAB2D leido_AB1E  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAB1E 16
+D 0xAB2D 0xAB3C leido_AB2D  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAB2D 16
+D 0xAB4B 0xAB5A leido_AB4B  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAB4B 16
+D 0xAB5A 0xAB69 leido_AB5A  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAB5A 16
+D 0xAB78 0xAB81 leido_AB78  9 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (9 bytes)
+F 0xAB78 16
+D 0xAB81 0xAB8A leido_AB81  9 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (9 bytes)
+F 0xAB81 16
+D 0xABC0 0xABE3 leido_ABC0  35 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (35 bytes)
+F 0xABC0 16
+D 0xAC06 0xAC29 leido_AC06  35 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (35 bytes)
+F 0xAC06 16
+D 0xAC29 0xAC56 leido_AC29  45 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (45 bytes)
+F 0xAC29 16
+D 0xAC56 0xAC83 leido_AC56  45 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (45 bytes)
+F 0xAC56 16
+D 0xAC83 0xAC94 leido_AC83  17 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (17 bytes)
+F 0xAC83 16
+D 0xAC94 0xACA5 leido_AC94  17 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (17 bytes)
+F 0xAC94 16
+D 0xACA5 0xACB6 leido_ACA5  17 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (17 bytes)
+F 0xACA5 16
+D 0xAD00 0xAD07 leido_AD00  7 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (7 bytes)
+F 0xAD00 16
+D 0xAD07 0xAD0E leido_AD07  7 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (7 bytes)
+F 0xAD07 16
+D 0xAD0E 0xAD1D leido_AD0E  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAD0E 16
+D 0xAD1D 0xAD2C leido_AD1D  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0xAD1D 16
+D 0xAD3B 0xAD4E leido_AD3B  19 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (19 bytes)
+F 0xAD3B 16
+D 0xAD4E 0xAD61 leido_AD4E  19 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (19 bytes)
+F 0xAD4E 16
+D 0xAD74 0xAD87 leido_AD74  19 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (19 bytes)
+F 0xAD74 16
+D 0xAD87 0xAD9A leido_AD87  19 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (19 bytes)
+F 0xAD87 16
+D 0xAF86 0xAF98 saltos_AF86  tabla de saltos de 9 entradas (src/semillas.txt): p03:AF7A-AF85: ld hl,0xAF86 / add a,a / call 51B8 / ... / jp (hl); lo leen p03:AF86 (18 bytes)
+F 0xAF86 w8
+D 0xB18B 0xB191 leido_B18B  6 bytes que lee 0xB08F al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xB08F (6 bytes)
+F 0xB18B 16
+D 0xB3AE 0xB3F4 dibujos_jugador_derecha  los dibujos del jugador mirando a la derecha: 35 posturas x (arriba, abajo) (p03:B247 con 0xE325 x 2); lo leen p03:B25A (70 bytes)
+F 0xB3AE 2
+D 0xB3F4 0xB43A dibujos_jugador_izquierda  los dibujos del jugador mirando a la izquierda: 35 posturas x (arriba, abajo) (p03:B250 con 0xE325 x 2); lo leen p03:B25A (70 bytes)
+F 0xB3F4 2
+D 0xB43A 0xB45D alturas_jugador  un byte por postura del jugador, las 35 (p03:B262); lo leen p03:B262 (35 bytes)
+F 0xB43A 35
+D 0xB45D 0xB462 puertas_01_izq  la puerta izquierda de cada sala de la base de la fase 1: 5 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B165 con 0xE022); lo leen p03:B168 (5 bytes)
+F 0xB45D 5
+D 0xB462 0xB467 puertas_01_der  la puerta derecha de cada sala de la base de la fase 1: 5 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B191 con 0xE022); lo leen p03:B168 (5 bytes)
+F 0xB462 5
+D 0xB467 0xB46E puertas_04_izq  la puerta izquierda de cada sala de la base de la fase 4: 7 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B165 con 0xE022); lo leen p03:B168 (7 bytes)
+F 0xB467 7
+D 0xB46E 0xB475 puertas_04_der  la puerta derecha de cada sala de la base de la fase 4: 7 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B191 con 0xE022); lo leen p03:B168 (7 bytes)
+F 0xB46E 7
+D 0xB475 0xB47F puertas_11_izq  la puerta izquierda de cada sala de la base de la fase 11: 10 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B165 con 0xE022); lo leen p03:B168 (10 bytes)
+F 0xB475 10
+D 0xB47F 0xB489 puertas_11_der  la puerta derecha de cada sala de la base de la fase 11: 10 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B191 con 0xE022); lo leen p03:B168 (10 bytes)
+F 0xB47F 10
+D 0xB489 0xB497 puertas_14_izq  la puerta izquierda de cada sala de la base de la fase 14: 14 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B165 con 0xE022); lo leen p03:B168 (14 bytes)
+F 0xB489 14
+D 0xB497 0xB4A5 puertas_14_der  la puerta derecha de cada sala de la base de la fase 14: 14 salas, la sala a la que lleva (0xFF: no hay puerta; p03:B191 con 0xE022); lo leen p03:B168 (14 bytes)
+F 0xB497 14
+D 0xB757 0xB777 leido_B757  32 bytes que lee 0x51BD al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x51BD (32 bytes)
+F 0xB757 16
+D 0xB7F3 0xB805 saltos_B7F3  tabla de saltos de 9 entradas (src/semillas.txt): p03:B7E7-B7F2: ld hl,0xB7F3 / add a,a / call 51B8 / ... / jp (hl); lo leen p03:B7F3 (18 bytes)
+F 0xB7F3 w8
+D 0xBAB9 0xBABD leido_BAB9  4 bytes que lee 0xBAC6 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBAC6 (4 bytes)
+F 0xBAB9 16
+D 0xBAE4 0xBAF8 tabla_BAE4  tabla que se lee desde HL = 0xBAE4 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p03:B58C, p03:BB69 (20 bytes)
+F 0xBAE4 16
+D 0xBE6F 0xBE83 dibujos_por_fase  el juego de dibujos de sprite de cada fase, uno por fase (20; p03:BE44 con 0xE020); lo leen p03:BE44 (20 bytes)
+F 0xBE6F 20
+D 0xBE83 0xBE8B dibujos_por_tramo_06  el juego de dibujos de sprite de cada tramo de la fase 6 (8 tramos; p03:BE4C con 0xE022); lo leen p03:BE4F (8 bytes)
+F 0xBE83 8
+D 0xBE8B 0xBE93 dibujos_por_tramo_09  el juego de dibujos de sprite de cada tramo de la fase 9 (8 tramos; p03:BE4C con 0xE022); lo leen p03:BE4F (8 bytes)
+F 0xBE8B 8
+D 0xBE93 0xBE9B dibujos_por_tramo_10  el juego de dibujos de sprite de cada tramo de la fase 10 (8 tramos; p03:BE4C con 0xE022); lo leen p03:BE4F (8 bytes)
+F 0xBE93 8
+D 0xBE9B 0xBEA5 dibujos_por_tramo_16  el juego de dibujos de sprite de cada tramo de la fase 16 (10 tramos; p03:BE4C con 0xE022); lo leen p03:BE4F (10 bytes)
+F 0xBE9B 10
+D 0xBEA5 0xBEAC dibujos_por_tramo_17  el juego de dibujos de sprite de cada tramo de la fase 17 (7 tramos; p03:BE4C con 0xE022); lo leen p03:BE4F (7 bytes)
+F 0xBEA5 7
+D 0xBFAB 0xBFB0 tabla_BFAB  tabla que se lee desde HL = 0xBFAB con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p03:BF76 (5 bytes)
+F 0xBFAB 16
+D 0xA098 0xA0A0 resto_A098  lo apuntan con el banco puesto p03:A060 (0xA098), p03:A08E (0xA098); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p03:A060, p03:A08E (8 bytes)
+F 0xA098 16
+D 0xA0BF 0xA0C2 resto_A0BF  lo apuntan con el banco puesto p02:9EE6 (0xA0C0); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9EE6 (3 bytes)
+F 0xA0BF 16
+D 0xA203 0xA207 resto_A203  lo apuntan con el banco puesto p03:A1EE (0xA203); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p03:A1EE (4 bytes)
+F 0xA203 16
+D 0xA5A0 0xA5A4 resto_A5A0  lo apuntan con el banco puesto p03:A58B (0xA5A0); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p03:A58B (4 bytes)
+F 0xA5A0 16
+D 0xA6CE 0xA6D2 resto_A6CE  lo apuntan con el banco puesto p03:A6BA (0xA6CE); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p03:A6BA (4 bytes)
+F 0xA6CE 16
+D 0xA80D 0xA811 resto_A80D  lo apuntan con el banco puesto p03:A7B0 (0xA80D); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p03:A7B0 (4 bytes)
+F 0xA80D 16
+D 0xA8DC 0xA8E5 resto_A8DC  lo apuntan con el banco puesto p00:54D1 (0xA8DD), p02:9AFB (0xA8DD); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p00:54D1, p02:9AFB (9 bytes)
+F 0xA8DC 16
+D 0xA962 0xA96E resto_A962  lo apuntan con el banco puesto p02:9C3E (0xA962), p02:9C41 (0xA968); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9C3E, p02:9C41 (12 bytes)
+F 0xA962 16
+D 0xA98C 0xA9B0 resto_A98C  lo apuntan con el banco puesto p02:9EB9 (0xA98C), p02:9F7D (0xA992); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9EB9, p02:9F7D (36 bytes)
+F 0xA98C 16
+D 0xA9BC 0xAA0B resto_A9BC  lo apuntan con el banco puesto p02:9EC7 (0xA9BC), p02:9ED2 (0xA9BC), p02:95F3 (0xA9C2), p02:9141 (0xA9F8); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9EC7, p02:9ED2, p02:95F3, p02:9141 (79 bytes)
+F 0xA9BC 16
+D 0xAA1D 0xAA26 resto_AA1D  lo apuntan con el banco puesto p02:8358 (0xAA1D); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8358 (9 bytes)
+F 0xAA1D 16
+D 0xAA42 0xAA49 resto_AA42  lo apuntan con el banco puesto p02:84F5 (0xAA42); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:84F5 (7 bytes)
+F 0xAA42 16
+D 0xAABD 0xAAC4 resto_AABD  lo apuntan con el banco puesto p02:870D (0xAABD); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:870D (7 bytes)
+F 0xAABD 16
+D 0xAAE2 0xAAF1 resto_AAE2  lo apuntan con el banco puesto p02:87B2 (0xAAE2); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:87B2 (15 bytes)
+F 0xAAE2 16
+D 0xAB0F 0xAB1E resto_AB0F  lo apuntan con el banco puesto p02:885A (0xAB0F); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:885A (15 bytes)
+F 0xAB0F 16
+D 0xAB3C 0xAB4B resto_AB3C  lo apuntan con el banco puesto p02:8860 (0xAB3C); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8860 (15 bytes)
+F 0xAB3C 16
+D 0xAB69 0xAB78 resto_AB69  lo apuntan con el banco puesto p02:8866 (0xAB69); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8866 (15 bytes)
+F 0xAB69 16
+D 0xAB8A 0xABC0 resto_AB8A  lo apuntan con el banco puesto p02:9074 (0xAB8A), p02:88D1 (0xAB93), p02:8957 (0xAB93), p02:895C (0xABA2), p02:8961 (0xABB1); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9074, p02:88D1, p02:8957, p02:895C, p02:8961 (54 bytes)
+F 0xAB8A 16
+D 0xABE3 0xAC06 resto_ABE3  lo apuntan con el banco puesto p02:8B0A (0xABE3); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8B0A (35 bytes)
+F 0xABE3 16
+D 0xACB6 0xAD00 resto_ACB6  lo apuntan con el banco puesto p02:8D7B (0xACB6), p02:8D8B (0xACB6), p02:8D7E (0xACC9), p02:8A23 (0xACDC), p02:8A28 (0xACE8), p02:89EC (0xACF4); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8D7B, p02:8D8B, p02:8D7E, p02:8A23, p02:8A28, p02:89EC (74 bytes)
+F 0xACB6 16
+D 0xAD2C 0xAD3B resto_AD2C  lo apuntan con el banco puesto p02:85DC (0xAD2C), p02:9050 (0xAD2C); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:85DC, p02:9050 (15 bytes)
+F 0xAD2C 16
+D 0xAD61 0xAD74 resto_AD61  lo apuntan con el banco puesto p02:8114 (0xAD61), p02:8125 (0xAD61), p02:8546 (0xAD61), p02:8F8D (0xAD61); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8114, p02:8125, p02:8546, p02:8F8D (19 bytes)
+F 0xAD61 16
+D 0xAD9A 0xAE38 resto_AD9A  lo apuntan con el banco puesto p02:81F3 (0xAD9A), p02:82D1 (0xAD9A), p02:82DA (0xADC7), p02:82C2 (0xADF4), p02:8223 (0xAE21), p02:8239 (0xAE28); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:81F3, p02:82D1, p02:82DA, p02:82C2, p02:8223, p02:8239 (158 bytes)
+F 0xAD9A 16
+D 0xB777 0xB7B7 resto_B777  lo apuntan con el banco puesto p03:B64B (0xB777), p03:B652 (0xB797); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p03:B64B, p03:B652 (64 bytes)
+F 0xB777 16
+# --- fin de los bloques de bloques.py ---

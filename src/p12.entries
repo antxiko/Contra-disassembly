@@ -13,6 +13,7 @@
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x9400   # p00:44F3 call
 0x98BF   # p00:47D9 call
+0x9914   # codigo huerfano: un ret solo, delante del rotulo de la fase (p12:9915)
 0x9915   # p00:452A call
 0x9943   # p03:AE50 call
 0x9966   # p03:BB31 call

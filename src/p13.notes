@@ -1,0 +1,279 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6000 0x6028 listas_de_fase  20 punteros, uno por fase, a la lista de pantallas de cada fase (p03:BB82: 0x6000 + 2 x 0xE020); en este banco valen los de las fases 2, 5, 10, 12, 13, 15 (p03:BAE4); lo leen p03:BB8B (40 bytes)
+F 0x6000 w8
+D 0x6028 0x6080 leido_6028  88 bytes que lee 0x4832 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x4832 (88 bytes)
+F 0x6028 16
+D 0x6080 0x6087 lista_ajena_6080  una lista de pantallas (4B 4C 4D 4E 4F 50 y el 0 que la acaba) a la que apunta, en este banco, la fase 1, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (7 bytes)
+F 0x6080 7
+D 0x6087 0x6089 lista_fase_02  la lista de pantallas de la fase 2: 2E y el 0 que la acaba (p03:BB8F lee la del tramo; p03:B5B5 mira el final); lo leen p03:BB92 (2 bytes)
+F 0x6087 2
+D 0x6089 0x6092 lista_ajena_6089  una lista de pantallas (51 52 53 54 55 56 57 58 y el 0 que la acaba) a la que apunta, en este banco, la fase 3, 4, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (9 bytes)
+F 0x6089 9
+D 0x6092 0x6094 lista_fase_05  la lista de pantallas de la fase 5: 2F y el 0 que la acaba (p03:BB8F lee la del tramo; p03:B5B5 mira el final); lo leen p03:BB92 (2 bytes)
+F 0x6092 2
+D 0x6094 0x609D lista_fase_10  la lista de pantallas de la fase 10: 38 37 36 35 34 33 32 31 y el 0 que la acaba (p03:BB8F lee la del tramo; p03:B5B5 mira el final); lo leen p03:BB92 (9 bytes)
+F 0x6094 9
+D 0x609D 0x60A9 lista_ajena_609D  una lista de pantallas (59 5A 5B 5C 5D 5E 5F 60 61 62 63 y el 0 que la acaba) a la que apunta, en este banco, la fase 11, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (12 bytes)
+F 0x609D 12
+D 0x60A9 0x60AB lista_fase_12  la lista de pantallas de la fase 12: 30 y el 0 que la acaba (p03:BB8F lee la del tramo; p03:B5B5 mira el final); lo leen p03:BB92 (2 bytes)
+F 0x60A9 2
+D 0x60AB 0x60B4 lista_fase_13  la lista de pantallas de la fase 13: 40 3F 3E 3D 3C 3B 3A 39 y el 0 que la acaba (p03:BB8F lee la del tramo; p03:B5B5 mira el final); lo leen p03:BB92 (9 bytes)
+F 0x60AB 9
+D 0x60B4 0x60C4 lista_ajena_60B4  una lista de pantallas (64 65 66 67 68 69 6A 6B 6C 6D 6E 6F 70 71 72 y el 0 que la acaba) a la que apunta, en este banco, la fase 14, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (16 bytes)
+F 0x60B4 16
+D 0x60C4 0x60C6 lista_fase_15  la lista de pantallas de la fase 15: 8A y el 0 que la acaba (p03:BB8F lee la del tramo; p03:B5B5 mira el final); lo leen p03:BB92 (2 bytes)
+F 0x60C4 2
+D 0x60C6 0x60D1 lista_ajena_60C6  una lista de pantallas (4A 49 48 47 46 45 44 43 42 41 y el 0 que la acaba) a la que apunta, en este banco, la fase 16, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (11 bytes)
+F 0x60C6 11
+D 0x60D1 0x60D9 lista_ajena_60D1  una lista de pantallas (79 78 77 76 75 74 73 y el 0 que la acaba) a la que apunta, en este banco, la fase 17, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (8 bytes)
+F 0x60D1 8
+D 0x60D9 0x60E2 lista_ajena_60D9  una lista de pantallas (7A 7B 7C 7D 7E 7F 80 81 y el 0 que la acaba) a la que apunta, en este banco, la fase 18, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (9 bytes)
+F 0x60D9 9
+D 0x60E2 0x60EB lista_ajena_60E2  una lista de pantallas (82 83 84 85 86 87 88 89 y el 0 que la acaba) a la que apunta, en este banco, la fase 19, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (9 bytes)
+F 0x60E2 9
+D 0x60EB 0x60F6 lista_ajena_60EB  una lista de pantallas (01 01 02 03 04 05 06 07 09 0A y el 0 que la acaba) a la que apunta, en este banco, la fase 0, que se juega con otro (p03:BAE4): no la lee nadie; lo leen nadie (11 bytes)
+F 0x60EB 11
+D 0x60F6 0x615C leido_60F6  102 bytes que lee 0x4832 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x4832 (102 bytes)
+F 0x60F6 16
+D 0x615C 0x6216 pantallas_13  los punteros a las ordenes de las pantallas 0x2E-0x8A (p03:BB95: 0x6100 + 2 x pantalla); las 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 5B 5C 5D 5E 5F 60 61 62 63 64 65 66 67 68 69 6A 6B 6C 6D 6E 6F 70 71 72 73 74 75 76 77 78 79 7A 7B 7C 7D 7E 7F 80 81 82 83 84 85 86 87 88 89 no estan en ninguna lista de fase; lo leen p03:BB9F (186 bytes)
+F 0x615C w8
+D 0x6216 0x6220 pantallas_13_a_cero  5 punteros a 0 detras de los de la pantalla 0x8A: la tabla de p03:BB95 sigue, pero en este banco no hay mas pantallas; lo leen p03:BB9F (10 bytes)
+F 0x6216 w8
+D 0x6220 0x6224 pieza_6220  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia con el color 0 transparente; la usan las pantallas 2E 2F 8A (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6220 3
+D 0x6224 0x625C piezas_sueltas_6224  5 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (56 bytes)
+F 0x6224 16
+D 0x625C 0x6260 pieza_625C  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia con el color 0 transparente; la usan las pantallas 2E (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x625C 3
+D 0x6260 0x6264 pieza_6260  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 2F 31 32 33 34 35 37 38 39 3A (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6260 3
+D 0x6264 0x6271 piezas_sueltas_6264  2 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (13 bytes)
+F 0x6264 16
+D 0x6271 0x6278 pieza_6271  una pieza de 4 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x6271 3
+D 0x6278 0x62AE piezas_sueltas_6278  3 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (54 bytes)
+F 0x6278 16
+D 0x62AE 0x62B5 pieza_62AE  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x62AE 3
+D 0x62B5 0x6392 piezas_sueltas_62B5  17 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (221 bytes)
+F 0x62B5 16
+D 0x6392 0x63A5 pieza_6392  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 31 32 33 34 35 36 37 38 39 3A (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x6392 3
+D 0x63A5 0x63B0 pieza_63A5  una pieza de 4 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 31 32 33 34 35 36 37 38 3B 3C (p03:BC2F/BBEE); lo leen p03:BC5C (11 bytes)
+F 0x63A5 3
+D 0x63B0 0x63BB pieza_63B0  una pieza de 4 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 31 32 33 34 35 36 37 38 3B 3C (p03:BC2F/BBEE); lo leen p03:BC5C (11 bytes)
+F 0x63B0 3
+D 0x63BB 0x63DA pieza_63BB  una pieza de 4 x 7 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 31 32 33 34 35 36 37 38 39 3A (p03:BC2F/BBEE); lo leen p03:BC5C (31 bytes)
+F 0x63BB 3
+D 0x63DA 0x63ED pieza_63DA  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 34 35 37 (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x63DA 3
+D 0x63ED 0x6400 pieza_63ED  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 36 38 3D 3F (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x63ED 3
+D 0x6400 0x6407 pieza_6400  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 34 35 37 (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x6400 3
+D 0x6407 0x6499 piezas_sueltas_6407  8 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (146 bytes)
+F 0x6407 16
+D 0x6499 0x64AC pieza_6499  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 31 32 33 34 35 36 37 38 39 3A (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x6499 3
+D 0x64AC 0x64D6 piezas_sueltas_64AC  7 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (42 bytes)
+F 0x64AC 16
+D 0x64D6 0x64E9 pieza_64D6  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 33 36 38 3E (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x64D6 3
+D 0x64E9 0x64F0 pieza_64E9  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 33 36 38 3B 3C 3E (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x64E9 3
+D 0x64F0 0x6503 pieza_64F0  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 36 (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x64F0 3
+D 0x6503 0x650A pieza_6503  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 36 (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x6503 3
+D 0x650A 0x6511 pieza_650A  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 36 38 3B 3C 3D 3F (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x650A 3
+D 0x6511 0x651A pieza_6511  una pieza de 3 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 39 3A 3B 3C 3D 3E 3F 40 (p03:BC2F/BBEE); lo leen p03:BC5C (9 bytes)
+F 0x6511 3
+D 0x651A 0x6521 pieza_651A  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 3B (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x651A 3
+D 0x6521 0x6528 pieza_6521  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 3B 3C (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x6521 3
+D 0x6528 0x6533 pieza_6528  una pieza de 2 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 39 3A 3B 3C 3D 3E 3F (p03:BC2F/BBEE); lo leen p03:BC5C (11 bytes)
+F 0x6528 3
+D 0x6533 0x6547 piezas_sueltas_6533  3 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (20 bytes)
+F 0x6533 16
+D 0x6547 0x654B pieza_6547  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 2E 2F 30 31 32 33 34 35 36 37 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6547 3
+D 0x654B 0x65B8 piezas_sueltas_654B  6 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (109 bytes)
+F 0x654B 16
+D 0x65B8 0x65BC pieza_65B8  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 8A (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x65B8 3
+D 0x65BC 0x65E8 piezas_sueltas_65BC  11 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (44 bytes)
+F 0x65BC 16
+D 0x65E8 0x65EC pieza_65E8  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x65E8 3
+D 0x65EC 0x65F0 piezas_sueltas_65EC  1 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (4 bytes)
+F 0x65EC 16
+D 0x65F0 0x65F4 pieza_65F0  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x65F0 3
+D 0x65F4 0x65F8 pieza_65F4  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x65F4 3
+D 0x65F8 0x6600 piezas_sueltas_65F8  2 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (8 bytes)
+F 0x65F8 16
+D 0x6600 0x6604 pieza_6600  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6600 3
+D 0x6604 0x66F3 piezas_sueltas_6604  13 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (239 bytes)
+F 0x6604 16
+D 0x66F3 0x66F7 pieza_66F3  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia con el color 0 transparente; la usan las pantallas 8A (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x66F3 3
+D 0x66F7 0x6726 piezas_sueltas_66F7  8 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (47 bytes)
+F 0x66F7 16
+D 0x6726 0x672A pieza_6726  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6726 3
+D 0x672A 0x672E pieza_672A  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x672A 3
+D 0x672E 0x6732 pieza_672E  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x672E 3
+D 0x6732 0x6736 pieza_6732  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6732 3
+D 0x6736 0x673A pieza_6736  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6736 3
+D 0x673A 0x673E pieza_673A  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x673A 3
+D 0x673E 0x6745 pieza_673E  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x673E 3
+D 0x6745 0x674C pieza_6745  una pieza de 2 x 2 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 (p03:BC2F/BBEE); lo leen p03:BC5C (7 bytes)
+F 0x6745 3
+D 0x674C 0x6750 pieza_674C  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x674C 3
+D 0x6750 0x6754 pieza_6750  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6750 3
+D 0x6754 0x682E piezas_sueltas_6754  2 pieza(s) seguidas (modo, alto, ancho y alto x ancho dibujos, el formato de p03:BC2F) a las que no apunta ninguna orden de pantalla: encajan justas en el hueco; lo leen nadie (218 bytes)
+F 0x6754 16
+D 0x682E 0x6841 pieza_682E  una pieza de 4 x 4 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia normal; la usan las pantallas 8A (p03:BC2F/BBEE); lo leen p03:BC5C (19 bytes)
+F 0x682E 3
+D 0x6841 0x6845 pieza_6841  una pieza de 1 x 1 dibujos (alto, ancho) de la fila 0x00 de la hoja, copia con el color 0 transparente; la usan las pantallas 8A (p03:BC2F/BBEE); lo leen p03:BC5C (4 bytes)
+F 0x6841 3
+D 0x6845 0x68A6 ordenes_31_6845  las ordenes de pieza de la pantalla 0x31 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (97 bytes)
+F 0x6845 16
+D 0x68A6 0x68A7 objetos_31  los 0 objetos de la pantalla 0x31: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (1 bytes)
+F 0x68A6 4
+D 0x68A7 0x68A8 sprites_31  los 0 grupos de sprites de la pantalla 0x31: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x68A7 4
+D 0x68A8 0x6913 ordenes_32_68A8  las ordenes de pieza de la pantalla 0x32 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (107 bytes)
+F 0x68A8 16
+D 0x6913 0x691C objetos_32  los 2 objetos de la pantalla 0x32: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (9 bytes)
+F 0x6913 4
+D 0x691C 0x6921 sprites_32  los 1 grupos de sprites de la pantalla 0x32: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (5 bytes)
+F 0x691C 4
+D 0x6921 0x69AE ordenes_33_6921  las ordenes de pieza de la pantalla 0x33 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (141 bytes)
+F 0x6921 16
+D 0x69AE 0x69B3 objetos_33  los 1 objetos de la pantalla 0x33: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (5 bytes)
+F 0x69AE 4
+D 0x69B3 0x69BC sprites_33  los 2 grupos de sprites de la pantalla 0x33: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x69B3 4
+D 0x69BC 0x6A21 ordenes_34_69BC  las ordenes de pieza de la pantalla 0x34 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (101 bytes)
+F 0x69BC 16
+D 0x6A21 0x6A2A objetos_34  los 2 objetos de la pantalla 0x34: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (9 bytes)
+F 0x6A21 4
+D 0x6A2A 0x6A33 sprites_34  los 2 grupos de sprites de la pantalla 0x34: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6A2A 4
+D 0x6A33 0x6AB8 ordenes_35_6A33  las ordenes de pieza de la pantalla 0x35 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (133 bytes)
+F 0x6A33 16
+D 0x6AB8 0x6ABD objetos_35  los 1 objetos de la pantalla 0x35: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (5 bytes)
+F 0x6AB8 4
+D 0x6ABD 0x6ABE sprites_35  los 0 grupos de sprites de la pantalla 0x35: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x6ABD 4
+D 0x6ABE 0x6B35 ordenes_36_6ABE  las ordenes de pieza de la pantalla 0x36 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (119 bytes)
+F 0x6ABE 16
+D 0x6B35 0x6B42 objetos_36  los 3 objetos de la pantalla 0x36: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (13 bytes)
+F 0x6B35 4
+D 0x6B42 0x6B53 sprites_36  los 4 grupos de sprites de la pantalla 0x36: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (17 bytes)
+F 0x6B42 4
+D 0x6B53 0x6BCE ordenes_37_6B53  las ordenes de pieza de la pantalla 0x37 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (123 bytes)
+F 0x6B53 16
+D 0x6BCE 0x6BD7 objetos_37  los 2 objetos de la pantalla 0x37: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (9 bytes)
+F 0x6BCE 4
+D 0x6BD7 0x6BE0 sprites_37  los 2 grupos de sprites de la pantalla 0x37: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6BD7 4
+D 0x6BE0 0x6C5F ordenes_38_6BE0  las ordenes de pieza de la pantalla 0x38 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (127 bytes)
+F 0x6BE0 16
+D 0x6C5F 0x6C74 objetos_38  los 5 objetos de la pantalla 0x38: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (21 bytes)
+F 0x6C5F 4
+D 0x6C74 0x6C75 sprites_38  los 0 grupos de sprites de la pantalla 0x38: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x6C74 4
+D 0x6C75 0x6CA4 ordenes_39_6C75  las ordenes de pieza de la pantalla 0x39 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (47 bytes)
+F 0x6C75 16
+D 0x6CA4 0x6CA5 objetos_39  los 0 objetos de la pantalla 0x39: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (1 bytes)
+F 0x6CA4 4
+D 0x6CA5 0x6CA6 sprites_39  los 0 grupos de sprites de la pantalla 0x39: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x6CA5 4
+D 0x6CA6 0x6CE5 ordenes_3A_6CA6  las ordenes de pieza de la pantalla 0x3A (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (63 bytes)
+F 0x6CA6 16
+D 0x6CE5 0x6CF2 objetos_3A  los 3 objetos de la pantalla 0x3A: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (13 bytes)
+F 0x6CE5 4
+D 0x6CF2 0x6CF7 sprites_3A  los 1 grupos de sprites de la pantalla 0x3A: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (5 bytes)
+F 0x6CF2 4
+D 0x6CF7 0x6D8E ordenes_3B_6CF7  las ordenes de pieza de la pantalla 0x3B (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (151 bytes)
+F 0x6CF7 16
+D 0x6D8E 0x6D97 objetos_3B  los 2 objetos de la pantalla 0x3B: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (9 bytes)
+F 0x6D8E 4
+D 0x6D97 0x6DA0 sprites_3B  los 2 grupos de sprites de la pantalla 0x3B: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6D97 4
+D 0x6DA0 0x6E1B ordenes_3C_6DA0  las ordenes de pieza de la pantalla 0x3C (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (123 bytes)
+F 0x6DA0 16
+D 0x6E1B 0x6E28 objetos_3C  los 3 objetos de la pantalla 0x3C: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (13 bytes)
+F 0x6E1B 4
+D 0x6E28 0x6E31 sprites_3C  los 2 grupos de sprites de la pantalla 0x3C: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6E28 4
+D 0x6E31 0x6E9C ordenes_3D_6E31  las ordenes de pieza de la pantalla 0x3D (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (107 bytes)
+F 0x6E31 16
+D 0x6E9C 0x6EAD objetos_3D  los 4 objetos de la pantalla 0x3D: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (17 bytes)
+F 0x6E9C 4
+D 0x6EAD 0x6EB6 sprites_3D  los 2 grupos de sprites de la pantalla 0x3D: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6EAD 4
+D 0x6EB6 0x6F19 ordenes_3E_6EB6  las ordenes de pieza de la pantalla 0x3E (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (99 bytes)
+F 0x6EB6 16
+D 0x6F19 0x6F1E objetos_3E  los 1 objetos de la pantalla 0x3E: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (5 bytes)
+F 0x6F19 4
+D 0x6F1E 0x6F27 sprites_3E  los 2 grupos de sprites de la pantalla 0x3E: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6F1E 4
+D 0x6F27 0x6F7A ordenes_3F_6F27  las ordenes de pieza de la pantalla 0x3F (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (83 bytes)
+F 0x6F27 16
+D 0x6F7A 0x6F87 objetos_3F  los 3 objetos de la pantalla 0x3F: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (13 bytes)
+F 0x6F7A 4
+D 0x6F87 0x6F90 sprites_3F  los 2 grupos de sprites de la pantalla 0x3F: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6F87 4
+D 0x6F90 0x6FC1 ordenes_40_6F90  las ordenes de pieza de la pantalla 0x40 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (49 bytes)
+F 0x6F90 16
+D 0x6FC1 0x6FD2 objetos_40  los 4 objetos de la pantalla 0x40: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (17 bytes)
+F 0x6FC1 4
+D 0x6FD2 0x6FDB sprites_40  los 2 grupos de sprites de la pantalla 0x40: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (9 bytes)
+F 0x6FD2 4
+D 0x6FDB 0x7006 ordenes_8A_6FDB  las ordenes de pieza de la pantalla 0x8A (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (43 bytes)
+F 0x6FDB 16
+D 0x7006 0x702B objetos_8A  los 9 objetos de la pantalla 0x8A: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (37 bytes)
+F 0x7006 4
+D 0x702B 0x702C sprites_8A  los 0 grupos de sprites de la pantalla 0x8A: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x702B 4
+D 0x702C 0x7037 pieza_702C  una pieza de 4 x 2 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 2E 2F 30 8A (p03:BC2F/BBEE); lo leen p03:BC5C (11 bytes)
+F 0x702C 3
+D 0x7037 0x70F2 ordenes_2E_7037  las ordenes de pieza de la pantalla 0x2E (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (187 bytes)
+F 0x7037 16
+D 0x70F2 0x7117 objetos_2E  los 9 objetos de la pantalla 0x2E: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (37 bytes)
+F 0x70F2 4
+D 0x7117 0x7118 sprites_2E  los 0 grupos de sprites de la pantalla 0x2E: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x7117 4
+D 0x7118 0x71DB ordenes_2F_7118  las ordenes de pieza de la pantalla 0x2F (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (195 bytes)
+F 0x7118 16
+D 0x71DB 0x7200 objetos_2F  los 9 objetos de la pantalla 0x2F: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (37 bytes)
+F 0x71DB 4
+D 0x7200 0x7201 sprites_2F  los 0 grupos de sprites de la pantalla 0x2F: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x7200 4
+D 0x7201 0x72C0 ordenes_30_7201  las ordenes de pieza de la pantalla 0x30 (p03:BBA2: forma corta con el bit 7, larga sin el, 0xFE + puntero, 0xFF acaba); lo leen p03:BBA2 (191 bytes)
+F 0x7201 16
+D 0x72C0 0x72F1 objetos_30  los 12 objetos de la pantalla 0x30: tipo, IY+3, fila y columna (la y, la x y su casilla salen de las dos: p03:BD7B-BDD5), y el 0xFF que acaba; lo leen p03:BD7F (49 bytes)
+F 0x72C0 4
+D 0x72F1 0x72F2 sprites_30  los 0 grupos de sprites de la pantalla 0x30: tipo, cuantos, y, x (p03:BDD6-BE1C), y el 0xFF que acaba (si no se llega antes a 0x14 sprites); lo leen p03:BDE3 (1 bytes)
+F 0x72F1 4
+D 0x72F2 0x72FD pieza_72F2  una pieza de 4 x 2 dibujos (alto, ancho) de la fila 0x40 de la hoja, copia normal; la usan las pantallas 30 (p03:BC2F/BBEE); lo leen p03:BC5C (11 bytes)
+F 0x72F2 3
+D 0x72FD 0x8000 leido_72FD  3331 bytes que lee 0x4832 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x4832 (3331 bytes)
+F 0x72FD 16
+# --- fin de los bloques de bloques.py ---

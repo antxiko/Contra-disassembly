@@ -75,6 +75,8 @@ C 0x824C ...hacia donde esta el jugador: su x + 0x30 contra la suya
 C 0x824F la x del jugador + 0x30...
 C 0x8256 a la izquierda (IY+10 = -1)...
 C 0x825C ...o a la derecha (+1)
+C 0x8266 huerfano (no salta nadie aqui): estado 1 (IY+5) y a p02:8274
+C 0x826C huerfano (no salta nadie aqui): pinta la pieza, libera la ficha (p03:A8BD) y a p02:8292
 C 0x8274 p00:5A61 con p02:8C87
 C 0x8277 la caja p02:8C87 contra el jugador
 C 0x827A el disparo le da? (p02:90AD, 0x1B)
@@ -84,6 +86,7 @@ C 0x828A IY+8 = 6
 C 0x8292 ...un punto, el sonido 0x37 y 0xE045 a cero
 C 0x8295 el sonido 0x37 de la explosion
 C 0x829C sin jefe: se puede salir
+C 0x82A0 huerfano (no salta nadie aqui): A = 0 y suma_100 (p00:5F19)
 C 0x82A4 se mueve: IY+11 + IY+10, entre 9 y 0x1F...
 C 0x82AA ni pasa de 9 ni de 0x1F
 C 0x82B3 ...8 puntos por paso en la x...
@@ -493,6 +496,7 @@ C 0x955C vuela (p00:5ECD) a la altura guardada
 C 0x9575 si el jugador la toca (p00:5ACE con p02:9595)...
 C 0x957C ...0xE2C2 = 1 (la capsula de arma) o, la de dibujo 0x2C, 0xE2C1 = 1
 C 0x9588 y fuera (p03:A8BD)
+C 0x958B huerfano: detras del jp de p02:9588, no se llega nunca
 C 0x95A8 la plataforma que se mueve: sus colores (p02:9619)
 C 0x95B7 a los 0x50 cuadros se pone en marcha
 C 0x95C1 IY+9 = 0x92: por bits, cuando da un paso
@@ -1213,3 +1217,172 @@ C 0x9FDF el estado del objeto (p03:A03E) = 0x06
 C 0x9FE5 suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 C 0x9FF7 suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 # --- fin de las anotaciones de anota.py ---
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8006 0x8062 tabla_8006  46 destinos del despachador p00:A03E (call en p02:8003, el indice en A): 8062, 9CE3, A60E, A6D2, A74A, A5A5, A5A4, A535, A4AA, A34E, A424, A3E0, A28B, A207, A19C, A10A, A0D5, A0D0, 9BBF, A811, 9BAC, 9C78, 9AD8, 9CC5, 9AD5, 9A31, 961D, 9599, 961D, 9AD2, 8183, 9886, A414, 96CA, 9864, 9887, 94D2, 97ED, 9929, 97A5, 8062, 978D, 93F4, 8180, 946B, 8062; lo leen p02:8003 (92 bytes)
+F 0x8006 w8
+D 0x8069 0x80B3 tabla_8069  37 destinos del despachador p00:A03E (call en p02:8066, el indice en A): 82E4, 82E4, 8498, 84DE, 850E, 8570, 8613, 8754, 87D1, 87D2, 87D3, 8FB7, 8870, 8871, 8A95, 8B80, 8C8B, 8D3B, 89BB, 8DA2, 8E0B, 9771, 8FB8, 8F73, 90D0, 913A, 9161, 80B3, 9248, 92D2, 8140, 923E, 8902, 817F, 8176, 80B3, 81C2; lo leen p02:8066 (74 bytes)
+F 0x8069 w8
+D 0x8186 0x818A tabla_8186  2 destinos del despachador p00:A03E (call en p02:8183, el indice en A): 818A, 8197; lo leen p02:8183 (4 bytes)
+F 0x8186 w2
+D 0x81AF 0x81B3 caja_81AF  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x81AF 4
+D 0x81B3 0x81B4 leido_81B3  1 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (1 bytes)
+F 0x81B3 16
+D 0x81C5 0x81CD tabla_81C5  4 destinos del despachador p00:A03E (call en p02:81C2, el indice en A): 81CD, 81FC, 820B, 823E; lo leen p02:81C2 (8 bytes)
+F 0x81C5 w4
+D 0x82E7 0x82ED tabla_82E7  3 destinos del despachador p00:A03E (call en p02:82E4, el indice en A): 82ED, 8300, 8342; lo leen p02:82E4 (6 bytes)
+F 0x82E7 w3
+D 0x83E5 0x83E9 caja_83E5  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x83E5 4
+D 0x850A 0x850E caja_850A  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x850A 4
+D 0x8511 0x8517 tabla_8511  3 destinos del despachador p00:A03E (call en p02:850E, el indice en A): 8517, 8526, 8533; lo leen p02:850E (6 bytes)
+F 0x8511 w3
+D 0x856C 0x8570 caja_856C  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x856C 4
+D 0x8579 0x8581 tabla_8579  4 destinos del despachador p00:A03E (call en p02:8576, el indice en A): 8581, 8595, 85A2, 85F1; lo leen p02:8576 (8 bytes)
+F 0x8579 w4
+D 0x860F 0x8613 caja_860F  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x860F 4
+D 0x8616 0x8620 tabla_8616  5 destinos del despachador p00:A03E (call en p02:8613, el indice en A): 8620, 863F, 8679, 86C3, 86C7; lo leen p02:8613 (10 bytes)
+F 0x8616 w5
+D 0x8728 0x8738 leido_8728  16 bytes que leen 0x871B, 0x8723 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x871B, 0x8723 (16 bytes)
+F 0x8728 16
+D 0x8738 0x8740 tabla_8738  tabla que se lee desde HL = 0x8738 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:866A (8 bytes)
+F 0x8738 16
+D 0x8740 0x8750 tabla_8740  tabla que se lee desde HL = 0x8740 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:86D9 (16 bytes)
+F 0x8740 16
+D 0x8750 0x8754 caja_8750  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8750 4
+D 0x87CD 0x87D1 caja_87CD  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x87CD 4
+D 0x87D6 0x87DC tabla_87D6  3 destinos del despachador p00:A03E (call en p02:87D3, el indice en A): 87DC, 87E3, 881E; lo leen p02:87D3 (6 bytes)
+F 0x87D6 w3
+D 0x886C 0x8870 caja_886C  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x886C 4
+D 0x8874 0x8878 tabla_8874  2 destinos del despachador p00:A03E (call en p02:8871, el indice en A): 8878, 8893; lo leen p02:8871 (4 bytes)
+F 0x8874 w2
+D 0x8977 0x8997 tabla_8977  tabla que se lee desde HL = 0x8977 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:896C (32 bytes)
+F 0x8977 16
+D 0x8997 0x89B7 tabla_8997  tabla que se lee desde HL = 0x8997 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:88C3 (32 bytes)
+F 0x8997 16
+D 0x8A5F 0x8A78 tabla_8A5F  tabla que se lee desde HL = 0x8A5F con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:8A02 (25 bytes)
+F 0x8A5F 16
+D 0x8A78 0x8A91 tabla_8A78  tabla que se lee desde HL = 0x8A78 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:8A0D (25 bytes)
+F 0x8A78 16
+D 0x8B6A 0x8B6E caja_8B6A  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8B6A 4
+D 0x8B6E 0x8B72 caja_8B6E  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8B6E 4
+D 0x8B83 0x8B89 tabla_8B83  3 destinos del despachador p00:A03E (call en p02:8B80, el indice en A): 8B89, 8BB7, 8BCF; lo leen p02:8B80 (6 bytes)
+F 0x8B83 w3
+D 0x8C83 0x8C87 sin_lector_8C83  cuatro bytes con la forma de una caja de choque (dy, alto, dx, ancho: 10 10 00 10), delante de la de p02:8C87; no lo lee nada: ni un puntero, ni una lista, orden o pieza, ni las partidas de tools/cobertura.py; lo leen nadie (4 bytes)
+F 0x8C83 16
+D 0x8C87 0x8C8B caja_8C87  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8C87 4
+D 0x8C8E 0x8C9C tabla_8C8E  7 destinos del despachador p00:A03E (call en p02:8C8B, el indice en A): 8C9C, 8CA2, 8CAF, 8CBC, 8D08, 8CAF, 8D13; lo leen p02:8C8B (14 bytes)
+F 0x8C8E w7
+D 0x8D2C 0x8D30 caja_8D2C  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8D2C 4
+D 0x8E07 0x8E0B caja_8E07  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8E07 4
+D 0x8E19 0x8E37 tabla_8E19  15 destinos del despachador p00:A03E (call en p02:8E16, el indice en A): 8E37, 8EA6, 8EB1, 8ECB, 8F0A, 8F11, 8F34, 8F3D, 8F3D, 8F40, 8F47, 8F47, 8F4E, 8F6B, 8F6C; lo leen p02:8E16 (30 bytes)
+F 0x8E19 w8
+D 0x8FB3 0x8FB7 caja_8FB3  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x8FB3 4
+D 0x8FBB 0x8FC3 tabla_8FBB  4 destinos del despachador p00:A03E (call en p02:8FB8, el indice en A): 8FC3, 8FEA, 900B, 9039; lo leen p02:8FB8 (8 bytes)
+F 0x8FBB w4
+D 0x9081 0x9085 caja_9081  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x9081 4
+D 0x90CC 0x90D0 caja_90CC  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x90CC 4
+D 0x915D 0x9161 caja_915D  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x915D 4
+D 0x924B 0x9251 tabla_924B  3 destinos del despachador p00:A03E (call en p02:9248, el indice en A): 9251, 9266, 92B5; lo leen p02:9248 (6 bytes)
+F 0x924B w3
+D 0x92D5 0x92DB tabla_92D5  3 destinos del despachador p00:A03E (call en p02:92D2, el indice en A): 92DB, 9351, 9373; lo leen p02:92D2 (6 bytes)
+F 0x92D5 w3
+D 0x938D 0x9399 leido_938D  12 bytes que leen 0x933F, 0x9341 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x933F, 0x9341 (12 bytes)
+F 0x938D 16
+D 0x9399 0x939B leido_9399  2 bytes que leen 0x933F, 0x9341 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x933F, 0x9341 (2 bytes)
+F 0x9399 16
+D 0x93B7 0x93C6 leido_93B7  15 bytes que leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0xBD37, 0xBD4A, 0xBD4D, 0xBD5C (15 bytes)
+F 0x93B7 16
+D 0x93F7 0x9407 tabla_93F7  8 destinos del despachador p00:A03E (call en p02:93F4, el indice en A): 9407, 9421, 945E, 9F12, 9F12, 9F12, 9F12, 9F21; lo leen p02:93F4 (16 bytes)
+F 0x93F7 w8
+D 0x946E 0x947E tabla_946E  8 destinos del despachador p00:A03E (call en p02:946B, el indice en A): 947E, 9495, 945E, 9F12, 9F12, 9F12, 9F12, 9F21; lo leen p02:946B (16 bytes)
+F 0x946E w8
+D 0x94D5 0x94DF tabla_94D5  5 destinos del despachador p00:A03E (call en p02:94D2, el indice en A): 94DF, 94F6, 9517, 955C, 9575; lo leen p02:94D2 (10 bytes)
+F 0x94D5 w5
+D 0x9595 0x9599 caja_9595  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x9595 4
+D 0x959C 0x95A8 tabla_959C  6 destinos del despachador p00:A03E (call en p02:9599, el indice en A): 95A8, 95B7, 95C7, 95B7, 95DB, 95EF; lo leen p02:9599 (12 bytes)
+F 0x959C w6
+D 0x9620 0x9626 tabla_9620  3 destinos del despachador p00:A03E (call en p02:961D, el indice en A): 9626, 9662, 9669; lo leen p02:961D (6 bytes)
+F 0x9620 w3
+D 0x96C2 0x96C6 caja_96C2  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x96C2 4
+D 0x96C6 0x96CA caja_96C6  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x96C6 4
+D 0x976D 0x9771 leido_976D  4 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (4 bytes)
+F 0x976D 16
+D 0x98D2 0x98D6 caja_98D2  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x98D2 4
+D 0x992C 0x993C tabla_992C  8 destinos del despachador p00:A03E (call en p02:9929, el indice en A): 993C, 994B, 9972, 999A, 9F2E, 9F2E, 9F2E, 9F2E; lo leen p02:9929 (16 bytes)
+F 0x992C w8
+D 0x9A14 0x9A24 tabla_9A14  tabla que se lee desde HL = 0x9A14 con un indice (lee_tabla, add hl,de...); va de su base hasta lo siguiente que hay (otra tabla, otro bloque, codigo, un puntero de otra instruccion o un byte que lee otra al jugar): el tamano no sale de recorrerla, el indice lo da quien llama; lo leen p02:99F5 (16 bytes)
+F 0x9A14 16
+D 0x9A34 0x9A3C tabla_9A34  4 destinos del despachador p00:A03E (call en p02:9A31, el indice en A): 9A3C, 9A53, 9A61, 9A85; lo leen p02:9A31 (8 bytes)
+F 0x9A34 w4
+D 0x9ACC 0x9AD0 caja_9ACC  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x9ACC 4
+D 0x9AD0 0x9AD2 leido_9AD0  2 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (2 bytes)
+F 0x9AD0 16
+D 0x9ADB 0x9AE5 tabla_9ADB  5 destinos del despachador p00:A03E (call en p02:9AD8, el indice en A): 9AE5, 9B04, 9B19, 9B57, 9B67; lo leen p02:9AD8 (10 bytes)
+F 0x9ADB w5
+D 0x9BAF 0x9BBF tabla_9BAF  8 destinos del despachador p00:A03E (call en p02:9BAC, el indice en A): 54CB, 9D24, 9E9D, 9EA5, 9F0A, 9D24, 9F12, 9F21; lo leen p02:9BAC (16 bytes)
+F 0x9BAF w8
+D 0x9BC2 0x9BCA tabla_9BC2  4 destinos del despachador p00:A03E (call en p02:9BBF, el indice en A): 9BCA, 9BE1, 9C04, 9C2F; lo leen p02:9BBF (8 bytes)
+F 0x9BC2 w4
+D 0x9C70 0x9C74 caja_9C70  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x9C70 4
+D 0x9C74 0x9C78 leido_9C74  4 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (4 bytes)
+F 0x9C74 16
+D 0x9CEB 0x9CFB tabla_9CEB  8 destinos del despachador p00:A03E (call en p02:9CE8, el indice en A): 9CFB, 9D24, 9E9D, 9EA5, 9F0A, 9D24, 9F12, 9F21; lo leen p02:9CE8 (16 bytes)
+F 0x9CEB w8
+D 0x9D18 0x9D1C leido_9D18  4 bytes que lee 0x5E48 al jugar (medido ejecutando el cartucho, tools/cobertura.py; el tamano es lo que se lee seguido); lo leen 0x5E48 (4 bytes)
+F 0x9D18 16
+D 0x9FF1 0x9FF5 caja_9FF1  una caja de choque (dy, alto, dx, ancho) que lee se_tocan (p00:5BD5-5C10); el primer byte, medido jugando; lo leen p00:5BD5 (4 bytes)
+F 0x9FF1 4
+D 0x9FFE 0xA000 partida_9FFE  los 2 primeros bytes de una instruccion de 3 (FD 77 00) que sigue en el banco 3: el trazador de un solo banco no puede verla entera (tools/bancos.py); lo leen p02:9FFE (2 bytes)
+F 0x9FFE 2
+D 0x82E0 0x82E4 resto_82E0  lo apuntan con el banco puesto p02:827A (0x82E0); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:827A (4 bytes)
+F 0x82E0 16
+D 0x89B7 0x89BB resto_89B7  lo apuntan con el banco puesto p02:88CE (0x89B7); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:88CE (4 bytes)
+F 0x89B7 16
+D 0x8A91 0x8A95 resto_8A91  lo apuntan con el banco puesto p02:8A44 (0x8A91); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8A44 (4 bytes)
+F 0x8A91 16
+D 0x8D30 0x8D3B resto_8D30  lo apuntan con el banco puesto p14:7A6E (0x8D30); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p14:7A6E (11 bytes)
+F 0x8D30 16
+D 0x8E00 0x8E07 resto_8E00  lo apuntan con el banco puesto p02:8DE9 (0x8E00); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:8DE9 (7 bytes)
+F 0x8E00 16
+D 0x9118 0x913A resto_9118  lo apuntan con el banco puesto p02:9105 (0x9118), p02:90EF (0x9127); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9105, p02:90EF (34 bytes)
+F 0x9118 16
+D 0x92BA 0x92D2 resto_92BA  lo apuntan con el banco puesto p14:7A2D (0x92BA), p14:7A57 (0x92C4), p14:7A28 (0x92CB); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p14:7A2D, p14:7A57, p14:7A28 (24 bytes)
+F 0x92BA 16
+D 0x9385 0x938D resto_9385  lo apuntan con el banco puesto p02:932B (0x9385); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:932B (8 bytes)
+F 0x9385 16
+D 0x939B 0x93B7 resto_939B  lo apuntan con el banco puesto p02:9332 (0x93AB); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9332 (28 bytes)
+F 0x939B 16
+D 0x93C6 0x93F4 resto_93C6  lo apuntan con el banco puesto p02:935E (0x93C6), p02:9369 (0x93D2), p02:9364 (0x93E5); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:935E, p02:9369, p02:9364 (46 bytes)
+F 0x93C6 16
+D 0x9619 0x961D resto_9619  lo apuntan con el banco puesto p02:95AF (0x9619); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:95AF (4 bytes)
+F 0x9619 16
+D 0x97E9 0x97ED resto_97E9  lo apuntan con el banco puesto p02:97D8 (0x97E9); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:97D8 (4 bytes)
+F 0x97E9 16
+D 0x9BA8 0x9BAC resto_9BA8  lo apuntan con el banco puesto p02:9B8C (0x9BA8), p02:9B92 (0x9BA8); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9B8C, p02:9B92 (4 bytes)
+F 0x9BA8 16
+D 0x9D1C 0x9D24 resto_9D1C  lo apuntan con el banco puesto p02:9CDE (0x9D1C), p02:9942 (0x9D20); el tamano es lo que hay hasta lo siguiente, no sale de recorrerlo; lo leen p02:9CDE, p02:9942 (8 bytes)
+F 0x9D1C 16
+# --- fin de los bloques de bloques.py ---

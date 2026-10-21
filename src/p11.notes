@@ -1,0 +1,5 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6000 0x8000 hoja_11  una hoja de dibujos de SCREEN 5 de 256 x 64 puntos (dos por byte) que p00:4801/4832 copia entera a la VRAM con HMMC; la usan: ninguna fase; y el titulo (p00:419D); lo leen p00:4832 (8192 bytes)
+F 0x6000 16
+# --- fin de los bloques de bloques.py ---

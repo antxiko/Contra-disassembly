@@ -1,7 +1,9 @@
 # lanza_vram.ps1 -dir <dir> -tiempos "<segundos>" ...: UN openMSX con tools/omsx_vram.tcl,
 # fuera del sandbox, y espera a que acabe (los parametros, en el guion).
-param([string]$dir, [string]$tiempos = "30 45 60", [string]$teclas = "", [string]$pokes = "", [string]$bp = "", [string]$wp = "", [string]$fijo = "", [string]$fijo_desde = "21", [string]$rom = "contra.rom", [string]$vecino = "", [string]$traza = "", [string]$dispara = "", [string]$escrituras = "", [string]$cuadros = "", [string]$puerto = "", [string]$scroll = "", [string]$maquina = "Sony_HB-F900")
+param([string]$dir, [string]$tiempos = "30 45 60", [string]$teclas = "", [string]$pokes = "", [string]$bp = "", [string]$wp = "", [string]$fijo = "", [string]$fijo_desde = "21", [string]$rom = "contra.rom", [string]$vecino = "", [string]$traza = "", [string]$dispara = "", [string]$escrituras = "", [string]$cuadros = "", [string]$puerto = "", [string]$scroll = "", [string]$maquina = "Sony_HB-F900", [string]$salta = "", [string]$supera = "")
 $env:VRAM_BP = $bp
+$env:VRAM_SALTA = $salta
+$env:VRAM_SUPERA = $supera
 $env:VRAM_WP = $wp
 $env:VRAM_FIJO = $fijo
 $env:VRAM_FIJO_DESDE = $fijo_desde

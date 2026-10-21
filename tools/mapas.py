@@ -27,7 +27,7 @@ import fases   # noqa: E402
 
 ROM = fases.ROM
 ALTO = 176                      # las 22 filas de juego; debajo va el marcador
-HORIZONTALES = (0, 6, 7, 9, 13, 17, 19)
+HORIZONTALES = (0, 6, 7, 8, 9, 13, 17, 19)    # la 8 no se juega (p00:449A)
 VERTICALES = (3, 10, 16, 18)
 TRES_D = (1, 4, 11, 14)
 PAREDES = (2, 5, 12, 15)

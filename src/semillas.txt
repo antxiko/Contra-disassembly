@@ -68,3 +68,29 @@ p04 0x699D 4 5 3  # entrada 27 de la tabla p04:67B0
 p04 0x69B7 4 5 3  # entrada 28 de la tabla p04:67B0
 p04 0x69CC 4 5 3  # entrada 29 de la tabla p04:67B0
 p04 0x69CF 4 5 3  # entrada 30 de la tabla p04:67B0
+#
+# Codigo huerfano (tools/huerfanas.py): huecos que desensamblan hasta un ret o un salto,
+# donde el trazado no entra y que ninguna instruccion salta, llama o carga con una constante;
+# tampoco los ha ejecutado la campana de tools/cobertura.py (75 partidas).
+p00 0x4AD8 1 2 3  # codigo huerfano: 12 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x4AD8
+p00 0x4D95 1 2 3  # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x4D95
+p00 0x58F2 1 2 3  # codigo huerfano: 6 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x58F2
+p00 0x5EB0 1 2 3  # codigo huerfano: 2 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x5EB0
+p00 0x5F29 1 2 3  # codigo huerfano: 4 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x5F29
+p02 0x8266 1 2 3  # codigo huerfano: 6 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8266
+p02 0x826C 1 2 3  # codigo huerfano: 8 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x826C
+p02 0x82A0 1 2 3  # codigo huerfano: 4 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x82A0
+p02 0x958B 1 2 3  # codigo huerfano: 2 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x958B
+p03 0xA33F 1 2 3  # codigo huerfano: 15 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xA33F
+p03 0xA730 1 2 3  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xA730
+#
+# Codigo huerfano que tools/huerfanas.py no propone (un hueco con varias rutinas y una
+# tabla, o que no acaba en un salto: sigue en codigo que si se traza). Leido a mano;
+# ninguna instruccion salta, llama o carga estas direcciones, y la campana no las ejecuta.
+p00 0x597B 1 2 3  # codigo huerfano: rutina de objeto (IY) hasta el ret de p00:59C3
+p00 0x59C4 1 2 3  # codigo huerfano: sube IY+0C y mueve la ficha con la tabla p00:5A02, hasta el ret de p00:59E9
+p00 0x59EA 1 2 3  # codigo huerfano: ocho veces p00:593C (siete call y un jp)
+p03 0xBA3D 1 2 3  # codigo huerfano: mira la y y la x de IY (0xB0, 5, 0xF4) y sigue en p03:BA4F
+p03 0xBB06 1 2 3  # codigo huerfano: pone el tramo guardado (0xE03E) en 0xE022 y sigue en pantalla_nueva (p03:BB0C)
+p04 0x6152 4 5 3  # codigo huerfano: nop, bits de 0xC1CB y 0xC1E1-0xC1E2 = 0, 9; acaba en ret
+p12 0x9914 1 12 3  # codigo huerfano: un ret solo, delante del rotulo de la fase (p12:9915)

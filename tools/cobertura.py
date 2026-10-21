@@ -13,6 +13,7 @@ Escenarios (cada uno una partida nueva):
   fN_tT      la fase N desde el tramo T (el del jefe, o cada sala de las bases)
   gameover   la fase 0 sin rellenar las vidas, hasta el GAME OVER
   final      la fase 19 desde el ultimo tramo, 90 s (el ultimo jefe y el final)
+  f8...      la fase 8, que el juego se salta, cargada a mano
 
 Uso: cobertura.py corre <escenario> ...     (los anade a work/cobertura.json)
      cobertura.py todos
@@ -43,6 +44,9 @@ def escenarios():
             # el tramo del jefe: el ultimo hacia donde va la fase
             fin = 0 if f in (10, 13, 16, 17) else n - 1
             out.append("f%d_t%d" % (f, fin))
+    # la fase 8 (TRAP HANGAR): el juego se la salta (p00:449A), pero sus datos
+    # estan; se carga poniendo 0xE020 = 8, como las demas
+    out += ["f8"] + ["f8_t%d" % t for t in range(1, len(fases.lista(8)[2]))]
     out += ["gameover", "final"]
     return out
 

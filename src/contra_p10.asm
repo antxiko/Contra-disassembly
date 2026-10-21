@@ -10,8 +10,11 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6000..0x8000  (8192 bytes)
-DATA_6000:
+; DATOS hoja_10: una hoja de dibujos de SCREEN 5 de 256 x 64 puntos (dos por
+;   byte) que p00:4801/4832 copia entera a la VRAM con HMMC; la usan: 6, 7, 8;
+;   lo leen p00:4832 (8192 bytes)
+;   0x6000..0x8000  (8192 bytes)
+DATA_hoja_10:
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 6000  ................
 	defb 000h,000h,000h,000h,033h,033h,033h,0d3h,033h,033h,033h,033h,003h,003h,003h,033h	; 6010  ....333.3333...3
 	defb 000h,000h,000h,000h,000h,003h,0dch,066h,066h,066h,0c3h,033h,033h,033h,000h,000h	; 6020  .......fff.333..

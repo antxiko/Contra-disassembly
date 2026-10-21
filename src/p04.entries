@@ -14,6 +14,7 @@
 0x6000   # p00:4103 call
 0x6003   # p00:506A call
 0x6006   # p00:4C29 call
+0x6152   # codigo huerfano: nop, bits de 0xC1CB y 0xC1E1-0xC1E2 = 0, 9; acaba en ret
 0x67EE   # entrada 0 de la tabla p04:67B0
 0x6804   # entrada 1 de la tabla p04:67B0
 0x6821   # entrada 4 de la tabla p04:67B0

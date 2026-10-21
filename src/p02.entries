@@ -26,6 +26,9 @@
 0x81FC   # p02:81C2 entrada 1 de la tabla de 0x81C5 (call 0xA03E en 0x81C2)
 0x820B   # p02:81C2 entrada 2 de la tabla de 0x81C5 (call 0xA03E en 0x81C2)
 0x823E   # p02:81C2 entrada 3 de la tabla de 0x81C5 (call 0xA03E en 0x81C2)
+0x8266   # codigo huerfano: 6 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8266
+0x826C   # codigo huerfano: 8 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x826C
+0x82A0   # codigo huerfano: 4 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x82A0
 0x82E4   # p02:8066 entrada 0 de la tabla de 0x8069 (call 0xA03E en 0x8066)
 0x82ED   # p02:82E4 entrada 0 de la tabla de 0x82E7 (call 0xA03E en 0x82E4)
 0x8300   # p02:82E4 entrada 1 de la tabla de 0x82E7 (call 0xA03E en 0x82E4)
@@ -122,6 +125,7 @@
 0x9517   # p02:94D2 entrada 2 de la tabla de 0x94D5 (call 0xA03E en 0x94D2)
 0x955C   # p02:94D2 entrada 3 de la tabla de 0x94D5 (call 0xA03E en 0x94D2)
 0x9575   # p02:94D2 entrada 4 de la tabla de 0x94D5 (call 0xA03E en 0x94D2)
+0x958B   # codigo huerfano: 2 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x958B
 0x9599   # p02:8003 entrada 27 de la tabla de 0x8006 (call 0xA03E en 0x8003)
 0x95A8   # p02:9599 entrada 0 de la tabla de 0x959C (call 0xA03E en 0x9599)
 0x95B7   # p02:9599 entrada 1 de la tabla de 0x959C (call 0xA03E en 0x9599)

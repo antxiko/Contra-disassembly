@@ -37,15 +37,16 @@
 0x4A5A   # entrada 5 de la tabla p00:49D3
 0x4A6B   # entrada 6 de la tabla p00:49D3
 0x4A88   # entrada 7 de la tabla p00:49D3
+0x4AD8   # codigo huerfano: 12 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x4AD8
 0x4B86   # p03:BB7F call
 0x4BD2   # gancho de interrupcion H.KEYI: INIT escribe esta direccion en 0xFD9B y 0xC3 en 0xFD9A (p00:40E3-p00:40EB)
+0x4D95   # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x4D95
 0x4F78   # p03:BB72 call
-0x5052   # p03:B2AC call
+0x5052   # p02:8297 call
 0x50D6   # p03:BB47 call
 0x51B2   # p03:BA54 call
-0x51B8   # p03:B257 call
 0x51BF   # p03:BB23 call
-0x531B   # p03:B94B call
+0x531B   # p03:BB18 call
 0x54CB   # p02:9BAC entrada 0 de la tabla de 0x9BAF (call 0xA03E en 0x9BAC)
 0x54DA   # p02:9BA2 call
 0x54DF   # p03:BA1B call cc
@@ -59,6 +60,10 @@
 0x5721   # p00:55D1 entrada 0 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
 0x57A2   # p00:55D1 entrada 6 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
 0x581E   # p00:55D1 entrada 7 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
+0x58F2   # codigo huerfano: 6 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x58F2
+0x597B   # codigo huerfano: rutina de objeto (IY) hasta el ret de p00:59C3
+0x59C4   # codigo huerfano: sube IY+0C y mueve la ficha con la tabla p00:5A02, hasta el ret de p00:59E9
+0x59EA   # codigo huerfano: ocho veces p00:593C (siete call y un jp)
 0x5A5A   # p14:79FD call
 0x5A61   # p02:8277 call
 0x5A68   # p02:9FCF call cc
@@ -66,6 +71,10 @@
 0x5AF8   # p02:90B5 call
 0x5C1A   # p02:8647 call
 0x5C48   # p02:9E60 call
+0x5C53   # p14:78C8 call
+0x5C75   # p14:7834 call
+0x5CB6   # p14:782C call
+0x5CCC   # p14:797D call
 0x5D1D   # p02:9495 call
 0x5DF4   # p03:BE64 call
 0x5E15   # p02:948C call
@@ -77,10 +86,12 @@
 0x5E66   # p02:9D4F call
 0x5E7B   # p02:9D2F call
 0x5E96   # p02:9D2A call
+0x5EB0   # codigo huerfano: 2 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x5EB0
 0x5ECD   # p02:955C call
 0x5F19   # p02:8292 call
 0x5F1D   # p02:8171 call
 0x5F21   # p02:9102 call
 0x5F25   # p02:8B4A call
+0x5F29   # codigo huerfano: 4 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x5F29
 0x5F2D   # p02:8DF4 call
 0x5F33   # p02:813D jp

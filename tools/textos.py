@@ -78,7 +78,7 @@ def grupos():
         ("marcador", seguidas(0, 0x4632, 0x4652) + [(0, 0x4508, lee(0, 0x4508)[0])]),
         ("titulo", seguidas(0, 0x502B, 0x5052)),
         ("armas", seguidas(0, 0x53AF, 0x53EB)),
-        ("grabar", seguidas(0, 0x53EB, 0x54CB)),
+        ("grabar", seguidas(0, 0x53EB, 0x54CA)),
         ("final", seguidas(12, 0x9622, 0x974C)),
         ("fases", por_tabla(12, 0x974C, 20)),
     ]

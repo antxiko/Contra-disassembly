@@ -341,6 +341,10 @@ def main(argv):
     despachadores()
     partidas()
     relleno()
+    # lo que el cartucho lee al jugarlo y no recorre ningun lector: al final,
+    # para que no tape nada de lo de arriba
+    if hasattr(lectores, "despues"):
+        lectores.despues()
     por = defaultdict(list)
     for b in BLOQUES:
         por[b["p"]].append(b)

@@ -98,10 +98,26 @@ def en_marcha(f, cuadros=1400, alto=176):
     return m.foto(sprites=False).crop((0, 0, 256, alto))
 
 
+# La fase 8 no se puede cargar: el juego se queda en negro (openMSX) o acaba
+# ejecutando la RAM (aqui, 0xC33F). Comparte con la 7 las hojas de dibujos
+# (p00:4666: 10 y 9), la paleta (p00:4652: 2) y el banco de fase (p03:BAE4:
+# 14), asi que se carga la 7 y se construyen sus pantallas con 0xE020 = 8.
+# Sus seis pantallas (0x1F-0x24) apuntan a p14:7D76, que es la sublista de
+# ordenes que usa la pantalla 0x25 (la primera de la fase 9) con su 0xFE: no
+# lleva objetos detras, y lo que hay son las ordenes de la 0x25.
+COMO = {8: 7}
+
+
 def pantallas(f, alto=176):
     """Las pantallas de la fase f como imagenes (PIL), en el orden de su lista."""
-    m = partida_en(f)
+    m = partida_en(COMO.get(f, f))
+    m.mem[FASE] = f
     m.apunta = False
+    if f in COMO:
+        # sin los objetos: sus "objetos" son las ordenes de la pantalla 0x25
+        # (tipo 0xFE: p02:8063 salta a la RAM); un `ret` en p03:BD7B, en la
+        # memoria del emulador, corta el constructor tras pintar el fondo
+        m.mem[0xBD7B] = 0xC9
     _, _, ls = lista(f)
     out = []
     for i in range(len(ls)):
