@@ -128,8 +128,10 @@ def fichas_de(filas, b=None):
     None). Cada ficha de FICHAS vale desde un `ld ix,nn` con nn en sus cargas
     hasta el siguiente `ld ix` con otra cosa, un `ret` o un `jp`; un tramo sin
     carga de IX no cuenta, salvo dentro de los tramos de la ficha."""
-    fuera = {}
-    for cargas, por_banco, campos in FICHAS:
+    fuera = {"ix": {}, "iy": {}}
+    for ficha in FICHAS:
+        cargas, por_banco, campos = ficha[:3]
+        r = ficha[3] if len(ficha) > 3 else "ix"
         tramos = por_banco.get(b, ())
 
         def defecto(a):
@@ -139,13 +141,13 @@ def fichas_de(filas, b=None):
         # manda el tramo de la tabla en el que cae cada instruccion
         cargado = None
         for k, (a, t) in enumerate(filas):
-            m = re.match(r"ld ix,0([0-9a-f]{4})h$", t)
+            m = re.match(r"ld %s,0([0-9a-f]{4})h$" % r, t)
             if m:
                 cargado = int(m.group(1), 16) in cargas
-            elif t.startswith(("ld ix", "pop ix")):
+            elif t.startswith(("ld %s," % r, "pop %s" % r, "ex (sp),%s" % r)):
                 cargado = False
-            if (defecto(a) if cargado is None else cargado) and k not in fuera:
-                fuera[k] = campos
+            if (defecto(a) if cargado is None else cargado) and k not in fuera[r]:
+                fuera[r][k] = campos
             if t.startswith(("ret", "jp ")) and not re.match(r"ret [a-z]", t):
                 cargado = None
     return fuera
@@ -200,14 +202,16 @@ def comentario(b, filas, k, fichas, ventanas=None, medido=None):
         if hecho:
             return "%s: %s" % hecho
     # los campos de la ficha del actor
-    if fichas.get(k):
-        mm = re.search(r"\(ix([+-])0?([0-9a-f]+)h?\)", t)
+    for r in ("ix", "iy"):
+        if not fichas[r].get(k):
+            continue
+        mm = re.search(r"\(%s([+-])0?([0-9a-f]+)h?\)" % r, t)
         if mm:
             n = int(mm.group(2), 16) * (-1 if mm.group(1) == "-" else 1)
-            que = fichas[k].get(n)
+            que = fichas[r][k].get(n)
             if que:
                 op = t.split()[0]
-                if op == "ld" and t.startswith("ld (ix"):
+                if op == "ld" and t.startswith("ld (%s" % r):
                     v = t.split(",", 1)[1]
                     if re.match(r"^[a-z]$", v):
                         return "guarda %s" % que

@@ -339,114 +339,114 @@ DATA_8000:
 
 
 L_9400:
-	xor a			;9400
+	xor a			;9400   ; el final: ya no hay partida (0xE000 = 0)
 	ld (0e1c3h),a		;9401
 	ld (0e000h),a		;9404   ; guarda 1 en una partida de verdad, 0 en la demostracion
-	ld b,010h		;9407
+	ld b,010h		;9407   ; 16 pasos de fundido, cada 0x10 cuadros:
 L_9409:
-	ld a,(0e1c3h)		;9409
+	ld a,(0e1c3h)		;9409   ; espera 0x10 cuadros
 	cp 010h		;940c
 	jr c,L_9409		;940e
 	xor a			;9410
 	ld (0e1c3h),a		;9411
 	push bc			;9414
-	ld hl,0e1d0h		;9415
-	ld b,020h		;9418
+	ld hl,0e1d0h		;9415   ; los 16 colores de 0xE1D0 (rojo y azul, verde)...
+	ld b,020h		;9418   ; los 32 bytes de la paleta (16 colores)
 L_941A:
 	ld c,000h		;941a
-	ld a,(hl)			;941c
+	ld a,(hl)			;941c   ; la cifra alta (rojo) baja uno...
 	push af			;941d
-	and 0f0h		;941e
+	and 0f0h		;941e   ; ...cada componente baja uno, hasta cero...
 	cp 010h		;9420
 	jr c,L_9427		;9422
 	sub 010h		;9424
 	ld c,a			;9426
 L_9427:
-	pop af			;9427
-	and 00fh		;9428
+	pop af			;9427   ; la componente baja (0-7) baja uno si no es cero
+	and 00fh		;9428   ; ...y la baja (azul o verde) tambien
 	and a			;942a
 	jr z,L_942E		;942b
 	dec a			;942d
 L_942E:
 	add a,c			;942e
-	ld (hl),a			;942f
+	ld (hl),a			;942f   ; se guarda
 	inc hl			;9430
 	djnz L_941A		;9431
-	call 046a4h		;9433
+	call 046a4h		;9433   ; ...y a la paleta (p00:46A4)
 	pop bc			;9436
-	djnz L_9409		;9437
-	call 00041h		;9439   ; BIOS DISSCR - Inhibits the screen display
+	djnz L_9409		;9437   ; los 16 pasos
+	call 00041h		;9439   ; BIOS DISSCR - Inhibits the screen display | la pantalla apagada
 	call 050c5h		;943c   ; borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
-	ld hl,0c300h		;943f   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
+	ld hl,0c300h		;943f   ; el mapa 0xC300-0xC4FF a 0xFF (vacio)...
 	ld de,0c301h		;9442
 	ld bc,00200h		;9445
 	ld (hl),0ffh		;9448
 	ldir		;944a
-	ld hl,0c4a6h		;944c
+	ld hl,0c4a6h		;944c   ; ...y una fila de suelo (2) en 0xC4C0, y una casilla en 0xC4A6
 	ld (hl),002h		;944f
 	ld hl,0c4c0h		;9451
 	ld de,0c4c1h		;9454
 	ld bc,00020h		;9457
 	ld (hl),002h		;945a
 	ldir		;945c
-	ld (ix+00ah),0e0h		;945e
-	ld (ix+00bh),000h		;9462
-	ld (ix+035h),000h		;9466
+	ld (ix+00ah),0e0h		;945e   ; el jugador abajo a la izquierda (y 0xE0, x 0)
+	ld (ix+00bh),000h		;9462   ; x = 0
+	ld (ix+035h),000h		;9466   ; 0xE355 a cero: el final no ha acabado
 	ld (ix+038h),000h		;946a
 	ld (ix+039h),000h		;946e
-	ld (ix+03ch),003h		;9472
-	ld (ix-001h),000h		;9476
-	ld a,001h		;947a
+	ld (ix+03ch),003h		;9472   ; 0xE35C = 3
+	ld (ix-001h),000h		;9476   ; con sprites
+	ld a,001h		;947a   ; el color de la primera linea del texto (p12:95BE)
 	call 0468eh		;947c   ; pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 	xor a			;947f
-	call L_95BE		;9480
-	ld hl,0e305h		;9483
+	call L_95BE		;9480   ; color 0: el texto empieza sin verse
+	ld hl,0e305h		;9483   ; los nueve bytes del texto (0xE305-0xE30D) a cero
 	ld b,009h		;9486
 L_9488:
 	ld (hl),000h		;9488
 	inc hl			;948a
 	djnz L_9488		;948b
-	call 00044h		;948d   ; BIOS ENASCR - Displays the screen
+	call 00044h		;948d   ; BIOS ENASCR - Displays the screen | la pantalla encendida
 	xor a			;9490
-	ld (0e2ceh),a		;9491
+	ld (0e2ceh),a		;9491   ; sin 0xE2CE
 	ld (0e1c3h),a		;9494
 L_9497:
-	ld a,(0e1c3h)		;9497
+	ld a,(0e1c3h)		;9497   ; cada dos cuadros: el texto (p12:94BB) y el jugador anda solo (p12:95D2)...
 	cp 002h		;949a
 	jr c,L_9497		;949c
 	xor a			;949e
 	ld (0e1c3h),a		;949f
 	call L_94BB		;94a2
 	call L_95D2		;94a5
-	ld ix,0e320h		;94a8
-	ld a,(ix+035h)		;94ac
+	ld ix,0e320h		;94a8   ; ...hasta que acaba (0xE355)
+	ld a,(ix+035h)		;94ac   ; acaba cuando 0xE355 no es cero
 	and a			;94af
 	jr z,L_9497		;94b0
-	call 00041h		;94b2   ; BIOS DISSCR - Inhibits the screen display
-	ld a,001h		;94b5
+	call 00041h		;94b2   ; BIOS DISSCR - Inhibits the screen display | la pantalla apagada y fin
+	ld a,001h		;94b5   ; A = 1 al volver
 	call 05052h		;94b7   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ret			;94ba
 L_94BB:
-	ld iy,0e305h		;94bb
-	ld a,(iy+000h)		;94bf
+	ld iy,0e305h		;94bb   ; el texto del final, por pasos (0xE305 la fase del texto, 0xE307 el paso)
+	ld a,(iy+000h)		;94bf   ; 0xE305: aparecer y desaparecer o escribir
 	and a			;94c2
 	jr z,L_94C8		;94c3
 	jp L_9562		;94c5
 L_94C8:
-	ld a,(iy+002h)		;94c8
-	and a			;94cb
+	ld a,(iy+002h)		;94c8   ; paso 0: escribir las lineas del bloque (IY+3)...
+	and a			;94cb   ; 0xE307: escribir (0), aparecer (1) o ya visto (2)
 	jr z,L_94DA		;94cc
 	cp 001h		;94ce
 	jr z,L_951D		;94d0
-	ld (iy+002h),000h		;94d2
+	ld (iy+002h),000h		;94d2   ; visto: a desaparecer
 	inc (iy+000h)		;94d6
 	ret			;94d9
 L_94DA:
-	ld a,(iy+003h)		;94da
-	ld hl,095cch		;94dd
+	ld a,(iy+003h)		;94da   ; ...cuantas lineas tiene el bloque (p12:95CC) y sus punteros (p12:95FC)...
+	ld hl,095cch		;94dd   ; el bloque 0xE308 de la tabla de lineas p12:95CC...
 	call 051b8h		;94e0   ; lee_tabla: HL = HL + A y A = (HL)
 	ld b,a			;94e3
-	ld hl,095f6h		;94e4
+	ld hl,095f6h		;94e4   ; ...y sus punteros en p12:95F6 / p12:95FC
 	ld a,(iy+003h)		;94e7
 	call 051b8h		;94ea   ; lee_tabla: HL = HL + A y A = (HL)
 	ld hl,095fch		;94ed
@@ -456,28 +456,28 @@ L_94DA:
 	inc hl			;94f5
 	ld d,(hl)			;94f6
 	inc hl			;94f7
-	ld (0e282h),hl		;94f8
-	ld hl,00148h		;94fb
+	ld (0e282h),hl		;94f8   ; el puntero a la linea siguiente, en 0xE282
+	ld hl,00148h		;94fb   ; ...una debajo de otra desde la casilla 0x148 (dos filas de separacion)...
 L_94FE:
 	push bc			;94fe
 	push hl			;94ff
 	call 048d3h		;9500   ; escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-	ld hl,(0e282h)		;9503
+	ld hl,(0e282h)		;9503   ; cada linea, desde el puntero
 	ld e,(hl)			;9506
 	inc hl			;9507
 	ld d,(hl)			;9508
 	inc hl			;9509
 	ld (0e282h),hl		;950a
 	pop hl			;950d
-	ld a,040h		;950e
+	ld a,040h		;950e   ; con la letra de la fila 0x40, dos filas mas abajo cada una
 	call 051b8h		;9510   ; lee_tabla: HL = HL + A y A = (HL)
 	pop bc			;9513
 	djnz L_94FE		;9514
-	inc (iy+002h)		;9516
-	inc (iy+003h)		;9519
+	inc (iy+002h)		;9516   ; ...y el bloque siguiente
+	inc (iy+003h)		;9519   ; el bloque siguiente
 	ret			;951c
 L_951D:
-	ld a,(iy+005h)		;951d
+	ld a,(iy+005h)		;951d   ; la cuenta: el color sube cada dos cuadros...
 	and a			;9520
 	jr nz,L_9542		;9521
 	inc (iy+004h)		;9523
@@ -485,33 +485,33 @@ L_951D:
 	cp 002h		;9529
 	ret c			;952b
 	ld (iy+004h),000h		;952c
-	ld a,(iy+006h)		;9530
+	ld a,(iy+006h)		;9530   ; ...0x11 cada vez (rojo-azul y verde a la vez)...
 	add a,011h		;9533
 	ld (iy+006h),a		;9535
 	call L_95BE		;9538
-	cp 077h		;953b
+	cp 077h		;953b   ; ...hasta 0x77 (el texto ya se ve del todo)
 	ret nz			;953d
 	inc (iy+005h)		;953e
 	ret			;9541
 L_9542:
-	inc (iy+004h)		;9542
+	inc (iy+004h)		;9542   ; ...se queda 0xB0 cuadros...
 	ld a,(iy+004h)		;9545
-	cp 0b0h		;9548
+	cp 0b0h		;9548   ; 0xB0 cuadros leyendolo
 	ret c			;954a
 	ld (iy+004h),000h		;954b
 	ld (iy+005h),000h		;954f
-	inc (iy+002h)		;9553
-	ld a,(iy+003h)		;9556
-	cp 006h		;9559
+	inc (iy+002h)		;9553   ; el paso siguiente
+	ld a,(iy+003h)		;9556   ; ...y tras el sexto bloque, la musica para (0x83)
+	cp 006h		;9559   ; despues del sexto bloque...
 	ret c			;955b
-	ld a,083h		;955c
+	ld a,083h		;955c   ; ...la musica se va apagando (0x83)
 	call 05052h		;955e   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ret			;9561
 L_9562:
-	ld a,(iy+005h)		;9562
+	ld a,(iy+005h)		;9562   ; luego desaparece (los colores bajan hasta cero)...
 	and a			;9565
 	jr nz,L_9586		;9566
-	inc (iy+004h)		;9568
+	inc (iy+004h)		;9568   ; cada dos cuadros el color baja 0x11...
 	ld a,(iy+004h)		;956b
 	cp 002h		;956e
 	ret c			;9570
@@ -519,16 +519,16 @@ L_9562:
 	ld a,(iy+006h)		;9575
 	sub 011h		;9578
 	ld (iy+006h),a		;957a
-	call L_95BE		;957d
+	call L_95BE		;957d   ; ...hasta cero (el texto ya no se ve)
 	and a			;9580
 	ret nz			;9581
 	inc (iy+005h)		;9582
 	ret			;9585
 L_9586:
-	ld a,(iy+003h)		;9586
-	cp 006h		;9589
+	ld a,(iy+003h)		;9586   ; ...se borra (0xFF en la VRAM 0x2800-0x47FF) y el siguiente
+	cp 006h		;9589   ; tras el sexto, ya no se borra
 	jr nc,L_95A1		;958b
-	ld hl,02800h		;958d
+	ld hl,02800h		;958d   ; la VRAM 0x2800-0x47FF a 0xFF: el texto borrado
 	ld bc,02000h		;9590
 	ld a,0ffh		;9593
 	call 0016bh		;9595   ; BIOS BIGFIL - Same function as FILVRM (with 16-bit VRAM-address)
@@ -536,23 +536,23 @@ L_9586:
 	ld (iy+005h),000h		;959c
 	ret			;95a0
 L_95A1:
-	ld a,(iy+007h)		;95a1
-	and a			;95a4
+	ld a,(iy+007h)		;95a1   ; acabado el texto: un salto (0xE062)...
+	and a			;95a4   ; al acabar, un salto del jugador (0xE062)
 	jr nz,L_95B0		;95a5
 	ld a,001h		;95a7
 	ld (0e062h),a		;95a9
 	inc (iy+007h)		;95ac
 	ret			;95af
 L_95B0:
-	ld a,(0c000h)		;95b0
+	ld a,(0c000h)		;95b0   ; ...y al acabar la musica, el final acaba (0xE355 = 1)
 	and a			;95b3
 	ret nz			;95b4
-	ld ix,0e320h		;95b5
+	ld ix,0e320h		;95b5   ; 0xE355 = 1: el final acaba
 	ld (ix+035h),001h		;95b9
 	ret			;95bd
 L_95BE:
-	push af			;95be
-	ld hl,0e1e4h		;95bf
+	push af			;95be   ; el color 4 de la paleta = A (rojo y azul) y A (verde): el del texto
+	ld hl,0e1e4h		;95bf   ; el color de 0xE1E4 (y su copia baja) y la paleta
 	ld (hl),a			;95c2
 	and 00fh		;95c3
 	inc hl			;95c5
@@ -572,7 +572,7 @@ DATA_95CC:
 
 
 L_95D2:
-	ld a,003h		;95d2
+	ld a,003h		;95d2   ; el jugador va a la derecha (palanca a 3)
 	ld (0e180h),a		;95d4   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ret			;95d7
 
@@ -633,25 +633,25 @@ DATA_95D8:
 
 
 L_98BF:
-	ld hl,06c00h		;98bf
+	ld hl,06c00h		;98bf   ; la tabla de sprites del jugador en la VRAM (0x6C00): p12:9A3A, de cuatro en cuatro...
 	ld (0e0d0h),hl		;98c2   ; guarda la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
-	ld de,09a3ah		;98c5
+	ld de,09a3ah		;98c5   ; la tabla p12:9A3A
 L_98C8:
-	ld a,(de)			;98c8
-	cp 0ffh		;98c9
+	ld a,(de)			;98c8   ; cada byte de la tabla, hasta 0xFF
+	cp 0ffh		;98c9   ; 0xFF: fin de fila
 	jr z,L_98F4		;98cb
 	ld b,004h		;98cd
 L_98CF:
 	push bc			;98cf
-	ld b,a			;98d0
-	bit 7,b		;98d1
+	ld b,a			;98d0   ; ...cada byte, cuatro parejas de bits: el color 10 (0xA0/0x0A) o el 15
+	bit 7,b		;98d1   ; el bit alto de la pareja...
 	jr z,L_98D9		;98d3
 	ld a,0a0h		;98d5
 	jr L_98DB		;98d7
 L_98D9:
-	ld a,0f0h		;98d9
+	ld a,0f0h		;98d9   ; ...(0xF0 sin el)...
 L_98DB:
-	bit 6,b		;98db
+	bit 6,b		;98db   ; ...y el bajo: 0x0A o 0x0F en la mitad derecha
 	jr z,L_98E3		;98dd
 	add a,00ah		;98df
 	jr L_98E5		;98e1
@@ -659,7 +659,7 @@ L_98E3:
 	add a,00fh		;98e3
 L_98E5:
 	call 00177h		;98e5   ; BIOS NWRVRM - Writes to VRAM like in WRTVRM (with 16-bit VRAM-address)
-	ld a,b			;98e8
+	ld a,b			;98e8   ; la pareja siguiente
 	sla a		;98e9
 	sla a		;98eb
 	inc hl			;98ed
@@ -668,7 +668,7 @@ L_98E5:
 	inc de			;98f1
 	jr L_98C8		;98f2
 L_98F4:
-	inc de			;98f4
+	inc de			;98f4   ; dos 0xFF seguidos: se acabo
 	ld a,(de)			;98f5
 	cp 0ffh		;98f6
 	jr z,L_98FF		;98f8
@@ -681,7 +681,7 @@ L_98FF:
 	cp 0ffh		;9901
 	ret z			;9903
 	ld hl,(0e0d0h)		;9904   ; lee la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
-	push de			;9907
+	push de			;9907   ; la fila siguiente: 0x80 bytes mas abajo en la VRAM
 	ld de,00080h		;9908
 	add hl,de			;990b
 	pop de			;990c
@@ -700,13 +700,13 @@ DATA_9914:
 
 
 L_9915:
-	ld hl,00109h		;9915
-	ld de,04508h		;9918
+	ld hl,00109h		;9915   ; el rotulo de la fase: STAGE...
+	ld de,04508h		;9918   ; STAGE en la casilla 0x109
 	call 048d3h		;991b   ; escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-	ld hl,00113h		;991e
+	ld hl,00113h		;991e   ; ...su numero (p00:4576)...
 	call 04576h		;9921
-	ld a,(0e020h)		;9924   ; lee la fase (0-19; la 8 se salta)
-	ld hl,0974ch		;9927
+	ld a,(0e020h)		;9924   ; ...y su nombre (la tabla p12:974C, una por fase)
+	ld hl,0974ch		;9927   ; el nombre: el puntero de p12:974C + 2 x fase, en la casilla 0x167
 	add a,a			;992a
 	call 051b8h		;992b   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,(hl)			;992e
@@ -714,125 +714,125 @@ L_9915:
 	ld d,(hl)			;9930
 	ld hl,00167h		;9931
 	call 048d3h		;9934   ; escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-	xor a			;9937
+	xor a			;9937   ; 0x60 cuadros
 	ld (0e1c3h),a		;9938
 L_993B:
-	ld a,(0e1c3h)		;993b
+	ld a,(0e1c3h)		;993b   ; espera 0x60 cuadros
 	cp 060h		;993e
 	jr c,L_993B		;9940
 	ret			;9942
 L_9943:
-	ld a,(0e020h)		;9943   ; lee la fase (0-19; la 8 se salta)
+	ld a,(0e020h)		;9943   ; donde sale el jugador en cada fase: la y y la x de la tabla p12:9A12
 	push af			;9946
 	add a,a			;9947
-	ld hl,09a12h		;9948
+	ld hl,09a12h		;9948   ; la y y la x de la tabla p12:9A12 (dos por fase)
 	call 051b8h		;994b   ; lee_tabla: HL = HL + A y A = (HL)
 	ld (ix+00ah),a		;994e
 	inc hl			;9951
 	ld a,(hl)			;9952
 	ld (ix+00bh),a		;9953
 	pop af			;9956
-	ld (ix+00fh),001h		;9957
+	ld (ix+00fh),001h		;9957   ; mirando a la izquierda en las fases 13 y 17 (las que van hacia la izquierda)
 	cp 00dh		;995b
 	ret z			;995d
 	cp 011h		;995e
 	ret z			;9960
-	ld (ix+00fh),000h		;9961
+	ld (ix+00fh),000h		;9961   ; mirando a la derecha en las demas
 	ret			;9965
 L_9966:
-	ld a,(0e020h)		;9966   ; lee la fase (0-19; la 8 se salta)
-	cp 007h		;9969
+	ld a,(0e020h)		;9966   ; la fase (0xE020) elige los arreglos:
+	cp 007h		;9969   ; la 7...
 	jr z,L_999C		;996b
-	cp 012h		;996d
+	cp 012h		;996d   ; ...la 18...
 	jr z,L_99AB		;996f
-	cp 010h		;9971
+	cp 010h		;9971   ; ...la 16...
 	jr z,L_99BD		;9973
-	cp 006h		;9975
+	cp 006h		;9975   ; ...la 6...
 	jr z,L_99DC		;9977
-	cp 011h		;9979
+	cp 011h		;9979   ; ...la 17...
 	jr z,L_99EC		;997b
-	cp 00ah		;997d
+	cp 00ah		;997d   ; ...la 10...
 	jr z,L_99F8		;997f
-	cp 00dh		;9981
+	cp 00dh		;9981   ; ...y la 13; las demas, ninguno
 	ret nz			;9983
-	ld a,(0e022h)		;9984   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;9984   ; fase 13: tramo 1 tres casillas a 1, tramo 2 una
 	cp 002h		;9987
 	jr z,L_9998		;9989
 	cp 001h		;998b
 	ret nz			;998d
-	ld (0c494h),a		;998e
+	ld (0c494h),a		;998e   ; tramo 1: 1 en tres casillas (una columna de suelo)
 	ld (0c475h),a		;9991
 	ld (0c455h),a		;9994
 	ret			;9997
 L_9998:
-	ld (0c46bh),a		;9998
+	ld (0c46bh),a		;9998   ; tramo 2: 2 en una casilla
 	ret			;999b
 L_999C:
-	ld a,(0e022h)		;999c   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;999c   ; fase 7, tramo 5: dos casillas a 2
 	cp 005h		;999f
 	ret nz			;99a1
-	sub 003h		;99a2
+	sub 003h		;99a2   ; 2 en dos casillas
 	ld (0c537h),a		;99a4
 	ld (0c5b1h),a		;99a7
 	ret			;99aa
 L_99AB:
-	ld a,(0e022h)		;99ab   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;99ab   ; fase 18: tramo 1 o 2, una casilla
 	cp 001h		;99ae
 	jr z,L_99B9		;99b0
 	cp 002h		;99b2
 	ret nz			;99b4
-	ld (0c530h),a		;99b5
+	ld (0c530h),a		;99b5   ; tramo 2: una casilla a 2
 	ret			;99b8
 L_99B9:
-	ld (0c3d2h),a		;99b9
+	ld (0c3d2h),a		;99b9   ; tramo 1: una casilla a 1
 	ret			;99bc
 L_99BD:
-	ld a,(0e022h)		;99bd   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;99bd   ; fase 16: tramo 4 tres casillas a 0x50, tramo 6 tres a 2
 	cp 004h		;99c0
 	jr z,L_99D0		;99c2
 	cp 006h		;99c4
 	ret nz			;99c6
-	ld hl,0c388h		;99c7
+	ld hl,0c388h		;99c7   ; tramo 6: tres casillas a 2
 	sub 004h		;99ca
 	ld b,003h		;99cc
 	jr L_99D7		;99ce
 L_99D0:
-	ld hl,0c3bch		;99d0
+	ld hl,0c3bch		;99d0   ; tramo 4: tres casillas a 0x50
 	ld a,050h		;99d3
 	ld b,003h		;99d5
 L_99D7:
-	ld (hl),a			;99d7
+	ld (hl),a			;99d7   ; B casillas seguidas a A
 	inc hl			;99d8
 	djnz L_99D7		;99d9
 	ret			;99db
 L_99DC:
-	ld a,(0e022h)		;99dc   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;99dc   ; fase 6, tramo 4: dos casillas (1 y 2)
 	cp 004h		;99df
 	ret nz			;99e1
-	sub 003h		;99e2
+	sub 003h		;99e2   ; 1 y 2 en dos casillas
 	ld (0c50eh),a		;99e4
 	inc a			;99e7
 	ld (0c575h),a		;99e8
 	ret			;99eb
 L_99EC:
-	ld a,(0e022h)		;99ec   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;99ec   ; fase 17, tramo 3: una casilla a 2
 	cp 003h		;99ef
 	ret nz			;99f1
-	sub 001h		;99f2
+	sub 001h		;99f2   ; 2 en una casilla
 	ld (0c3b6h),a		;99f4
 	ret			;99f7
 L_99F8:
-	ld a,(0e022h)		;99f8   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;99f8   ; fase 10: tramo 0 o 4, cuatro casillas
 	and a			;99fb
 	jr z,L_9A0A		;99fc
 	cp 004h		;99fe
 	ret nz			;9a00
-	sub 003h		;9a01
+	sub 003h		;9a01   ; tramo 4: cuatro casillas a 1
 	ld hl,0c3abh		;9a03
 	ld b,004h		;9a06
 	jr L_99D7		;9a08
 L_9A0A:
-	inc a			;9a0a
+	inc a			;9a0a   ; tramo 0: dos casillas a 1
 	ld (0c397h),a		;9a0b
 	ld (0c398h),a		;9a0e
 	ret			;9a11

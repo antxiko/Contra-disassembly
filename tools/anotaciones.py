@@ -114,6 +114,9 @@ RUTINAS = {
     (3, 0xB4C3): ("choca_derecha", "acarreo si a la derecha del jugador hay pared (dibujos por debajo de 3)"),
     (3, 0xB52B): ("choca_izquierda", "acarreo si a la izquierda del jugador hay pared"),
     (3, 0xB3A2): ("paso_de_andar", "A = el paso de la animacion de andar (bits 3-4 de la cuenta 0xE1C2)"),
+    (0, 0x5BD5): ("se_tocan", "acarreo si la caja HL de la ficha IY y la caja DE de la ficha IX se tocan (B: el lado)"),
+    (0, 0x5CCC): ("un_paso", "mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)"),
+    (0, 0x5B8C): ("pide_si_banco_14", "con el banco 14 en 0x6000 apunta el sonido A en 0xE2D2; si no, lo pide"),
     (3, 0xBD1F): ("pinta_pieza_en", "pinta la pieza DE en la casilla HL (de 0xC300) con 0xE093 a 1"),
     # --- banco 3: las pantallas ---
     (3, 0xA03E): ("despacha_estado", "salta por la tabla que va detras del call, con el estado del objeto (IY+5)"),
@@ -181,5 +184,23 @@ CAMPOS_JUGADOR = {
 # Los 32 registros de sprite de 0xE300: p00:4BBB copia sus tres primeros bytes
 # a la tabla de atributos.
 CAMPOS_SPRITE = {0x00: "la y del sprite", 0x01: "la x del sprite", 0x02: "el dibujo del sprite"}
+# Las fichas de objeto (0xE340-0xE5FF, 16 bytes): los campos que usan las
+# rutinas comunes a todos los objetos. En los bancos 2, 3 y 14 IY es siempre
+# la ficha del objeto que corre (p00:5DD2 y p00:5DF4 la ponen antes de
+# p02:8000/8063); en el banco 0, en las balas del jugador (p00:54DF-5A11).
+CAMPOS_OBJETO = {
+    0x00: "la y del objeto (p00:4BBB)",
+    0x01: "la x del objeto (p00:4BBB)",
+    0x02: "el dibujo del objeto (p00:4BBB)",
+    0x04: "el tipo del objeto (p02:8000, p02:8063)",
+    0x05: "el estado del objeto (p03:A03E)",
+    0x0A: "la y guardada del objeto (p02:9A24)",
+    0x0B: "la x guardada del objeto (p02:9A24)",
+    0x0C: "la cuenta del objeto (p02:9915)",
+    0x0D: "la segunda cuenta del objeto (p02:9921)",
+}
+FICHAS_OBJETO = tuple(0xE300 + 16 * k for k in range(4, 48))
 FICHAS = (((0xE320,), {3: ((0xAE38, 0xB3AE),)}, CAMPOS_JUGADOR),
+          (FICHAS_OBJETO, {2: ((0x8000, 0xA000),), 3: ((0xA000, 0xAE38), (0xB3AE, 0xC000)),
+                           14: ((0x7800, 0x8000),), 0: ((0x54DF, 0x5A12),)}, CAMPOS_OBJETO, "iy"),
           (tuple(0xE300 + 16 * k for k in range(32) if k != 2), {}, CAMPOS_SPRITE))

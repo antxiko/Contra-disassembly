@@ -4,77 +4,126 @@
 C 0x8000 el tipo del objeto (IY+4) elige su rutina en la tabla de detras
 C 0x8063 lo mismo para las fichas de 0xE500
 C 0x80B3 por el estado del objeto (IY+5): 3, 2 o el de empezar
+C 0x80B6 estado 3: a p02:80FA
+C 0x80BA estado 2: a p02:80F0
 C 0x80BE al empezar: los cuatro trozos del objeto (cuatro fichas seguidas) con IY+5 = 2...
 C 0x80CA ...y su IY+0F a 0, 0x10, 0x20 y 0x30
+C 0x80DA el trozo que se hace del tipo 0x1B: uno de los cuatro al azar (0 a 3)
 C 0x80DF uno de los cuatro al azar (el registro R) pasa a ser del tipo 0x1B
 C 0x80F0 estado 3
 C 0x80F4 y su pieza, p03:AA58, en el fondo
 C 0x80FA estado 3: p03:AA49 o p03:AA58 segun la cuenta 0x40 (p02:83E9)
+C 0x80FD la pieza cerrada p03:AA58...
+C 0x8100 ...y la abierta p03:AA49, cada 0x40 cuadros
 C 0x8105 IY+0A impar: todavia no
+C 0x8109 cerrado: nada mas
 C 0x810A el tipo se guarda en IY+0E
+C 0x8110 el del tipo 0x1B se puede destruir directamente
 C 0x8114 el que no es del tipo 0x1B mira p00:5AF8 con la pieza p03:AD61
+C 0x8117 la caja p02:856C
 C 0x811D mientras queden blancos en la sala, nada mas
+C 0x8121 sin blancos que quedan, nada
 C 0x8122 el disparo le da? (p02:90B1, 0x10 de energia)
+C 0x8128 0x10 de energia
+C 0x812D no le han dado
 C 0x812E le han dado: 0x50 puntos...
 C 0x8131 ...y fuera (p02:88FD)
 C 0x813B suma 0x50 a los puntos
 C 0x8140 la primera vez: estado 1...
+C 0x814A el primero: 0xE5C3 a cero
 C 0x814C ...y en y = 0x40, x = 0x18
+C 0x815B IY+8 = 1
 C 0x8163 cada cuadro: p02:8E10
 C 0x8166 hasta que 0xE5C3 llegue a 0x10...
+C 0x8169 hasta 0x10 destruidos (0xE5C3)
 C 0x816C ...y si 0xE5C2 es cero, se acaba con 2 puntos (p00:5F1D)
+C 0x816F con 0xE5C2 no
 C 0x8176 con 0xE18A de 3 o mas, fuera
+C 0x8179 tres destruidos: fuera
 C 0x8183 por su estado (IY+5), la tabla de detras
 C 0x818A el dibujo 0xF0, y el estado siguiente
 C 0x8191 los colores de p02:81B3
 C 0x8197 baja 4 puntos...
 C 0x819C ...y al pasar de 0x58 se convierte en el tipo 0x20
+C 0x819E aun no ha bajado del todo
 C 0x81A9 si no, p00:5A68 con p02:81AF
 C 0x81B4 la y + A
 C 0x81BB la x + A
 C 0x81C2 por su estado (IY+5)
 C 0x81CD al empezar: el sonido 0x2C...
 C 0x81D2 ...0xE045 = 1...
+C 0x81D4 0xE045 = 1: el jefe vivo (no se puede salir de la pantalla)
 C 0x81D7 ...su casilla en el fondo 0xC3D8...
 C 0x81DF ...en y = 0xC0, x = 0x30...
+C 0x81E7 IY+0E = 0x55: los bits que alternan sus dos piezas
+C 0x81EB empieza moviendose a la derecha, en el paso 0x20
 C 0x81F3 ...y su pieza, p03:AD9A, en el fondo
 C 0x81FC cada 0x20 cuadros (la cuenta IY+0D): se mueve (p02:82A4) y dispara (p03:A879, 0x0A)
+C 0x8201 aun no
+C 0x8206 dispara cada 0x0A cuadros
 C 0x820B cada 0x10 (la cuenta IY+0C)...
+C 0x8210 aun no
 C 0x8212 ...busca sitio para un disparo (p02:8383)...
+C 0x8218 un disparo (tipo 0x0C, dibujo 0xF4)
 C 0x821D ...y le pone 0xFD en su IY+0E
+C 0x8221 su IY+0E = -3 (hacia la izquierda)
 C 0x8223 la pieza p03:AE21; cada cuatro, el estado siguiente
+C 0x8226 cuatro disparos, y el estado siguiente
 C 0x8239 sin sitio: la pieza p03:AE28
 C 0x823E cada 0x30 cuadros...
 C 0x824C ...hacia donde esta el jugador: su x + 0x30 contra la suya
+C 0x824F la x del jugador + 0x30...
 C 0x8256 a la izquierda (IY+10 = -1)...
 C 0x825C ...o a la derecha (+1)
 C 0x8274 p00:5A61 con p02:8C87
+C 0x8277 la caja p02:8C87 contra el jugador
 C 0x827A el disparo le da? (p02:90AD, 0x1B)
+C 0x827D 0x1B de energia y la pieza p03:AA2D
 C 0x8286 destruido: IY+8 e IY+9 a 6...
+C 0x828A IY+8 = 6
 C 0x8292 ...un punto, el sonido 0x37 y 0xE045 a cero
+C 0x8295 el sonido 0x37 de la explosion
+C 0x829C sin jefe: se puede salir
 C 0x82A4 se mueve: IY+11 + IY+10, entre 9 y 0x1F...
+C 0x82AA ni pasa de 9 ni de 0x1F
 C 0x82B3 ...8 puntos por paso en la x...
+C 0x82B6 el paso x 8 puntos
 C 0x82C2 ...su pieza p03:ADF4...
 C 0x82C8 ...su casilla en el fondo se mueve con el...
+C 0x82CB su casilla del fondo se mueve con el
 C 0x82D1 ...y la pieza de encima, p03:AD9A o p03:ADC7 alternando (IY+0E)
+C 0x82D4 IY+0E da la vuelta: un bit cada vez
 C 0x82E4 por su estado (IY+5)
 C 0x82ED al empezar: una espera de 0x30 a 0x4F cuadros al azar
+C 0x82EF la espera: al azar de 0x30 a 0x4F
 C 0x82FA y la pieza p03:AA0B
 C 0x8300 la cuenta baja...
 C 0x8306 ...al acabar: la pieza p03:AA14 (abierto)...
 C 0x830E ...y una ficha libre (p02:843F) para su disparo...
 C 0x8313 ...12 mas abajo y 0x12 a la izquierda...
+C 0x8316 el disparo: 0x0C mas abajo...
+C 0x831E ...y 0x12 a la izquierda
 C 0x8323 ...del tipo 0x0C...
 C 0x832D ...que arranca con p03:A28B
+C 0x8331 sale con p03:A28B
 C 0x8336 otra espera de 0x30, estado 2
+C 0x833A espera de 0x30 y estado 2
 C 0x8342 al acabar, cerrado otra vez (p03:AA0B)
 C 0x834D otra espera de 0x30 y vuelta a empezar
 C 0x8355 el disparo le da? (p02:9085, 7 de energia, dos golpes)
+C 0x8358 la pieza p03:AA1D, 7 de energia, dos golpes
 C 0x8363 destruido: 0x30 puntos y la explosion (p02:8564)
+C 0x8377 busca cuatro fichas y crea el objeto (tipo C, dibujo B)
+C 0x837D busca dos fichas y crea el objeto
+C 0x8383 busca una ficha y crea el objeto, sin tocar IX
+C 0x838B busca una ficha (de 19) y crea
+C 0x8392 busca una ficha (de 8) y crea
 C 0x8399 si hay ficha, el objeto nuevo corre ya su primer cuadro (p02:8000 con IY en el)...
+C 0x83A7 p02:8000 corre con el jugador en IX
 C 0x83B2 ...y HL = su ficha, con acarreo
 C 0x83B7 sin ficha: sin acarreo
 C 0x83C3 el dibujo 0x1C
+C 0x83C9 el dibujo B
 C 0x83CC la x de IY + H...
 C 0x83D3 ...la y de IY + L...
 C 0x83DA ...el tipo C y el estado 0
@@ -83,38 +132,53 @@ C 0x83F0 ...y cada vez, IY+0A sube: par la pieza DE, impar la HL
 C 0x8400 sin interrupciones y con 0xE093 a 1 mientras se pinta
 C 0x840A la casilla de la ficha en el mapa
 C 0x8419 de dos en dos fichas (0x20 bytes), cuatro grupos
+C 0x8420 cuatro grupos de dos en 0xE400
 C 0x8427 libres si los cuatro tipos (IX+4, +14, +24, +34) son cero
 C 0x8435 el numero del grupo para IX+0F de cada una
 C 0x843C ninguno libre: acarreo
+C 0x8440 cinco grupos en 0xE400...
+C 0x8449 ...o diez en 0xE380
 C 0x8468 los numeros de sus cuatro fichas en IX+0F, +1F, +2F y +3F
+C 0x8470 sus numeros en IX+0F e IX+1F
 C 0x847A 19 fichas de 0xE380 una a una
+C 0x8481 desde 0xE380, de una en una
 C 0x848A libre si su tipo (IX+4) es cero
 C 0x8498 el estado 0 pone su pieza (p03:AA26)
 C 0x84A4 cada 0x40 cuadros:
 C 0x84AB la direccion hacia el jugador (p00:5D1D)...
+C 0x84AE la direccion hacia el jugador
 C 0x84B1 ...y un disparo del tipo 0x25 hacia alla
+C 0x84B4 el disparo (tipo 0x25, dibujo 0xF4)
+C 0x84C4 con esa direccion
 C 0x84C9 el disparo le da? (p02:9085, 8 de energia)
 C 0x84D5 destruido: 0x30 puntos y su pieza rota (p02:8B7A)
+C 0x84D8 su casilla rota (0xF5, 3)
 C 0x84E5 abre y cierra (p03:AA34 y p03:AA3B) cada 8 cuadros
+C 0x84E8 la pieza p03:AA3B
 C 0x84F0 el disparo le da? (8 de energia, pieza p03:AA42)
 C 0x84FC destruido: 0xE18B = 0xFF
 C 0x8501 destruido: 0x20 puntos (p00:54DA) y su pieza rota
 C 0x8517 una espera al azar de 0x70 a 0xAF cuadros
+C 0x8519 espera al azar
 C 0x8520 cerrado: la pieza p03:AA58
 C 0x8526 al acabar la espera (p03:A879)...
 C 0x852D ...abierto: la pieza p03:AA49
 C 0x8533 abierto 0x38 cuadros (p03:A881) y otra vez cerrado
 C 0x8543 el disparo le da? (3 de energia)
+C 0x8546 caja p03:AD61, 3 de energia
 C 0x854F destruido: el dibujo 1...
 C 0x8557 ...uno mas en 0xE5C7...
 C 0x855E ...uno mas en la cuenta de destruidos (0xE18A) y 0x50 puntos
 C 0x8564 0xE18A + 1: los objetos destruidos
 C 0x8570 mientras queden blancos en la sala, quieto
+C 0x8574 con blancos en la sala, quieto
 C 0x8581 una espera al azar...
+C 0x8583 una espera al azar de 0xB0 a 0xEF (y la mitad baja en la cuenta)
 C 0x858F ...cerrado (p03:AA76)
 C 0x8595 abre (p03:AA67) cuando la cuenta llega a la espera
 C 0x85A2 cada 0x30 cuadros: tres disparos del tipo 0x1F...
 C 0x85A9 ...hacia arriba a la izquierda (IY+8 = 0x10)...
+C 0x85AF hacia arriba a la izquierda (direccion 0x10)
 C 0x85B8 ...hacia arriba (0x13)...
 C 0x85C7 ...y hacia arriba a la derecha (0x0D)
 C 0x85D7 el disparo le da? (8 de energia, pieza p03:AD2C)
@@ -469,29 +533,52 @@ L 0x9921 cuenta_d lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 L 0x9FFA pon_figura pone la figura HL (dy, dx, dibujo) en la ficha IY y en la de debajo (IY+10, dibujo + 4)
 C 0x8003 despacha_e: salta por la tabla que va detras del call, con el indice en E
 C 0x8066 despacha_e: salta por la tabla que va detras del call, con el indice en E
+C 0x80EA el tipo del objeto (p02:8000, p02:8063) = 0x1B
 C 0x80F7 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8102 alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
 C 0x811A le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
 C 0x812A tocado_1d: como p02:9085, pero al explotar pasa al tipo 0x1D
+C 0x8135 el dibujo del objeto (p00:4BBB) = 0x01
 C 0x813D suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
+C 0x8146 el estado del objeto (p03:A03E) = 0x01
+C 0x8153 la x del objeto (p00:4BBB) = 0x18
+C 0x8157 la y del objeto (p00:4BBB) = 0x40
+C 0x815F la y guardada del objeto (p02:9A24) = 0x01
 C 0x8171 suma_200: suma 2 a los puntos
 C 0x8180 libera: libera la ficha IY (a cero, y fuera de la pantalla)
+C 0x818E sube el estado del objeto (p03:A03E)
 C 0x8194 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 C 0x8199 suma_y: suma A a la y de la ficha IY
+C 0x81A0 el tipo del objeto (p02:8000, p02:8063) = 0x20
+C 0x81A4 el estado del objeto (p03:A03E) = 0x00
 C 0x81AC toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
+C 0x81B7 guarda la y del objeto (p00:4BBB)
+C 0x81BE guarda la x del objeto (p00:4BBB)
 C 0x81CF pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x81E3 la y del objeto (p00:4BBB) = 0x30
+C 0x81F6 sube el estado del objeto (p03:A03E)
 C 0x81F9 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x81FE cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x8208 espera_d: cada A cuadros (la cuenta IY+0D) el estado siguiente; acarreo al llegar
 C 0x820D cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8231 sube el estado del objeto (p03:A03E)
 C 0x8234 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8240 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8245 el estado del objeto (p03:A03E) = 0x01
+C 0x8251 compara con la x del objeto (p00:4BBB)
+C 0x8260 el estado del objeto (p03:A03E) = 0x01
 C 0x8282 tocado_1c: como p02:9085, pero al explotar pasa al tipo 0x1C
+C 0x828E el estado del objeto (p03:A03E) = 0x00
 C 0x8297 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x82BC le suma la x del objeto (p00:4BBB)
+C 0x82BF guarda la x del objeto (p00:4BBB)
 C 0x82C5 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x82DD pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x82F3 guarda la cuenta del objeto (p02:9915)
+C 0x82F6 el estado del objeto (p03:A03E) = 0x01
 C 0x82FD pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8309 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x831B lee la x del objeto (p00:4BBB)
 C 0x834A pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x835F tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x836B suma_3000: suma 0x30 a los puntos
@@ -503,6 +590,8 @@ C 0x8393 busca_una_de_8: IX = una ficha libre de 0xE380 (de 8); acarreo si no ha
 C 0x839A crea_objeto: pone en la ficha IX un objeto del tipo C, dibujo B, en la posicion de IY + H (x) y L (y)
 C 0x83AB mueve_sprites: la rutina del objeto IY (sprite) segun su tipo IY+4 (la tabla de detras)
 C 0x83BD busca_una: IX = una ficha libre de 0xE380 (de 19); acarreo si no hay
+C 0x83F4 sube la y guardada del objeto (p02:9A24)
+C 0x83F7 mira el bit 0 de la y guardada del objeto (p02:9A24)
 C 0x8410 pinta_pieza_en: pinta la pieza DE en la casilla HL (de 0xC300) con 0xE093 a 1
 C 0x84A6 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x84D1 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
@@ -511,39 +600,73 @@ C 0x84ED alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, p
 C 0x84F8 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x84FE guarda los blancos de la sala que quedan (bases 3D)
 C 0x850E despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x851D guarda la cuenta del objeto (p02:9915)
 C 0x8529 espera_d: cada A cuadros (la cuenta IY+0D) el estado siguiente; acarreo al llegar
 C 0x8530 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8537 espera_d_b: cada A cuadros (IY+0D) el estado B; acarreo al llegar
 C 0x853F pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x854B tocado_1d: como p02:9085, pero al explotar pasa al tipo 0x1D
+C 0x8553 el dibujo del objeto (p00:4BBB) = 0x01
 C 0x8576 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x8587 guarda la segunda cuenta del objeto (p02:9921)
+C 0x858C guarda la cuenta del objeto (p02:9915)
 C 0x8598 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x85A4 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x85D4 sube el estado del objeto (p03:A03E)
 C 0x85DF tocado_1d: como p02:9085, pero al explotar pasa al tipo 0x1D
+C 0x85E7 el dibujo del objeto (p00:4BBB) = 0x01
 C 0x85F5 espera_c_b: cada A cuadros (IY+0C) el estado B; acarreo al llegar
 C 0x85FD pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8613 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x8626 guarda la cuenta del objeto (p02:9915)
+C 0x862D guarda la y guardada del objeto (p02:9A24)
+C 0x8630 el estado del objeto (p03:A03E) = 0x01
+C 0x8638 la x guardada del objeto (p02:9A24) = 0x00
 C 0x8641 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x864A compara con la y guardada del objeto (p02:9A24)
+C 0x8657 el estado del objeto (p03:A03E) = 0x02
+C 0x865B la cuenta del objeto (p02:9915) = 0x00
+C 0x866E lee la y guardada del objeto (p02:9A24)
+C 0x8674 guarda la y guardada del objeto (p02:9A24)
 C 0x867B busca_una_de_8: IX = una ficha libre de 0xE380 (de 8); acarreo si no hay
+C 0x86A1 la cuenta del objeto (p02:9915) = 0x00
+C 0x86A5 la segunda cuenta del objeto (p02:9921) = 0x00
+C 0x86A9 el estado del objeto (p03:A03E) = 0x03
+C 0x86BB el estado del objeto (p03:A03E) = 0x04
 C 0x86CB espera_c_b: cada A cuadros (IY+0C) el estado B; acarreo al llegar
 C 0x86E0 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x86E6 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x86ED lee la x guardada del objeto (p02:9A24)
 C 0x86F5 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x8710 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x8718 lee la y del objeto (p00:4BBB)
+C 0x8720 lee la x del objeto (p00:4BBB)
+C 0x8760 guarda la cuenta del objeto (p02:9915)
+C 0x877D guarda la cuenta del objeto (p02:9915)
 C 0x87B7 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x87C5 suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 C 0x87CA pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x87D3 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 C 0x8811 alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
 C 0x8817 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x881B sube el estado del objeto (p03:A03E)
+C 0x8830 el estado del objeto (p03:A03E) = 0x00
+C 0x8838 el dibujo del objeto (p00:4BBB) = 0x00
+C 0x883C lee la y del objeto (p00:4BBB)
+C 0x8841 guarda la y del objeto (p00:4BBB)
 C 0x8844 lee la fase (0-19; la 8 se salta)
 C 0x885D pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8863 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8869 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8871 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x887E sube el estado del objeto (p03:A03E)
+C 0x8884 guarda el dibujo del objeto (p00:4BBB)
 C 0x8895 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
+C 0x88C8 guarda la x del objeto (p00:4BBB)
 C 0x88DA tocado_1d: como p02:9085, pero al explotar pasa al tipo 0x1D
 C 0x88EA suma_300: suma 3 a los puntos
+C 0x88F5 el dibujo del objeto (p00:4BBB) = 0x01
+C 0x88F9 la x del objeto (p00:4BBB) = 0x80
 C 0x88FF rutina_banco_14: llama a p14:7800 con el banco 14 en 0x6000 (E = lo que hace) y devuelve el que habia
 C 0x8911 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x8916 guarda 1 mientras dura la fase
@@ -552,12 +675,20 @@ C 0x892D pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x8933 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x893E cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x8974 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x89D0 sube el estado del objeto (p03:A03E)
+C 0x89D6 guarda el dibujo del objeto (p00:4BBB)
 C 0x89E7 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x89EF pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x8A07 le suma el dibujo del objeto (p00:4BBB)
+C 0x8A17 guarda la x del objeto (p00:4BBB)
 C 0x8A2B pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8A30 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x8A4C tocado_1d: como p02:9085, pero al explotar pasa al tipo 0x1D
 C 0x8A51 suma_200: suma 2 a los puntos
+C 0x8A58 el dibujo del objeto (p00:4BBB) = 0x00
+C 0x8AA1 guarda la cuenta del objeto (p02:9915)
+C 0x8AB0 la x del objeto (p00:4BBB) = 0xB8
+C 0x8AB4 la y del objeto (p00:4BBB) = 0x30
 C 0x8ACC pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8B02 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8B0F alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
@@ -569,9 +700,17 @@ C 0x8B4A suma_400: suma 4 a los puntos
 C 0x8B73 suma_x: suma A a la x de la ficha IY
 C 0x8B77 suma_y: suma A a la y de la ficha IY
 C 0x8B80 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x8B8D la y del objeto (p00:4BBB) = 0x18
+C 0x8B99 la x guardada del objeto (p02:9A24) = 0x00
+C 0x8BA5 guarda la y guardada del objeto (p02:9A24)
+C 0x8BA8 la y del objeto (p00:4BBB) = 0x10
 C 0x8BB9 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8BBF lee la x del objeto (p00:4BBB)
 C 0x8BD2 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x8BD9 busca_cuatro: IX = cuatro fichas libres seguidas en 0xE400 (de dos en dos); acarreo si no hay
+C 0x8BDE lee la y del objeto (p00:4BBB)
+C 0x8BEB mira el bit 0 de la x guardada del objeto (p02:9A24)
+C 0x8BF3 le suma la x del objeto (p00:4BBB)
 C 0x8C11 mueve_sprites: la rutina del objeto IY (sprite) segun su tipo IY+4 (la tabla de detras)
 C 0x8C33 toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x8C3D tocado_1c: como p02:9085, pero al explotar pasa al tipo 0x1C
@@ -583,55 +722,99 @@ C 0x8C8B despacha_estado: salta por la tabla que va detras del call, con el esta
 C 0x8CA4 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x8CB1 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x8CBE cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8D04 sube el estado del objeto (p03:A03E)
 C 0x8D0A cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8D0F sube el estado del objeto (p03:A03E)
+C 0x8D13 el estado del objeto (p03:A03E) = 0x00
 C 0x8D1A le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
 C 0x8D23 tocado_1d: como p02:9085, pero al explotar pasa al tipo 0x1D
 C 0x8D29 rutina_banco_14: llama a p14:7800 con el banco 14 en 0x6000 (E = lo que hace) y devuelve el que habia
+C 0x8D47 guarda la segunda cuenta del objeto (p02:9921)
+C 0x8D4A sube el estado del objeto (p03:A03E)
+C 0x8D58 compara con la segunda cuenta del objeto (p02:9921)
+C 0x8D67 guarda la segunda cuenta del objeto (p02:9921)
 C 0x8D83 alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
 C 0x8D8E tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x8D96 suma_100: suma 1 a los puntos
+C 0x8D99 el dibujo del objeto (p00:4BBB) = 0x02
+C 0x8DA8 sube el estado del objeto (p03:A03E)
 C 0x8DAE pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x8DB1 la y del objeto (p00:4BBB) = 0x58
+C 0x8DB5 la x del objeto (p00:4BBB) = 0xC0
 C 0x8DC1 alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
 C 0x8DC6 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x8DCB hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
 C 0x8DEC tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x8DF4 suma_1000: suma 0x10 a los puntos
 C 0x8E16 despacha_e: salta por la tabla que va detras del call, con el indice en E
+C 0x8E3D la y guardada del objeto (p02:9A24) = 0x01
+C 0x8E41 sube el estado del objeto (p03:A03E)
+C 0x8E48 mira el bit 7 de la x del objeto (p00:4BBB)
 C 0x8E83 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x8E8A cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
+C 0x8E95 lee la y guardada del objeto (p02:9A24)
 C 0x8EB3 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8ED2 sube el estado del objeto (p03:A03E)
 C 0x8EE2 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x8EE9 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x8F13 apunta a las fichas de los objetos de la fase (16 bytes)
+C 0x8F1C lee el tipo del objeto (p02:8000, p02:8063)
+C 0x8F29 el tipo del objeto (p02:8000, p02:8063) = 0x24
 C 0x8F36 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8F40 la y guardada del objeto (p02:9A24) = 0x26
+C 0x8F47 la y guardada del objeto (p02:9A24) = 0x17
+C 0x8F5A la y guardada del objeto (p02:9A24) = 0x01
+C 0x8F6C la y guardada del objeto (p02:9A24) = 0x13
+C 0x8F79 mira el bit 0 de el estado del objeto (p03:A03E)
 C 0x8F7F pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x8F82 el estado del objeto (p03:A03E) = 0x01
 C 0x8F8A alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
 C 0x8F95 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x8FA3 guarda los blancos de la sala que quedan (bases 3D)
 C 0x8FAD suma_200: suma 2 a los puntos
 C 0x8FB8 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 C 0x8FC6 lee la fase (0-19; la 8 se salta)
+C 0x8FD6 guarda la cuenta del objeto (p02:9915)
+C 0x8FDC lee el tipo del objeto (p02:8000, p02:8063)
 C 0x8FE1 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8FE7 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
 C 0x8FEF cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x8FF4 lee el tipo del objeto (p02:8000, p02:8063)
 C 0x9003 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x9006 sube el estado del objeto (p03:A03E)
 C 0x900D cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x9012 lee el tipo del objeto (p02:8000, p02:8063)
+C 0x9030 la segunda cuenta del objeto (p02:9921) = 0x01
+C 0x9034 sube el estado del objeto (p03:A03E)
 C 0x903B cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x9040 el estado del objeto (p03:A03E) = 0x00
 C 0x9053 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x9063 suma_200: suma 2 a los puntos
+C 0x9066 el dibujo del objeto (p00:4BBB) = 0x01
 C 0x9077 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
 C 0x9087 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x9091 compara con la x guardada del objeto (p02:9A24)
 C 0x9095 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x909C el estado del objeto (p03:A03E) = 0x00
+C 0x90A0 el dibujo del objeto (p00:4BBB) = 0x03
 C 0x90B5 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x90BF compara con la x guardada del objeto (p02:9A24)
+C 0x90C3 guarda el tipo del objeto (p02:8000, p02:8063)
+C 0x90C6 el estado del objeto (p03:A03E) = 0x00
 C 0x90D9 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x90DC sube el estado del objeto (p03:A03E)
 C 0x90E7 alterna_piezas: cada A cuadros pinta en el fondo la pieza HL o la DE, por turnos
 C 0x90F2 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
+C 0x90FA el dibujo del objeto (p00:4BBB) = 0x02
 C 0x9102 suma_300: suma 3 a los puntos
 C 0x9108 apunta a la orden del VDP que se manda (registros 32-46)
 C 0x9112 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
 C 0x9149 tocado: si le da un disparo (p00:5AF8 con la caja HL) cuenta un golpe; con mas de A, explota (tipo 0x1D): acarreo
+C 0x9150 el dibujo del objeto (p00:4BBB) = 0x02
 C 0x915A le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x9166 lee el estado del objeto (p03:A03E)
 C 0x9192 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x9196 lee el estado del objeto (p03:A03E)
 C 0x91AA busca_cuatro: IX = cuatro fichas libres seguidas en 0xE400 (de dos en dos); acarreo si no hay
 C 0x91C5 mueve_sprites: la rutina del objeto IY (sprite) segun su tipo IY+4 (la tabla de detras)
 C 0x91CF busca_cuatro: IX = cuatro fichas libres seguidas en 0xE400 (de dos en dos); acarreo si no hay
@@ -639,123 +822,265 @@ C 0x9228 mueve_sprites: la rutina del objeto IY (sprite) segun su tipo IY+4 (la 
 C 0x9230 busca_dos: IX = dos fichas libres seguidas en 0xE400; acarreo si no hay
 C 0x9248 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 C 0x9257 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x925A sube el estado del objeto (p03:A03E)
+C 0x9262 guarda la x del objeto (p00:4BBB)
+C 0x9269 lee la x del objeto (p00:4BBB)
 C 0x927F pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x929D suma_x: suma A a la x de la ficha IY
+C 0x92AB guarda la y del objeto (p00:4BBB)
+C 0x92AE guarda la x del objeto (p00:4BBB)
+C 0x92B1 sube el estado del objeto (p03:A03E)
 C 0x92B7 rutina_banco_14: llama a p14:7800 con el banco 14 en 0x6000 (E = lo que hace) y devuelve el que habia
 C 0x92D2 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 C 0x92DE lee la fase (0-19; la 8 se salta)
 C 0x92FF pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x9307 sube el estado del objeto (p03:A03E)
 C 0x936C pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x936F sube el estado del objeto (p03:A03E)
 C 0x9375 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x9380 el tipo del objeto (p02:8000, p02:8063) = 0x00
 C 0x93F4 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x940E el estado del objeto (p03:A03E) = 0x02
 C 0x9431 busca_una_de_8: IX = una ficha libre de 0xE380 (de 8); acarreo si no hay
+C 0x9436 lee la x del objeto (p00:4BBB)
+C 0x943E lee la y del objeto (p00:4BBB)
+C 0x9458 sube el estado del objeto (p03:A03E)
 C 0x9460 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x9466 el estado del objeto (p03:A03E) = 0x01
 C 0x946B despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x9482 el estado del objeto (p03:A03E) = 0x02
 C 0x9495 hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
 C 0x94A5 busca_una_de_8: IX = una ficha libre de 0xE380 (de 8); acarreo si no hay
+C 0x94AA lee la x del objeto (p00:4BBB)
+C 0x94B2 lee la y del objeto (p00:4BBB)
+C 0x94CC sube el estado del objeto (p03:A03E)
 C 0x94D2 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x94E2 lee la x del objeto (p00:4BBB)
+C 0x94E5 guarda la x guardada del objeto (p02:9A24)
+C 0x94E8 lee la y del objeto (p00:4BBB)
+C 0x94ED guarda la y guardada del objeto (p02:9A24)
 C 0x94F3 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x94FB guarda la y del objeto (p00:4BBB)
+C 0x950A el estado del objeto (p03:A03E) = 0x02
+C 0x950E la x del objeto (p00:4BBB) = 0xEC
+C 0x9512 la y del objeto (p00:4BBB) = 0xEC
+C 0x9517 baja la cuenta del objeto (p02:9915)
 C 0x951F lee la fase (0-19; la 8 se salta)
 C 0x952A lee el tramo: la pantalla de la lista de la fase
 C 0x9537 lee el tramo: la pantalla de la lista de la fase
+C 0x9548 le suma la x guardada del objeto (p02:9A24)
+C 0x9553 guarda la x guardada del objeto (p02:9A24)
+C 0x9556 el estado del objeto (p03:A03E) = 0x03
+C 0x9560 lee la y guardada del objeto (p02:9A24)
+C 0x9565 guarda la y del objeto (p00:4BBB)
+C 0x9568 lee la x guardada del objeto (p02:9A24)
+C 0x956B guarda la x del objeto (p00:4BBB)
+C 0x9571 el estado del objeto (p03:A03E) = 0x04
 C 0x9592 libera: libera la ficha IY (a cero, y fuera de la pantalla)
 C 0x9599 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x95AB el estado del objeto (p03:A03E) = 0x02
 C 0x95B9 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x95BE sube el estado del objeto (p03:A03E)
+C 0x95CD baja la x guardada del objeto (p02:9A24)
+C 0x95E1 sube la x guardada del objeto (p02:9A24)
+C 0x95EF el estado del objeto (p03:A03E) = 0x01
 C 0x95F6 pon_figura_4: como p02:9FFA y ademas las dos fichas siguientes (IY+20 e IY+30)
+C 0x95FD lee la y del objeto (p00:4BBB)
 C 0x961D despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x962D la y guardada del objeto (p02:9A24) = 0x9C
+C 0x9638 el dibujo del objeto (p00:4BBB) = 0xE8
 C 0x9664 espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
+C 0x9674 le resta la x guardada del objeto (p02:9A24)
 C 0x967F busca_dos_e380: IX = dos fichas libres seguidas en 0xE380; acarreo si no hay
+C 0x9687 el estado del objeto (p03:A03E) = 0x01
+C 0x969B mira el bit 2 de la cuenta del objeto (p02:9915)
+C 0x96A1 la y del objeto (p00:4BBB) = 0xEC
+C 0x96A6 lee la y guardada del objeto (p02:9A24)
+C 0x96A9 guarda la y del objeto (p00:4BBB)
 C 0x96BA toca_al_jugador_2: como p00:5A68 con otro dano
+C 0x96D6 guarda el dibujo del objeto (p00:4BBB)
+C 0x96D9 lee el estado del objeto (p03:A03E)
 C 0x96E6 espera_d: cada A cuadros (la cuenta IY+0D) el estado siguiente; acarreo al llegar
 C 0x96F0 libera_2: libera la ficha IY y la de debajo
 C 0x96F5 libera_2: libera la ficha IY y la de debajo
 C 0x96FE cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x9705 busca_dos_e380: IX = dos fichas libres seguidas en 0xE380; acarreo si no hay
+C 0x970F el estado del objeto (p03:A03E) = 0x03
 C 0x9718 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x971E libera_2: libera la ficha IY y la de debajo
 C 0x972B lee la fase (0-19; la 8 se salta)
+C 0x973E le suma la y guardada del objeto (p02:9A24)
+C 0x974A lee la x guardada del objeto (p02:9A24)
+C 0x9768 la segunda cuenta del objeto (p02:9921) = 0x00
 C 0x977B busca_dos_e380: IX = dos fichas libres seguidas en 0xE380; acarreo si no hay
 C 0x9787 libera: libera la ficha IY (a cero, y fuera de la pantalla)
+C 0x9793 sube el estado del objeto (p03:A03E)
 C 0x9799 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x979C baja la y del objeto (p00:4BBB)
+C 0x979F baja la y del objeto (p00:4BBB)
+C 0x97AB sube el estado del objeto (p03:A03E)
 C 0x97AE hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
 C 0x97B9 velocidad: la velocidad A del objeto IY
 C 0x97BF colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x97CA guarda la y guardada del objeto (p02:9A24)
+C 0x97D1 guarda el dibujo del objeto (p00:4BBB)
 C 0x97DC toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x97E0 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x97E4 el tipo del objeto (p02:8000, p02:8063) = 0x0B
 C 0x97F6 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x97F9 el estado del objeto (p03:A03E) = 0x01
 C 0x9800 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x9805 velocidad: la velocidad A del objeto IY
 C 0x980F avanza: mueve la ficha IY un paso en su direccion
 C 0x9825 dentro_o_fuera: si la ficha IY sale de la pantalla la libera; acarreo si sigue dentro
 C 0x982F libera: libera la ficha IY (a cero, y fuera de la pantalla)
+C 0x983D lee la x del objeto (p00:4BBB)
 C 0x9854 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 C 0x985D toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x986D colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x9870 el estado del objeto (p03:A03E) = 0x01
 C 0x987A espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
 C 0x9881 suma_x: suma A a la x de la ficha IY
 C 0x988E libera: libera la ficha IY (a cero, y fuera de la pantalla)
+C 0x9891 lee el tipo del objeto (p02:8000, p02:8063)
 C 0x9899 lee la fase (0-19; la 8 se salta)
 C 0x98A5 libera: libera la ficha IY (a cero, y fuera de la pantalla)
 C 0x98AA libera: libera la ficha IY (a cero, y fuera de la pantalla)
+C 0x98AD lee la x del objeto (p00:4BBB)
 C 0x98B2 libera: libera la ficha IY (a cero, y fuera de la pantalla)
 C 0x98B7 libera: libera la ficha IY (a cero, y fuera de la pantalla)
+C 0x98BD lee el tipo del objeto (p02:8000, p02:8063)
 C 0x98C4 toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x98C8 libera: libera la ficha IY (a cero, y fuera de la pantalla)
 C 0x98CB toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x98CF libera: libera la ficha IY (a cero, y fuera de la pantalla)
 C 0x98DF colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x98E2 el estado del objeto (p03:A03E) = 0x01
 C 0x98E9 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x98FD un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
+C 0x9907 un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
+C 0x990A un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
+C 0x9912 un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
+C 0x9918 compara con la cuenta del objeto (p02:9915)
 C 0x9923 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x9929 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x996E sube el estado del objeto (p03:A03E)
+C 0x9978 sube la x guardada del objeto (p02:9A24)
+C 0x997B lee la x guardada del objeto (p02:9A24)
 C 0x9980 libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
+C 0x9985 baja la x guardada del objeto (p02:9A24)
+C 0x9988 lee la x guardada del objeto (p02:9A24)
 C 0x998D libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
+C 0x9990 guarda la x del objeto (p00:4BBB)
 C 0x9995 espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
+C 0x99A0 lee la y guardada del objeto (p02:9A24)
+C 0x99A8 sube la y guardada del objeto (p02:9A24)
+C 0x99AB lee la y guardada del objeto (p02:9A24)
 C 0x99B0 libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
+C 0x99B5 baja la y guardada del objeto (p02:9A24)
+C 0x99B8 lee la y guardada del objeto (p02:9A24)
 C 0x99BD libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
 C 0x99C7 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x99CC hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
 C 0x99E9 espera_c_b: cada A cuadros (IY+0C) el estado B; acarreo al llegar
 C 0x99EC cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x99F1 el estado del objeto (p03:A03E) = 0x01
+C 0x9A27 guarda la x guardada del objeto (p02:9A24)
+C 0x9A2A lee la y del objeto (p00:4BBB)
+C 0x9A2D guarda la y guardada del objeto (p02:9A24)
 C 0x9A31 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x9A40 el dibujo del objeto (p00:4BBB) = 0x44
 C 0x9A59 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x9A5C sube el estado del objeto (p03:A03E)
+C 0x9A72 lee la x del objeto (p00:4BBB)
+C 0x9A7F el estado del objeto (p03:A03E) = 0x03
 C 0x9A89 espera_c_b: cada A cuadros (IY+0C) el estado B; acarreo al llegar
+C 0x9A99 guarda el dibujo del objeto (p00:4BBB)
 C 0x9AA5 toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x9AA9 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x9AB0 lee la x guardada del objeto (p02:9A24)
 C 0x9ABC explota: la ficha IY pasa a ser una explosion (tipo 0x0B)
+C 0x9AC5 lee la y del objeto (p00:4BBB)
 C 0x9AD2 libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
 C 0x9AD5 libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
 C 0x9AD8 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x9AE8 el dibujo del objeto (p00:4BBB) = 0xD8
+C 0x9AF3 lee la y del objeto (p00:4BBB)
+C 0x9AF8 guarda la y guardada del objeto (p02:9A24)
+C 0x9B0B lee la x del objeto (p00:4BBB)
+C 0x9B27 el estado del objeto (p03:A03E) = 0x01
+C 0x9B47 guarda la x del objeto (p00:4BBB)
+C 0x9B52 sube el estado del objeto (p03:A03E)
+C 0x9B62 sube el estado del objeto (p03:A03E)
 C 0x9B69 cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x9B6E lee la x del objeto (p00:4BBB)
+C 0x9B76 el estado del objeto (p03:A03E) = 0x03
+C 0x9B7B el estado del objeto (p03:A03E) = 0x01
 C 0x9B84 libera_2: libera la ficha IY y la de debajo
 C 0x9B89 libera_2: libera la ficha IY y la de debajo
 C 0x9B8F toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x9B95 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x9B9C lee la x guardada del objeto (p02:9A24)
 C 0x9BA5 explota: la ficha IY pasa a ser una explosion (tipo 0x0B)
 C 0x9BAC despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 C 0x9BBF despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x9BE4 le suma la x guardada del objeto (p02:9A24)
+C 0x9BE7 guarda la x guardada del objeto (p02:9A24)
 C 0x9BEC libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
 C 0x9BF1 libera_4: libera la ficha IY y las tres siguientes (fuera de la pantalla)
+C 0x9BF9 sube el estado del objeto (p03:A03E)
 C 0x9BFF pon_figura_4: como p02:9FFA y ademas las dos fichas siguientes (IY+20 e IY+30)
 C 0x9C06 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
 C 0x9C0B hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
+C 0x9C2A sube el estado del objeto (p03:A03E)
 C 0x9C33 espera_c_b: cada A cuadros (IY+0C) el estado B; acarreo al llegar
 C 0x9C56 pon_figura_4: como p02:9FFA y ademas las dos fichas siguientes (IY+20 e IY+30)
 C 0x9C5C le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x9C62 le suma la y del objeto (p00:4BBB)
+C 0x9C65 guarda la y del objeto (p00:4BBB)
 C 0x9C6A suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
+C 0x9C7F sube el estado del objeto (p03:A03E)
 C 0x9C8E velocidad: la velocidad A del objeto IY
+C 0x9CA3 el estado del objeto (p03:A03E) = 0x02
+C 0x9CCB el estado del objeto (p03:A03E) = 0x81
+C 0x9CE3 lee el estado del objeto (p03:A03E)
 C 0x9CE8 despacha_e: salta por la tabla que va detras del call, con el indice en E
+C 0x9D38 mira el bit 7 de el estado del objeto (p03:A03E)
+C 0x9D87 pone a cero el bit 7 de el estado del objeto (p03:A03E)
+C 0x9DB7 lee la y guardada del objeto (p02:9A24)
+C 0x9DBB guarda la y guardada del objeto (p02:9A24)
 C 0x9DDC pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x9DEC el estado del objeto (p03:A03E) = 0x02
+C 0x9DF7 lee la y guardada del objeto (p02:9A24)
+C 0x9E1D pone a cero el bit 7 de el estado del objeto (p03:A03E)
+C 0x9E86 el estado del objeto (p03:A03E) = 0x02
+C 0x9E8A la segunda cuenta del objeto (p02:9921) = 0x00
 C 0x9E9F espera_d: cada A cuadros (la cuenta IY+0D) el estado siguiente; acarreo al llegar
+C 0x9ECA el estado del objeto (p03:A03E) = 0x04
+C 0x9ECE la segunda cuenta del objeto (p02:9921) = 0x00
 C 0x9EDA busca_una_de_8: IX = una ficha libre de 0xE380 (de 8); acarreo si no hay
+C 0x9F00 el estado del objeto (p03:A03E) = 0x04
+C 0x9F04 la segunda cuenta del objeto (p02:9921) = 0x00
 C 0x9F0C espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
+C 0x9F15 baja la y guardada del objeto (p02:9A24)
 C 0x9F1C espera_d_b: cada A cuadros (IY+0D) el estado B; acarreo al llegar
+C 0x9F21 sube la y guardada del objeto (p02:9A24)
+C 0x9F24 sube la y guardada del objeto (p02:9A24)
 C 0x9F29 cuenta_d: lo mismo con la cuenta IY+0D (p02:9915 con IY + 1)
+C 0x9F33 guarda la y guardada del objeto (p02:9A24)
+C 0x9F36 el estado del objeto (p03:A03E) = 0x00
+C 0x9F3A el tipo del objeto (p02:8000, p02:8063) = 0x0B
+C 0x9F3E el dibujo del objeto (p00:4BBB) = 0x18
 C 0x9F44 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x9F6B pon_figura_4: como p02:9FFA y ademas las dos fichas siguientes (IY+20 e IY+30)
+C 0x9F94 sube la segunda cuenta del objeto (p02:9921)
+C 0x9F97 mira el bit 2 de la segunda cuenta del objeto (p02:9921)
 C 0x9FA1 pon_figura_4: como p02:9FFA y ademas las dos fichas siguientes (IY+20 e IY+30)
+C 0x9FC9 lee el tipo del objeto (p02:8000, p02:8063)
 C 0x9FCF toca_al_jugador: acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 C 0x9FD3 toca_al_jugador_2: como p00:5A68 con otro dano
 C 0x9FD7 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x9FDF el estado del objeto (p03:A03E) = 0x06
 C 0x9FE5 suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 C 0x9FF7 suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
 # --- fin de las anotaciones de anota.py ---

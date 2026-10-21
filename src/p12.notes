@@ -1,8 +1,126 @@
 
+
+# --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x9400 el final: ya no hay partida (0xE000 = 0)
+C 0x9407 16 pasos de fundido, cada 0x10 cuadros:
+C 0x9409 espera 0x10 cuadros
+C 0x9415 los 16 colores de 0xE1D0 (rojo y azul, verde)...
+C 0x9418 los 32 bytes de la paleta (16 colores)
+C 0x941C la cifra alta (rojo) baja uno...
+C 0x941E ...cada componente baja uno, hasta cero...
+C 0x9427 la componente baja (0-7) baja uno si no es cero
+C 0x9428 ...y la baja (azul o verde) tambien
+C 0x942F se guarda
+C 0x9433 ...y a la paleta (p00:46A4)
+C 0x9437 los 16 pasos
+C 0x9439 la pantalla apagada
+C 0x943F el mapa 0xC300-0xC4FF a 0xFF (vacio)...
+C 0x944C ...y una fila de suelo (2) en 0xC4C0, y una casilla en 0xC4A6
+C 0x945E el jugador abajo a la izquierda (y 0xE0, x 0)
+C 0x9462 x = 0
+C 0x9466 0xE355 a cero: el final no ha acabado
+C 0x9472 0xE35C = 3
+C 0x9476 con sprites
+C 0x947A el color de la primera linea del texto (p12:95BE)
+C 0x9480 color 0: el texto empieza sin verse
+C 0x9483 los nueve bytes del texto (0xE305-0xE30D) a cero
+C 0x948D la pantalla encendida
+C 0x9491 sin 0xE2CE
+C 0x9497 cada dos cuadros: el texto (p12:94BB) y el jugador anda solo (p12:95D2)...
+C 0x94A8 ...hasta que acaba (0xE355)
+C 0x94AC acaba cuando 0xE355 no es cero
+C 0x94B2 la pantalla apagada y fin
+C 0x94B5 A = 1 al volver
+C 0x94BB el texto del final, por pasos (0xE305 la fase del texto, 0xE307 el paso)
+C 0x94BF 0xE305: aparecer y desaparecer o escribir
+C 0x94C8 paso 0: escribir las lineas del bloque (IY+3)...
+C 0x94CB 0xE307: escribir (0), aparecer (1) o ya visto (2)
+C 0x94D2 visto: a desaparecer
+C 0x94DA ...cuantas lineas tiene el bloque (p12:95CC) y sus punteros (p12:95FC)...
+C 0x94DD el bloque 0xE308 de la tabla de lineas p12:95CC...
+C 0x94E4 ...y sus punteros en p12:95F6 / p12:95FC
+C 0x94F8 el puntero a la linea siguiente, en 0xE282
+C 0x94FB ...una debajo de otra desde la casilla 0x148 (dos filas de separacion)...
+C 0x9503 cada linea, desde el puntero
+C 0x950E con la letra de la fila 0x40, dos filas mas abajo cada una
+C 0x9516 ...y el bloque siguiente
+C 0x9519 el bloque siguiente
+C 0x951D la cuenta: el color sube cada dos cuadros...
+C 0x9530 ...0x11 cada vez (rojo-azul y verde a la vez)...
+C 0x953B ...hasta 0x77 (el texto ya se ve del todo)
+C 0x9542 ...se queda 0xB0 cuadros...
+C 0x9548 0xB0 cuadros leyendolo
+C 0x9553 el paso siguiente
+C 0x9556 ...y tras el sexto bloque, la musica para (0x83)
+C 0x9559 despues del sexto bloque...
+C 0x955C ...la musica se va apagando (0x83)
+C 0x9562 luego desaparece (los colores bajan hasta cero)...
+C 0x9568 cada dos cuadros el color baja 0x11...
+C 0x957D ...hasta cero (el texto ya no se ve)
+C 0x9586 ...se borra (0xFF en la VRAM 0x2800-0x47FF) y el siguiente
+C 0x9589 tras el sexto, ya no se borra
+C 0x958D la VRAM 0x2800-0x47FF a 0xFF: el texto borrado
+C 0x95A1 acabado el texto: un salto (0xE062)...
+C 0x95A4 al acabar, un salto del jugador (0xE062)
+C 0x95B0 ...y al acabar la musica, el final acaba (0xE355 = 1)
+C 0x95B5 0xE355 = 1: el final acaba
+C 0x95BE el color 4 de la paleta = A (rojo y azul) y A (verde): el del texto
+C 0x95BF el color de 0xE1E4 (y su copia baja) y la paleta
+C 0x95D2 el jugador va a la derecha (palanca a 3)
+C 0x98BF la tabla de sprites del jugador en la VRAM (0x6C00): p12:9A3A, de cuatro en cuatro...
+C 0x98C5 la tabla p12:9A3A
+C 0x98C8 cada byte de la tabla, hasta 0xFF
+C 0x98C9 0xFF: fin de fila
+C 0x98D0 ...cada byte, cuatro parejas de bits: el color 10 (0xA0/0x0A) o el 15
+C 0x98D1 el bit alto de la pareja...
+C 0x98D9 ...(0xF0 sin el)...
+C 0x98DB ...y el bajo: 0x0A o 0x0F en la mitad derecha
+C 0x98E8 la pareja siguiente
+C 0x98F4 dos 0xFF seguidos: se acabo
+C 0x9907 la fila siguiente: 0x80 bytes mas abajo en la VRAM
+C 0x9915 el rotulo de la fase: STAGE...
+C 0x9918 STAGE en la casilla 0x109
+C 0x991E ...su numero (p00:4576)...
+C 0x9924 ...y su nombre (la tabla p12:974C, una por fase)
+C 0x9927 el nombre: el puntero de p12:974C + 2 x fase, en la casilla 0x167
+C 0x9937 0x60 cuadros
+C 0x993B espera 0x60 cuadros
+C 0x9943 donde sale el jugador en cada fase: la y y la x de la tabla p12:9A12
+C 0x9948 la y y la x de la tabla p12:9A12 (dos por fase)
+C 0x9957 mirando a la izquierda en las fases 13 y 17 (las que van hacia la izquierda)
+C 0x9961 mirando a la derecha en las demas
+C 0x9966 la fase (0xE020) elige los arreglos:
+C 0x9969 la 7...
+C 0x996D ...la 18...
+C 0x9971 ...la 16...
+C 0x9975 ...la 6...
+C 0x9979 ...la 17...
+C 0x997D ...la 10...
+C 0x9981 ...y la 13; las demas, ninguno
+C 0x9984 fase 13: tramo 1 tres casillas a 1, tramo 2 una
+C 0x998E tramo 1: 1 en tres casillas (una columna de suelo)
+C 0x9998 tramo 2: 2 en una casilla
+C 0x999C fase 7, tramo 5: dos casillas a 2
+C 0x99A2 2 en dos casillas
+C 0x99AB fase 18: tramo 1 o 2, una casilla
+C 0x99B5 tramo 2: una casilla a 2
+C 0x99B9 tramo 1: una casilla a 1
+C 0x99BD fase 16: tramo 4 tres casillas a 0x50, tramo 6 tres a 2
+C 0x99C7 tramo 6: tres casillas a 2
+C 0x99D0 tramo 4: tres casillas a 0x50
+C 0x99D7 B casillas seguidas a A
+C 0x99DC fase 6, tramo 4: dos casillas (1 y 2)
+C 0x99E2 1 y 2 en dos casillas
+C 0x99EC fase 17, tramo 3: una casilla a 2
+C 0x99F2 2 en una casilla
+C 0x99F8 fase 10: tramo 0 o 4, cuatro casillas
+C 0x9A01 tramo 4: cuatro casillas a 1
+C 0x9A0A tramo 0: dos casillas a 1
+# --- fin de lo escrito a mano ---
+
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
 C 0x9404 guarda 1 en una partida de verdad, 0 en la demostracion
 C 0x943C borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
-C 0x943F apunta a el mapa de la pantalla: 32 x 24 dibujos
 C 0x947C pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 C 0x94B7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x94E0 lee_tabla: HL = HL + A y A = (HL)
@@ -16,17 +134,7 @@ C 0x98C2 guarda la orden del VDP que se manda (registros 32-46) y el byte siguie
 C 0x9904 lee la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
 C 0x990D guarda la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
 C 0x991B escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x9924 lee la fase (0-19; la 8 se salta)
 C 0x992B lee_tabla: HL = HL + A y A = (HL)
 C 0x9934 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
-C 0x9943 lee la fase (0-19; la 8 se salta)
 C 0x994B lee_tabla: HL = HL + A y A = (HL)
-C 0x9966 lee la fase (0-19; la 8 se salta)
-C 0x9984 lee el tramo: la pantalla de la lista de la fase
-C 0x999C lee el tramo: la pantalla de la lista de la fase
-C 0x99AB lee el tramo: la pantalla de la lista de la fase
-C 0x99BD lee el tramo: la pantalla de la lista de la fase
-C 0x99DC lee el tramo: la pantalla de la lista de la fase
-C 0x99EC lee el tramo: la pantalla de la lista de la fase
-C 0x99F8 lee el tramo: la pantalla de la lista de la fase
 # --- fin de las anotaciones de anota.py ---

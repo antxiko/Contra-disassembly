@@ -119,59 +119,93 @@ C 0x434E callado, y vuelta al titulo
 C 0x436A el color del texto, del fondo y del borde
 C 0x43E6 sin vidas: espera 0x50 cuadros (0xE1C3 la cuenta)
 C 0x43F8 el jugador fuera
+C 0x4400 sin sprites
 C 0x4403 callado
+C 0x4408 las fichas fuera y los sprites otra vez
 C 0x440E la demostracion acaba aqui
+C 0x4412 en la demostracion, al titulo (p00:4343)
 C 0x4415 GAME OVER
 C 0x441E la musica del fin de la partida
 C 0x4423 se acabo la partida
+C 0x442D 0xE00F a cero (la cifra de la vida de mas)
 C 0x4430 espera a que acabe la musica
+C 0x4437 0xE045 a cero
 C 0x443A la paleta 0, la pantalla apagada y vuelta al titulo
 C 0x4446 fase superada: 0xE184 = 2
+C 0x444B sin sprites mientras se cuentan los puntos
 C 0x444F con 0xE03F o 0xE035 no hay puntos de final de fase
 C 0x445B los puntos de la fase: 5 (centenas) hasta la 6 y 0x10 desde la 7...
+C 0x4460 (la fase 7 en adelante)
+C 0x4466 los puntos de la fase
 C 0x4469 ...y otros 0x10 mas si la suma pasa de 0x10
+C 0x446D (otra vez, si son 0x10 o mas)
 C 0x4470 se escribe el marcador
 C 0x4473 espera a que acabe la musica de jefe destruido
 C 0x4479 callado
 C 0x447D la ficha del jugador a cero
+C 0x447E el jugador sin parpadeo, sin golpe ni empujon, fuera del pasillo
 C 0x4496 la fase siguiente...
+C 0x4499 la siguiente
 C 0x449A ...pero la 8 (TRAP HANGAR) se salta siempre
 C 0x44A2 la 20 es el final
 C 0x44A6 el tramo con el que empieza la fase: la tabla p00:450E
 C 0x44B2 con 0xE03F a 0xFF (y si no es una base), el tramo de 0xE03E
+C 0x44BE el tramo guardado al grabar
+C 0x44C4 0xE03F a cero: ya se ha usado
 C 0x44C8 el rotulo de la fase (p12:9915)
+C 0x44CB 0xE2CE = 0xFF mientras se carga la fase
 C 0x44D0 vuelta a cargar fase, hasta la 20
 C 0x44D8 el final: la partida acaba...
+C 0x44E8 0xE1C1 a cero
 C 0x44EB ...con la musica 0x03...
 C 0x44F0 ...y el final de p12:9400 (el texto de p12:9622)
 C 0x44F9 vuelta al titulo
 C 0x44FC suma B a los puntos (0xE037, cuatro cifras BCD)
+C 0x4500 B a las cifras de los puntos, desde la de las centenas (C = 4)
 C 0x4522 callado y, con el banco 12, el rotulo de la fase (STAGE y su nombre)
+C 0x452A el rotulo (p12:9915)
+C 0x4538 el banco 12
 C 0x4541 las fases de la lista p00:4558 (5, 9, 19, 12 y 15)...
+C 0x4544 la lista p00:4558, 5 fases
 C 0x454E ...ponen 0xAB en 0xE19C; las demas 0xFF
 C 0x455D el marcador entero: STAGE, REST, SCORE y LIFE
+C 0x4560 REST, SCORE y la energia
 C 0x456A STAGE/ en la fila de abajo
+C 0x456D STAGE/ (p00:4637)
 C 0x4573 y el numero de fase:
 C 0x4576 el indice + 1 hasta la 7; desde la 9 el indice (la 8 se salta)
 C 0x457E de 10 en adelante, en BCD (+6)...
 C 0x4582 ...y la 20 (el final) es 0x20
 C 0x458C las dos cifras: la alta...
+C 0x458D la cifra alta (los 4 bits de arriba)...
 C 0x4597 ...con la letra de la fila 0xD8...
 C 0x459A ...y la baja
+C 0x459B ...y la baja, en la casilla siguiente
 C 0x45A1 REST/
+C 0x45A4 REST/ (p00:463E)
 C 0x45AA y las vidas menos la que se juega, en BCD
+C 0x45B0 la que se juega no cuenta (BCD)
 C 0x45B5 SCORE/ y los puntos
+C 0x45B8 SCORE/ (p00:4644)
+C 0x45BE y los puntos (p00:5F33 con 0)
 C 0x45C3 LIFE y la barra de energia, entera
+C 0x45C6 LIFE (p00:4632)
 C 0x45CC 0xAA: dos puntos del color 10 por byte
+C 0x45CE el byte de la barra: 0xAA (lleno)
 C 0x45D1 la barra empieza en el byte 0x609C de la VRAM
 C 0x45DA borra la barra desde la energia que queda hasta el final:
 C 0x45DC 0xFF, el color 15 (el negro de esta paleta)
+C 0x45DF la barra en la VRAM
 C 0x45E9 dos bytes (cuatro puntos) por punto de energia
 C 0x45ED los 8 que quedan hasta el final de la barra
 C 0x45F1 siete lineas de alto
 C 0x45F5 la direccion de la VRAM por el puerto 0x99: los bits altos a R#14...
+C 0x45FF los bits altos de la direccion, a R#14
 C 0x4605 ...y la baja, para escribir
+C 0x4607 la baja y la alta, con el bit 6 (escribir)
 C 0x460E un byte de la barra y luego el de su borde (color 15 en la mitad baja)
+C 0x4611 el byte de la barra...
+C 0x4613 ...y el de debajo, con el borde
 C 0x461B la linea siguiente: 128 bytes mas abajo
 C 0x4624 el siguiente punto de energia
 C 0x468E la paleta A: 32 bytes (16 colores) por paleta desde p00:46BE
@@ -182,47 +216,71 @@ C 0x46B1 SETPLT de la SUB-ROM: el color D
 C 0x46BA el color siguiente
 C 0x47C4 HL = 0x6000: el banco se copia desde el principio
 C 0x47C7 0xE01C = 1: a la pagina 1 de la VRAM (la de los dibujos)
+C 0x47C9 0xE01C = 1: la pagina de dibujos
 C 0x47D0 a la linea 0 de la pagina
 C 0x47D6 con el banco 12, p12:98BF: la tabla de sprites del jugador
+C 0x47D9 p12:98BF
 C 0x47E2 a la linea 0x40 de la pagina
 C 0x47E8 la orden HMMC de p00:4843: 256 x 64 puntos, de la CPU a la VRAM
+C 0x47F1 la orden a 0xE0D0
 C 0x47F3 la y de destino...
 C 0x47F9 ...y la pagina (el byte alto de la y)
 C 0x4801 el primer byte va con la orden (en R#44, el color)
+C 0x4802 en R#44 (el color) el primer byte
 C 0x480C R#17 = 36 con autoincremento: los registros 36 a 46 seguidos
+C 0x480E R#17 = 36...
+C 0x4810 ...con autoincremento (0x80) y al registro 17 (0x11)
+C 0x4814 11 registros
 C 0x481B los 11 bytes de la orden, al puerto 0x9B
 C 0x4820 S#2: mira el VDP
+C 0x4822 R#15 = 2: S#2
+C 0x4828 lee S#2
 C 0x482A CE a cero: la orden acabo
 C 0x482E TR a uno: quiere otro byte
 C 0x4832 el byte siguiente del banco, a R#44 (el puerto 0x9B)
 C 0x4834 R#17 = 44 sin autoincremento, para el siguiente
+C 0x4836 R#17 = 44
 C 0x483A S#0 otra vez en R#15
+C 0x483B R#15 = 0: S#0 otra vez
 C 0x484E la orden de p00:48A9: HMMM de 8 x 8 desde la pagina 1 (la de los dibujos)
+C 0x4850 la orden de copiar de la pagina 1
 C 0x485E la misma con LMMM y TIMP (0x98): el color 0 no tapa lo de debajo
+C 0x4861 LMMM con TIMP
 C 0x4867 la orden de p00:48B8: HMMM de 8 x 8 desde la linea 0xD8 de la pagina 0 (las letras)
+C 0x4869 la orden de copiar de las letras
 C 0x4871 la casilla HL (fila x 32 + columna): la y de destino = fila x 8...
+C 0x4872 la fila de la casilla: los 3 bits altos de L...
+C 0x4874 ...y los 2 bajos de H, x 8
 C 0x487A ...en R#38-39...
 C 0x4881 ...y la x = columna x 8, en R#36
+C 0x4887 la x (R#36)
 C 0x488B el dibujo A: su fila de la hoja (A / 32) x 8...
 C 0x4891 ...mas la fila de la hoja (0xE01F), en R#34...
+C 0x4894 la fila de la hoja (R#34)
 C 0x4898 ...y la x = (A mod 32) x 8, en R#32
 C 0x48A1 los registros 32 a 46, y la orden
 C 0x48C7 una cifra con la letra de la fila 0xD8
+C 0x48C8 las letras
 C 0x48D3 las letras estan en la linea 0xD8 de la pagina 0
 C 0x48DB cada byte de la cadena es un dibujo de la hoja; 0xFF acaba
 C 0x48E3 la casilla siguiente
 C 0x48E9 el mapa de 0xC300 (0x9C0 bytes) a 0x10
+C 0x48EF 0x10: casilla vacia
 C 0x48F7 0xE100-0xE1FF a cero
 C 0x4900 0xE220-0xE3FF a cero
 C 0x4909 las fichas del jugador con y = 0xEC: fuera de la pantalla
+C 0x490E las cuatro del jugador fuera
 C 0x491D sin disparo ni palanca
+C 0x4921 sin disparo, salto ni 0xE064
 C 0x492E 0xE500-0xE5FF a cero (los objetos de la fase)
 C 0x4937 las 28 fichas que no son del jugador a cero...
+C 0x4940 desde 0xE340, 28 fichas
 C 0x4948 ...y fuera de la pantalla (y = 0xEC)
 C 0x494D y a la VRAM
 C 0x4950 los colores de los sprites del jugador: 0xC980...
 C 0x4958 ...o 0xC9A0
 C 0x495E 0x40 bytes a la tabla de colores de los sprites 0-3 (0x7400): el jugador
+C 0x4961 los colores de los sprites 0-3 (el jugador)
 C 0x4971 0x60 en la linea B de los colores...
 C 0x4973 ...y en la misma del sprite siguiente (16 mas)
 C 0x497B los colores de los 32 sprites (0x400 bytes)...
@@ -418,6 +476,124 @@ C 0x52F9 ...y no es la de la vez anterior (0xE00F la recuerda)...
 C 0x5304 ...una vida mas, hasta 99
 C 0x5311 el sonido de la vida de mas, y REST en el marcador
 C 0x531B la fase en la lista de las bases (p00:532C)?
+C 0x54DF una bala del jugador (IY): en las bases, aparte (p00:58D7)
+C 0x54E5 al salir: su dibujo segun el arma (0xE032, la tabla p00:5519)...
+C 0x54FA ...estado 1, dibujo 0x20...
+C 0x5502 ...y lo propio de cada arma (su tipo - 1, la tabla de detras)
+C 0x5526 0xE2D0 = 8
+C 0x552C una ficha libre para un trozo de bala: las dos de 0xE340 y las cuatro de 0xE4C0
+C 0x5556 libre (tipo 0): la ocupa con la posicion de IY, tipo 1, estado 2, dibujo 0x20...
+C 0x5574 ...y la direccion de IY + 4 (de 1 a 8, dando la vuelta)
+C 0x5585 el dibujo de la bala segun su direccion (la tabla p00:5597)
+C 0x55A0 con el jugador a la izquierda del todo (x < 9), fuera
+C 0x55A8 la bala hacia abajo: 0x0C mas abajo...
+C 0x55B4 ...y en los bordes, 8 hacia dentro
+C 0x55CD cada cuadro, segun el tipo de bala (el arma + 1), la tabla de detras
+C 0x55E4 la bala que serpentea: cada 8 cuadros...
+C 0x55F1 ...su paso de la tabla p00:5634 (x e y de cada uno de los 8)
+C 0x560A avanza dos veces (p00:573C)
+C 0x5610 fuera de la pantalla por su lado, fuera (p03:BA4F)
+C 0x5644 la que se abre en dos: estado 3, ya partida
+C 0x564C hacia arriba o hacia abajo, siempre...
+C 0x5659 ...a los lados, solo con el jugador lejos del borde (x 0x1C-0xD6)
+C 0x5669 al partirse: una segunda bala en 0xE4C0 desde la de 0xE350 (p00:56E8)...
+C 0x5697 ...y las dos avanzan tres pasos
+C 0x56A7 junto al borde: las dos fuera
+C 0x56BE la primera vez, la de 0xE350 sale de la de 0xE340
+C 0x56E8 la bala IY a la posicion de IX + la tabla HL por su direccion (si cabe en la pantalla)
+C 0x5705 estado 3, tipo 2
+C 0x5721 avanza; fuera de la pantalla, fuera
+C 0x573C un paso de la bala en su direccion: el paso de la tabla segun la velocidad (0xE034)...
+C 0x5747 ...p00:576C, p00:5790 (0) o p00:577E (1)
+C 0x5760 la x + su paso...
+C 0x5764 ...y la y + el suyo
+C 0x57A2 la que se abre en abanico: la primera vez...
+C 0x57AB ...estado 2 y su direccion entre 32 (la de la bala x 4, menos 2)...
+C 0x57C3 ...dibujo 0x20, velocidad 0x0B...
+C 0x57D2 ...y cuatro balas mas en 0xE4C0 (tipo 7), cada una una direccion mas alla
+C 0x581E el fuego: estado 1, al salir...
+C 0x5829 ...estado 2, cuenta IY+0D hasta que estalla...
+C 0x5831 ...su direccion (x 4), velocidad 0x0B, 0x10 cuadros hasta estallar
+C 0x5854 al estallar: dos trozos aqui (tipo 8) y cuatro en 0xE4C0, cada uno 5 direcciones mas alla
+C 0x58CF el sonido 0x1F
+C 0x58D7 la bala en las bases: al salir, el sonido 0x36 y dibujo 0x20
+C 0x58F8 hacia el fondo: su paso en x hacia el centro (p00:596A)...
+C 0x5911 ...y en y segun la palanca (arriba en diagonal o recto, p00:5965 o p00:596A)
+C 0x5934 0x28 pasos
+C 0x5939 dos pasos por cuadro (p00:593C)
+C 0x593C sin dibujo, nada; al acabar los pasos, fuera
+C 0x5947 en x y en y, un paso cuando le toca a su mascara de bits (IY+7, IY+8)
+C 0x5965 la mascara y el paso de la tabla p00:5A36...
+C 0x596A ...o de p00:5A12, por A / 4
+C 0x5A6D el jugador tocado: no con 0xE5C2...
+C 0x5A76 ...ni saltando en las bases
+C 0x5A84 su caja segun la postura: agachado (0x12), tumbado (0x0D), en el agua (0xE326) o de pie
+C 0x5AA7 si se tocan (p00:5BD5)...
+C 0x5AAB ...y no parpadea, ni 0xE30F, ni esta ya golpeado...
+C 0x5ABA ...el golpe: 0x40 cuadros, el empujon hacia el lado B...
+C 0x5AC1 ...el dano de 0xE2D1 a 0xE025...
+C 0x5AC7 ...y el sonido 0x26
+C 0x5ACE lo toca algo que se coge? la caja del jugador de pie (o en el agua)
+C 0x5AF8 le da un disparo del jugador: con blancos en la sala vivos no
+C 0x5B00 las dos balas de 0xE340...
+C 0x5B19 ...y las cuatro de 0xE4C0
+C 0x5B32 le ha dado: si el objeto no es de 0xE500 y la bala es de las que atraviesan (tipos 2 y 3), sigue
+C 0x5B45 la bala desaparece...
+C 0x5B60 ...y en su sitio un destello (tipo 0x2B, dibujo 0x10)...
+C 0x5B78 ...con sus colores, y el sonido 0x2F
+C 0x5B8C el sonido A: con el banco 14 puesto se deja en 0xE2D2 para luego
+C 0x5BA1 la bala IX contra la caja HL: libre no
+C 0x5BB0 las del tipo 5 solo con IX+0D
+C 0x5BC3 las de los objetos de 0xE500, solo las primeras 4 de vida (IX+0B)
+C 0x5BD5 las dos cajas: (dy, alto, dx, ancho) de HL para IY y de DE para IX...
+C 0x5BDA ...se tocan en y?...
+C 0x5BF9 ...y en x?
+C 0x5C11 B = 3: tocado desde la izquierda; B = 7 desde la derecha
+C 0x5C1D A = la tabla p00:5C27 (A)
+C 0x5C48 B = 1 si la direccion C es de las cuatro rectas
+C 0x5C53 avanza: con velocidad negativa, un paso cada vez que toca la mascara (IY+7)...
+C 0x5C61 ...con positiva, tantos pasos como diga p00:5C96
+C 0x5C75 la velocidad A (IY+6) y su mascara de pasos (p00:5C8F o p00:5CA6)
+C 0x5CB6 la mascara del paso en la otra coordenada (p00:5CC4, por la direccion)
+C 0x5CCC un paso: la direccion (IY+8, 32) elige en p00:5D0D el paso en y y en x...
+C 0x5CDD ...las direcciones casi horizontales mueven la x siempre y la y segun la mascara...
+C 0x5CF9 ...las casi verticales, al reves
+C 0x5D1D la direccion (de 32) desde IY hacia IX: el octante (p00:5D48)...
+C 0x5D20 ...y dentro de el, cuanto se aparta (de 0 a 4, por la razon entre los lados)
+C 0x5D3B ...sumado o restado segun el octante
+C 0x5D48 el octante: las diferencias en y (B) y en x (C), el mayor en B, y H la direccion base, L el sentido
+C 0x5DAC cada ocho cuadros: con el arma 3 (o cualquiera en las bases) el disparo seguido...
+C 0x5DC3 ...cada 0xE2D0 cuadros se repite solo (0xE061 a cero)
+C 0x5DD2 los 21 objetos de sprite (0xE360-0xE4AF): p02:8000 con los que tienen tipo
+C 0x5DF4 y los 14 de 0xE500: p02:8063
+C 0x5E15 los colores de cuatro fichas (BC una tabla) y las partes de cuerpo de las tres de debajo (tipo 0x2D)
+C 0x5E31 los de dos fichas: la de debajo, tipo 0x2D
+C 0x5E45 el color de (BC) en las 16 lineas de la tabla de colores (0x7400 + la ficha - 0xE300...)
+C 0x5E57 lo mismo con A
+C 0x5E5C hay pared a la derecha? la casilla de (y, x + 0x0C) (en la fase 18, 4 mas abajo)
+C 0x5E66 a la izquierda: (y, x - 3)
+C 0x5E7B un paso a la derecha si no hay pared...
+C 0x5E91 ...y si la hay, p00:5EB2
+C 0x5E96 un paso a la izquierda si no hay pared
+C 0x5EB2 con pared: se da la vuelta (y los del tipo 0x17 saltan)
+C 0x5ECD cae: hasta 3 puntos, mientras no haya suelo bajo sus pies (x + 4 y x + 0x0B)...
+C 0x5F01 ...un punto mas abajo cada vez; acarreo si sigue cayendo
+C 0x5F0C D = 4 en la fase 18 (el suelo esta 4 mas abajo); 0 en las demas
+C 0x5F19 los puntos: 1, 2, 3, 4 o 0x10 (centenas en BCD)
+C 0x5F33 suma A (y B) a los puntos: solo en la partida y sin 0xE035...
+C 0x5F44 ...las dos cifras bajas en 0xE038...
+C 0x5F4C ...y las altas en 0xE037 (con la vida de mas, p00:52DD)
+C 0x5F58 con 0xE035, los puntos se quedan en 999999
+C 0x5F6C suma B en BCD a (HL), y el acarreo a la cifra de mas arriba
+C 0x5F85 y el marcador: los puntos a cifras (p00:5F92)
+C 0x5F92 los puntos (0xE035-0xE038, cuatro bytes BCD) a ocho cifras en 0xE056...
+C 0x5F9E ...la cifra alta de cada byte...
+C 0x5FA6 ...los ceros de la izquierda como espacio (0x10) hasta la primera cifra...
+C 0x5FBB ...y la baja, igual
+C 0x5FD6 la ultima, si es espacio, un 0
+C 0x5FDE las seis cifras que se ven (0xE058-0xE05D) en la fila del marcador...
+C 0x5FE1 ...con la letra de la hoja de la fila 0x40, en la pagina 1
+C 0x5FF6 ...una a una (p00:48C7)
 # --- fin de lo escrito a mano ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
@@ -455,9 +631,12 @@ L 0x531B es_base_3d acarreo si la fase es una base en 3D (la lista p00:532C: 1, 
 L 0x5A5A toca_al_jugador_2 como p00:5A68 con otro dano
 L 0x5A68 toca_al_jugador acarreo si la caja HL de la ficha IY toca al jugador (y le quita energia)
 L 0x5AF8 le_da_un_disparo acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+L 0x5B8C pide_si_banco_14 con el banco 14 en 0x6000 apunta el sonido A en 0xE2D2; si no, lo pide
+L 0x5BD5 se_tocan acarreo si la caja HL de la ficha IY y la caja DE de la ficha IX se tocan (B: el lado)
 L 0x5C53 avanza mueve la ficha IY un paso en su direccion
 L 0x5C75 velocidad la velocidad A del objeto IY
 L 0x5CB6 paso_de_direccion el paso en x y en y de la direccion IY+8 (32 direcciones)
+L 0x5CCC un_paso mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
 L 0x5D1D hacia_el_jugador A = la direccion desde la ficha IY hasta el jugador
 L 0x5E45 colores_ficha pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 L 0x5F19 suma_100 suma 1 a los puntos
@@ -698,41 +877,105 @@ C 0x52D6 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a
 C 0x530E guarda las vidas que quedan (en BCD)
 C 0x5313 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x54DC suma_puntos: suma A a los puntos (0xE037-0xE038, BCD) y mira la vida de mas
-C 0x54DF es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 C 0x54F7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x54FE el dibujo del objeto (p00:4BBB) = 0x20
 C 0x5506 despacha_e: salta por la tabla que va detras del call, con el indice en E
+C 0x555C lee la x del objeto (p00:4BBB)
+C 0x5562 lee la y del objeto (p00:4BBB)
+C 0x558F guarda el dibujo del objeto (p00:4BBB)
+C 0x55AA le suma la y del objeto (p00:4BBB)
+C 0x55AD guarda la y del objeto (p00:4BBB)
+C 0x55B0 la cuenta del objeto (p02:9915) = 0x00
+C 0x55C6 le suma la x del objeto (p00:4BBB)
+C 0x55C9 guarda la x del objeto (p00:4BBB)
+C 0x55E7 lee la cuenta del objeto (p02:9915)
+C 0x55FB le suma la x del objeto (p00:4BBB)
+C 0x55FE guarda la x del objeto (p00:4BBB)
+C 0x5603 le suma la y del objeto (p00:4BBB)
+C 0x5606 guarda la y del objeto (p00:4BBB)
+C 0x566C sube el estado del objeto (p03:A03E)
 C 0x5687 lee el dibujo del sprite
+C 0x568A guarda el dibujo del objeto (p00:4BBB)
 C 0x56D2 lee el dibujo del sprite
+C 0x56D5 guarda el dibujo del objeto (p00:4BBB)
+C 0x56F7 guarda la x del objeto (p00:4BBB)
+C 0x5702 guarda la y del objeto (p00:4BBB)
+C 0x5709 el tipo del objeto (p02:8000, p02:8063) = 0x02
+C 0x5724 lee la y del objeto (p00:4BBB)
+C 0x572E lee la x del objeto (p00:4BBB)
+C 0x575D le suma la x del objeto (p00:4BBB)
+C 0x5765 le suma la y del objeto (p00:4BBB)
+C 0x5768 guarda la y del objeto (p00:4BBB)
 C 0x57C7 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x57CF velocidad: la velocidad A del objeto IY
+C 0x57DB lee la x del objeto (p00:4BBB)
+C 0x57DE lee la y del objeto (p00:4BBB)
+C 0x57E8 el tipo del objeto (p02:8000, p02:8063) = 0x07
+C 0x57EC el estado del objeto (p03:A03E) = 0x02
+C 0x57F0 el dibujo del objeto (p00:4BBB) = 0x20
+C 0x57F4 guarda la x del objeto (p00:4BBB)
+C 0x57F7 guarda la y del objeto (p00:4BBB)
+C 0x57FA la y guardada del objeto (p02:9A24) = 0x02
 C 0x5802 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x580A velocidad: la velocidad A del objeto IY
 C 0x5818 avanza: mueve la ficha IY un paso en su direccion
 C 0x581B dentro_o_fuera: si la ficha IY sale de la pantalla la libera; acarreo si sigue dentro
 C 0x5840 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x5848 velocidad: la velocidad A del objeto IY
+C 0x584B la y guardada del objeto (p02:9A24) = 0x02
+C 0x584F la segunda cuenta del objeto (p02:9921) = 0x10
+C 0x585B lee la x del objeto (p00:4BBB)
+C 0x585E lee la y del objeto (p00:4BBB)
+C 0x5866 el tipo del objeto (p02:8000, p02:8063) = 0x08
+C 0x586A el estado del objeto (p03:A03E) = 0x03
+C 0x586E el dibujo del objeto (p00:4BBB) = 0x20
+C 0x5872 guarda la x del objeto (p00:4BBB)
+C 0x5875 guarda la y del objeto (p00:4BBB)
+C 0x5878 la y guardada del objeto (p02:9A24) = 0x03
 C 0x5880 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x5888 velocidad: la velocidad A del objeto IY
+C 0x589F el tipo del objeto (p02:8000, p02:8063) = 0x08
+C 0x58A3 el estado del objeto (p03:A03E) = 0x03
+C 0x58A7 el dibujo del objeto (p00:4BBB) = 0x20
+C 0x58AB guarda la x del objeto (p00:4BBB)
+C 0x58AE guarda la y del objeto (p00:4BBB)
+C 0x58B1 la y guardada del objeto (p02:9A24) = 0x03
 C 0x58B9 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x58C1 velocidad: la velocidad A del objeto IY
 C 0x58D1 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0x58DF pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
-C 0x5911 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
-C 0x5A76 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
-C 0x5AF8 lee los blancos de la sala que quedan (bases 3D)
+C 0x58E2 el dibujo del objeto (p00:4BBB) = 0x20
+C 0x58E6 lee el estado del objeto (p03:A03E)
+C 0x58EC sube el estado del objeto (p03:A03E)
+C 0x5903 lee la x del objeto (p00:4BBB)
+C 0x5920 lee la y del objeto (p00:4BBB)
+C 0x5928 lee la y del objeto (p00:4BBB)
+C 0x5931 guarda la y guardada del objeto (p02:9A24)
+C 0x5941 baja la x guardada del objeto (p02:9A24)
+C 0x5950 le suma la x del objeto (p00:4BBB)
+C 0x5953 guarda la x del objeto (p00:4BBB)
+C 0x595B lee la y guardada del objeto (p02:9A24)
+C 0x595E le suma la y del objeto (p00:4BBB)
+C 0x5961 guarda la y del objeto (p00:4BBB)
+C 0x5AC9 pide_si_banco_14: con el banco 14 en 0x6000 apunta el sonido A en 0xE2D2; si no, lo pide
+C 0x5AE4 se_tocan: acarreo si la caja HL de la ficha IY y la caja DE de la ficha IX se tocan (B: el lado)
 C 0x5B5A busca_una: IX = una ficha libre de 0xE380 (de 19); acarreo si no hay
 C 0x5B7B colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
+C 0x5B82 pide_si_banco_14: con el banco 14 en 0x6000 apunta el sonido A en 0xE2D2; si no, lo pide
 C 0x5B8D lee la copia del banco de 0x6000
 C 0x5B9A pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x5BCB se_tocan: acarreo si la caja HL de la ficha IY y la caja DE de la ficha IX se tocan (B: el lado)
 C 0x5C1A hacia_el_jugador: A = la direccion desde la ficha IY hasta el jugador
+C 0x5C5E un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
+C 0x5C6D un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
 C 0x5DB1 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x5DE3 lee el tipo del objeto (p02:8000, p02:8063)
 C 0x5DF8 apunta a las fichas de los objetos de la fase (16 bytes)
+C 0x5E05 lee el tipo del objeto (p02:8000, p02:8063)
 C 0x5E09 mueve_objetos: la rutina del objeto IY (de 0xE500) segun su tipo IY+4 (la tabla de detras)
 C 0x5E33 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 C 0x5E3B colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
-C 0x5F0C lee la fase (0-19; la 8 se salta)
 C 0x5F38 lee 1 en una partida de verdad, 0 en la demostracion
-C 0x5F4C apunta a los puntos (BCD; el marcador anade 00)
 C 0x5F63 guarda los puntos (BCD; el marcador anade 00)
 C 0x5FE3 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 # --- fin de las anotaciones de anota.py ---

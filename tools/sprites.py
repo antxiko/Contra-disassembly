@@ -128,8 +128,94 @@ def del_jugador(m):
     return rs
 
 
-def recoge(f, segundos=20, tramo=None):
-    """{bytes del dibujo: (imagen, es_jugador)} de lo que se ve en la fase."""
+# Tipos que son disparos o explosiones (los crean asi p02 y p03): no son
+# enemigos y no van a la hoja. 0x0B la explosion (p03:A0FF), 0x1C/0x1D las de
+# p02:9085-90B1, y las balas 0x03, 0x04, 0x09, 0x0A, 0x0C, 0x0D, 0x11, 0x1F,
+# 0x22, 0x23, 0x25 y 0x29 (p02:8323, p02:85A9, p02:8680, p02:8DC4, p02:9019,
+# p02:9B57, p02:9EB0, p03:A141, p03:A67B, p03:A731...); 0x1E lo lanza p02:8C18
+# y 0x20 es la explosion de p02:81A0, p03:A339 y p03:A499.
+NO_ENEMIGOS = {0x03, 0x04, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x11, 0x1C, 0x1D, 0x1E,
+               0x1F, 0x20, 0x22, 0x23, 0x25, 0x29}
+POR_TIPO = 4
+# Tipos que son una parte de otro objeto y no lo nombran: 0x2D el cuerpo de
+# los soldados (va encima de las piernas, que llevan el tipo del soldado) y
+# 0x2B el destello del disparo.
+PARTES = {0x2B, 0x2D}
+
+
+def objetos(m):
+    """[(tipos, [registros])] de los objetos en pantalla. Un objeto son los
+    registros de 0xE340-0xE4FF que se tocan en la pantalla: la misma x (a 4
+    puntos) y una y a 16 (la parte de abajo, p02:9ABF), o a 16 en x y la misma
+    y (los de cuatro, p03:A01A). Cada parte puede llevar su tipo (el soldado
+    lleva uno en las piernas y otro en el cuerpo)."""
+    pos = {}
+    for k in range(4, 32):
+        a = 0xE300 + 16 * k
+        if m.mem[a] in (0xEC, 0xD8, 0xE8) or m.mem[a + 4] in NO_ENEMIGOS:
+            continue
+        pos[k] = (m.mem[a], m.mem[a + 1])
+
+    def cerca(p, q):
+        dy = abs(((p[0] - q[0] + 128) & 0xFF) - 128)
+        dx = abs(((p[1] - q[1] + 128) & 0xFF) - 128)
+        return (dx <= 4 and dy <= 18) or (dy <= 4 and dx <= 18)
+    grupos = []
+    for k in sorted(pos):
+        junto = [g for g in grupos if any(cerca(pos[k], pos[n]) for n in g)]
+        nuevo = [k] + [n for g in junto for n in g]
+        grupos = [g for g in grupos if g not in junto] + [sorted(nuevo)]
+    out = []
+    for g in grupos:
+        tipos = tuple(sorted({m.mem[0xE300 + 16 * n + 4] for n in g} - {0} - PARTES))
+        if len(tipos) == 1:                 # dos enemigos cruzados no valen
+            out.append((tipos, g))
+    return out
+
+
+def pinta(m, ks):
+    """Los sprites ks (y sus parejas CC) pintados solos: imagen RGBA recortada."""
+    from PIL import Image
+    v = m.vdp
+    attr = ((v.r[11] & 3) << 15) | ((v.r[5] & 0xFC) << 7)
+    cols = attr - 0x200
+    pat = (v.r[6] & 0x3F) << 11
+    ns = set()
+    for k in ks:
+        ns.add(k)
+        n = k + 1
+        while n < 32 and v.vram[cols + 16 * n] & 0x40:   # las de CC que le siguen
+            ns.add(n)
+            n += 1
+    puntos = {}
+    for n in sorted(ns):
+        y, x, d = v.vram[attr + 4 * n:attr + 4 * n + 3]
+        if y in (216, 0xEC, 0xD8):
+            continue
+        y = (y + 1) & 0xFF
+        d &= 0xFC
+        for fila in range(16):
+            c = v.vram[cols + 16 * n + fila]
+            dx = x - 32 if c & 0x80 else x
+            for col in range(16):
+                b = v.vram[pat + 8 * d + (col // 8) * 16 + fila]
+                if (b >> (7 - col % 8)) & 1:
+                    k2 = (dx + col, y + fila)
+                    puntos[k2] = puntos.get(k2, 0) | (c & 15)
+    puntos = {k2: c for k2, c in puntos.items() if c}
+    if not puntos:
+        return None
+    x0 = min(p[0] for p in puntos); y0 = min(p[1] for p in puntos)
+    x1 = max(p[0] for p in puntos); y1 = max(p[1] for p in puntos)
+    im = Image.new("RGBA", (x1 - x0 + 1, y1 - y0 + 1), (0, 0, 0, 0))
+    px = im.load()
+    for (xx, yy), c in puntos.items():
+        px[xx - x0, yy - y0] = v.rgb(c) + (255,)
+    return im
+
+
+def recoge(f, segundos=25, tramo=None):
+    """{tipo: [imagenes distintas]} de los objetos que se ven en la fase."""
     vistos = {}
     m = anima.partida(f, tramo)
     m.apunta = False
@@ -146,37 +232,39 @@ def recoge(f, segundos=20, tramo=None):
         d = anima.HACIA.get(f, 3)
         m.palanca = {1: d} if d else {}
         m.botones = {1} | ({3} if n[0] % 45 < 8 else set())
-        if m.cuadro > fases.PULSA + 120 and n[0] % 3 == 0:
-            jug = del_jugador(m)
-            for im, x, y, w, h in figuras(m):
-                if w < 8 or h < 8:
-                    continue                    # las balas y las chispas
-                k = im.tobytes() + bytes([w, h])
-                forma = bytes(1 if a else 0 for a in im.getchannel("A").tobytes()) + bytes([w, h])
-                cuantas = sum(1 for kk in vistos if vistos[kk][2] == forma)
-                if k not in vistos and cuantas < 1:
-                    es = any(x - 2 <= jx + 8 <= x + w + 2 and y - 2 <= jy + 8 <= y + h + 2
-                             for jx, jy in jug)
-                    vistos[k] = (im, es, forma)
+        if m.cuadro > fases.PULSA + 120 and n[0] % 2 == 0:
+            for tipos, ks in objetos(m):
+                if set(tipos) <= NO_ENEMIGOS:
+                    continue
+                tipo = tipos
+                im = pinta(m, ks)
+                if im is None or im.width < 6 or im.height < 6:
+                    continue
+                ya = vistos.setdefault(tipo, [])
+                if len(ya) < POR_TIPO and all(im.tobytes() != o.tobytes() for o in ya):
+                    ya.append(im)
     m.cuadros(fases.PULSA + 120 + segundos * 60, cada=mando)
     return vistos
 
 
-def hoja(vistos, ancho=640, escala=2, fondo=(40, 40, 48), jugador=False):
-    """Las figuras en filas, de la mas alta a la mas baja."""
-    from PIL import Image
-    ims = sorted((im for im, jug, _ in vistos.values() if jug == jugador),
-                 key=lambda i: (-i.height, -i.width))
-    pos, x, y, alto = [], 2, 2, 0
-    for im in ims:
-        if x + im.width + 2 > ancho // escala:
-            x, y, alto = 2, y + alto + 3, 0
-        pos.append((im, x, y))
-        x += im.width + 3
-        alto = max(alto, im.height)
-    h = Image.new("RGB", (ancho // escala, y + alto + 2), fondo)
-    for im, x, y in pos:
-        h.paste(im, (x, y), im)
+def hoja(vistos, escala=3, fondo=(40, 40, 48)):
+    """Una fila por tipo de objeto, con sus dibujos (como mucho POR_TIPO)."""
+    from PIL import Image, ImageDraw
+    filas = sorted(vistos.items())
+    if not filas:
+        return Image.new("RGB", (64, 16), fondo)
+    alto = [max(i.height for i in ims) + 4 for _, ims in filas]
+    ancho = max(sum(i.width + 4 for i in ims) for _, ims in filas) + 44
+    h = Image.new("RGB", (ancho, sum(alto)), fondo)
+    d = ImageDraw.Draw(h)
+    y = 0
+    for (tipo, ims), a in zip(filas, alto):
+        d.text((1, y + a // 2 - 4), "+".join("%02X" % x for x in tipo), fill=(150, 150, 150))
+        x = 40
+        for im in ims:
+            h.paste(im, (x, y + (a - im.height) // 2), im)
+            x += im.width + 4
+        y += a
     return h.resize((h.width * escala, h.height * escala), Image.NEAREST)
 
 
@@ -188,8 +276,8 @@ def main(argv):
     tramo = int(argv[5]) if len(argv) > 5 else None
     v = recoge(f, seg, tramo)
     hoja(v).save(salida)
-    print("fase %d: %d dibujos (%d del jugador) -> %s" % (
-        f, len(v), sum(1 for _, j, _ in v.values() if j), salida))
+    print("fase %d: %d tipos de objeto (%s) -> %s" % (
+        f, len(v), " ".join("+".join("%02X" % x for x in t) for t in sorted(v)), salida))
 
 
 if __name__ == "__main__":

@@ -1,15 +1,66 @@
 
+
+# --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x7800 lo que pide E (p03:A0E4): 1 p14:7860, 2 p14:7937, 3 p14:7838, 4 p14:7820...
+C 0x780F ...5 p14:7A11, 6 p14:7A66, 7 p14:7A87, 8 p14:7AA0; si no, nada
+C 0x7820 4: el soldado que baja: guarda su posicion y sus colores (p03:A8D5)...
+C 0x7829 ...su paso (p00:5E40) y velocidad -2
+C 0x7838 3: el que se esconde, al salir: 4 mas abajo, espera al azar (8 a 0x3F)...
+C 0x784F ...sus colores, su figura (p03:A92C) y la direccion -2
+C 0x7860 1: el que va a la izquierda por la base: uno a la izquierda por cuadro
+C 0x7865 al llegar al borde (x 8), fuera
+C 0x786D sin blancos en la sala, fuera
+C 0x7881 hasta donde baja: su y + 4 (IY+18)
+C 0x788C hacia arriba (direccion 0), velocidad 4, dibujos 0x90 y 0x94, sus colores (p14:7935)
+C 0x78AA cada 2 cuadros frena hasta -6...
+C 0x78BB ...y entonces hacia abajo (direccion 0x10)
+C 0x78CB cada 2 cuadros acelera...
+C 0x78D9 ...hasta su y de partida
+C 0x78E8 alli, a veces (uno de cada cuatro) se queda (estado 4); si no, otra vez
+C 0x78F9 sube y va a la izquierda, con el dibujo alternando 0x98 y 0xA0 cada 4 cuadros
+C 0x7914 la ficha de abajo, y si toca al jugador (p14:7931)...
+C 0x7923 ...su figura rota y explota
+C 0x7937 2: el bicho de la base: espera al azar (0x10 a 0x1F) y una direccion al azar (0x16 a 0x19)...
+C 0x7958 ...sus colores (p14:7A0F)...
+C 0x795E ...y si gira: a la izquierda (3 de cada 8), a la derecha (3) o nada (2)
+C 0x7976 sin blancos en la sala, fuera
+C 0x797D dos pasos por cuadro (p00:5CCC)
+C 0x798A cada 0x30 cuadros (0x50 en el tramo 2)...
+C 0x799C ...y cada 8, gira un paso (mientras le quede la espera)
+C 0x79C1 su dibujo da la vuelta: de 0x58 a 0x78 de 8 en 8, despacio
+C 0x79E0 fuera de la pantalla, fuera
+C 0x79F9 si toca al jugador (p14:7A0B), explota
+C 0x7A11 5: la pieza que cae del techo: con IY+3 = 1, ya en el suelo
+C 0x7A18 cada 0x10 cuadros...
+C 0x7A22 ...su pieza en el fondo (p02:92CB o p02:92BA segun IY+0F)...
+C 0x7A33 ...una casilla mas abajo (0x20)...
+C 0x7A40 ...IY+9 veces
+C 0x7A46 abajo: una casilla atras y fuera
+C 0x7A57 con IY+0F, la pieza p02:92C4 y un 1 en la casilla 0x19F (p00:48C7)
+C 0x7A66 6: rota (IY+3 = 3, dibujo 4)...
+C 0x7A6E ...la orden de p02:8D30 que borra su trozo de pantalla...
+C 0x7A7E ...0x50 puntos y dos destruidos mas
+C 0x7A87 7: un objeto del tipo 0x20 en 0xE5D0 con la cuenta 0x50...
+C 0x7A97 ...y 0xE5C2 y los blancos de la sala a 0xFF
+C 0x7AA0 8: el tipo 0x24, dibujo 0x28, IY+14 = 0x0B
+# --- fin de lo escrito a mano ---
+
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
 C 0x7826 colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 C 0x782C paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x7834 velocidad: la velocidad A del objeto IY
+C 0x783E lee la y guardada del objeto (p02:9A24)
+C 0x7843 guarda la y guardada del objeto (p02:9A24)
+C 0x784C guarda la segunda cuenta del objeto (p02:9921)
 C 0x7858 pon_figura: pone la figura HL (dy, dx, dibujo) en la ficha IY y en la de debajo (IY+10, dibujo + 4)
 C 0x7867 libera_2: libera la ficha IY y la de debajo
-C 0x786D lee los blancos de la sala que quedan (bases 3D)
+C 0x786A guarda la x del objeto (p00:4BBB)
 C 0x7871 libera_2: libera la ficha IY y la de debajo
 C 0x7874 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x7889 sube el estado del objeto (p03:A03E)
 C 0x7891 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 C 0x7896 velocidad: la velocidad A del objeto IY
+C 0x7899 el dibujo del objeto (p00:4BBB) = 0x90
 C 0x78A7 avanza: mueve la ficha IY un paso en su direccion
 C 0x78AC cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x78C3 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
@@ -17,23 +68,45 @@ C 0x78C8 avanza: mueve la ficha IY un paso en su direccion
 C 0x78CD cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
 C 0x78D6 velocidad: la velocidad A del objeto IY
 C 0x78E3 velocidad: la velocidad A del objeto IY
+C 0x78EE el estado del objeto (p03:A03E) = 0x04
+C 0x78F4 sube el estado del objeto (p03:A03E)
+C 0x78FC baja la x del objeto (p00:4BBB)
+C 0x790C guarda el dibujo del objeto (p00:4BBB)
 C 0x791F le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
+C 0x7926 el tipo del objeto (p02:8000, p02:8063) = 0x0B
+C 0x792A el estado del objeto (p03:A03E) = 0x00
+C 0x793D sube el estado del objeto (p03:A03E)
+C 0x7949 guarda la segunda cuenta del objeto (p02:9921)
 C 0x7955 paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
-C 0x7976 lee los blancos de la sala que quedan (bases 3D)
 C 0x797A libera_2: libera la ficha IY y la de debajo
-C 0x798A lee el tramo: la pantalla de la lista de la fase
+C 0x7980 un_paso: mueve la ficha IY un punto en su direccion (IY+8, 32 direcciones, la tabla p00:5D0D)
+C 0x7983 lee el estado del objeto (p03:A03E)
 C 0x7997 espera_c: cada A cuadros (la cuenta IY+0C) el estado siguiente; acarreo al llegar
+C 0x799F lee la cuenta del objeto (p02:9915)
+C 0x79A6 la cuenta del objeto (p02:9915) = 0x00
+C 0x79AA lee la segunda cuenta del objeto (p02:9921)
+C 0x79B0 baja la segunda cuenta del objeto (p02:9921)
 C 0x79BE paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
+C 0x79D5 guarda el dibujo del objeto (p00:4BBB)
 C 0x79E9 libera_2: libera la ficha IY y la de debajo
+C 0x79EC lee la x del objeto (p00:4BBB)
 C 0x79F1 libera_2: libera la ficha IY y la de debajo
 C 0x79F6 libera_2: libera la ficha IY y la de debajo
 C 0x79FD toca_al_jugador_2: como p00:5A68 con otro dano
 C 0x7A01 le_da_un_disparo: acarreo si un disparo del jugador (0xE340 y siguientes) toca la caja HL de la ficha IY
 C 0x7A08 explota: la ficha IY pasa a ser una explosion (tipo 0x0B)
 C 0x7A1A cuenta_c: sube la cuenta IY+0C; al llegar a A vuelve a 0 y da acarreo (cada A cuadros)
+C 0x7A1E el estado del objeto (p03:A03E) = 0x01
 C 0x7A30 pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x7A4E el tipo del objeto (p02:8000, p02:8063) = 0x00
 C 0x7A5A pinta_pieza: pinta en el fondo la pieza DE en la casilla de la ficha (IY+6/IY+7), con p03:BD1F
+C 0x7A6A el dibujo del objeto (p00:4BBB) = 0x04
 C 0x7A71 apunta a la orden del VDP que se manda (registros 32-46)
 C 0x7A7B orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x7A8B el tipo del objeto (p02:8000, p02:8063) = 0x20
+C 0x7A8F la cuenta del objeto (p02:9915) = 0x50
+C 0x7A93 la segunda cuenta del objeto (p02:9921) = 0x00
 C 0x7A9C guarda los blancos de la sala que quedan (bases 3D)
+C 0x7AA4 el estado del objeto (p03:A03E) = 0x00
+C 0x7AA8 el dibujo del objeto (p00:4BBB) = 0x28
 # --- fin de las anotaciones de anota.py ---
