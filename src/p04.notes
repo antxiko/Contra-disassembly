@@ -12,55 +12,87 @@ C 0x6006 un cuadro del motor (desde la interrupcion)
 C 0x6009 arranque: el sonido 1 (todo callado)
 C 0x600B pide el sonido A, o una orden: 0x80 ponerse en marcha, 0x81 pausa, 0x82 parar, 0x83 y 0x84 bajar el volumen
 C 0x600E 0xC1EB-0xC1EC a 0xFF: hay que mandar todo al SCC
+C 0x6010 0xC1EB y 0xC1EC a 0xFF
+C 0x6017 y las marcas de los canales (0xC1EE, 14 bytes)
 C 0x601A a 1
 C 0x6021 los registros del SCC a cero
 C 0x6024 enciende el SCC (0x3F en 0x9000)...
 C 0x6029 ...con sus canales apagados...
 C 0x602A al SCC: los canales del SCC encendidos
+C 0x602D el sonido 2 al arrancar
 C 0x6032 el registro 7 del PSG: 0xBF (tonos sin ruido)
 C 0x6034 guarda el registro 7 del PSG (los canales y el ruido)
 C 0x603D pide el sonido A, o una orden: 0x80 ponerse en marcha, 0x81 pausa, 0x82 parar, 0x83 y 0x84 bajar el volumen
 C 0x603E 0x82: parar
+C 0x6040 0x82: para
 C 0x6043 0x83: bajar el volumen
+C 0x6045 0x83: baja el volumen
 C 0x6048 0x84: bajar el volumen
+C 0x604A 0x84
 C 0x604D 0x80: en marcha
+C 0x604F 0x80
+C 0x6052 0x81: la pausa
 C 0x6054 orden 0x81: pausa
 C 0x6057 0xC1CC = el sonido
+C 0x605A el sonido que se pide, en 0xC1CC
 C 0x605B su cabecera: la palabra A de la tabla 0x6E12
 C 0x605E el sonido x 2
+C 0x605F el numero x 2...
+C 0x6063 ...en la tabla de cabeceras (p04:6E12)
 C 0x6068 18 bytes a 0xC1CD: [canales][prioridad][una palabra por canal]
+C 0x606B 0x12 bytes de cabecera a 0xC1CD
 C 0x6070 IX: las palabras de la cabecera
 C 0x6074 cada canal marcado (del bit 7 al 0) se pone en marcha con su partitura
+C 0x6077 bit 7 de la mascara: el canal de 0xC001
 C 0x607C la prioridad
 C 0x607D su prioridad
 C 0x6080 pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x6083 la palabra siguiente
+C 0x6085 el puntero siguiente de la cabecera
 C 0x6087 apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x608A bit 6: el canal de 0xC034
 C 0x6093 pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x609A apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x609D bit 5: el de 0xC067
 C 0x60A6 pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x60AD apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x60B0 bit 4: el de 0xC09A
 C 0x60B9 pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x60C0 apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x60C3 bit 3: el de 0xC0CD
 C 0x60CC pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x60D3 apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x60D6 bit 2: el de 0xC100
 C 0x60DF pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x60E6 apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x60E9 bit 1: el de 0xC133
 C 0x60F2 pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x60F9 apunta a la cabecera del sonido que se pide (18 bytes)
+C 0x60FC bit 0: el de 0xC166
 C 0x6104 pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 C 0x6105 menor: no
+C 0x6106 si el canal tiene un sonido mas importante, no se toca
 C 0x6107 el sonido y la prioridad
+C 0x6108 la prioridad y el sonido del canal...
 C 0x610A apunta a el sonido que se pide
 C 0x6111 la partitura
+C 0x6116 ...y por donde empieza su partitura
 C 0x611B y el resto del canal, de la plantilla de 0x6124 (46 bytes)
+C 0x611E y lo demas del canal desde la plantilla (0x2E bytes)
 C 0x6163 orden 0x82: para (bit 0 de 0xC1CB a cero)
+C 0x6166 para: el bit 0 de 0xC1CB a cero
 C 0x616A orden 0x83: baja el volumen poco a poco (0x25 cuadros por paso, 10 pasos)
+C 0x616D 0x25 cuadros por paso, 10 pasos
 C 0x6175 orden 0x84: lo mismo
 C 0x617D bit 0 de 0xC1CB: bajando el volumen
+C 0x6180 bajando el volumen (bit 0)
 C 0x6184 la cuenta a cero
+C 0x6187 0xC1EB y 0xC1EC a cero
 C 0x618C orden 0x80: sigue tras la pausa
+C 0x618F la pausa: con el bit 1 ya puesto, se quita
+C 0x619D la marca de pausa (bit 3) a la de bajando (bit 0)
 C 0x61A1 devuelve el canal 3 guardado en 0xC198
+C 0x61A4 devuelve los volumenes guardados (0xC1FE, 0xC1FF)
 C 0x61A7 copia un canal (0x33 bytes)
 C 0x61AA devuelve los volumenes del PSG guardados en 0xC1FE/0xC1FF
 C 0x61AD el canal 0
@@ -69,10 +101,14 @@ C 0x61CB el canal 2
 C 0x61D5 y los canales del SCC encendidos
 C 0x61DA lee los canales del SCC que suenan
 C 0x61DD al SCC: los canales del SCC encendidos
+C 0x61E0 el sonido 2
 C 0x61E5 0xC1EB-0xC1EC a 0xFF: todo al SCC otra vez
+C 0x61E7 0xC1EB y 0xC1EC a 2
 C 0x61F0 orden 0x81: pausa
+C 0x61F3 pausa: B = 1 si ya estaba
 C 0x61FB bit 1 de 0xC1CB: en pausa
 C 0x6205 guarda el canal 3 en 0xC198
+C 0x6208 guarda los volumenes de los canales 0-2 en 0xC1FE y 0xC1FF
 C 0x620B copia un canal (0x33 bytes)
 C 0x620E los volumenes del PSG a cero, guardandolos
 C 0x6211 el canal 0: su volumen a 0xC1FE...
@@ -83,6 +119,7 @@ C 0x622F ...y fuera del canal
 C 0x6238 el canal 2: su volumen a 0xC1FF...
 C 0x623E ...y fuera del canal
 C 0x6244 sin el bit 4 de las marcas de los canales 0-2
+C 0x6247 y los quita (bit 4 de sus marcas)
 C 0x625C los canales del SCC apagados y sus volumenes a cero
 C 0x6261 lee los canales del SCC que suenan
 C 0x6264 sin el canal 1 del SCC
@@ -91,20 +128,27 @@ C 0x626A al SCC: el volumen del canal 2 del SCC
 C 0x626D al SCC: el volumen del canal 3 del SCC
 C 0x6270 al SCC: el volumen del canal 4 del SCC
 C 0x6273 al SCC: el volumen del canal 5 del SCC
+C 0x6276 C = 2
 C 0x627B B = 0: C = 2
+C 0x627E C = 0x38
 C 0x6281 copia un canal (0x33 bytes)
 C 0x6287 un cuadro del motor: el registro 7 del PSG
+C 0x628A el cuadro del motor
 C 0x628D 0xFDA2 (el cuadro de la BIOS) contra el del motor (0xC1FD)
+C 0x6290 la cuenta de cuadros 0xC1FD
 C 0x6293 van a la par?
 C 0x6296 si no van a la par, las ondas del SCC se vuelven a mandar
 C 0x629A pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
+C 0x629E los canales del SCC: 0xC0CC, 0xC0FF, 0xC132...
 C 0x62A2 pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
 C 0x62AA pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
 C 0x62B2 pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
 C 0x62B6 y se igualan
 C 0x62BA el cuadro siguiente
 C 0x62BB a 0xFDA2
+C 0x62BC 0xFDA2
 C 0x62BF en pausa, solo el canal 3
+C 0x62C2 en pausa: p04:6343
 C 0x62C7 bajando el volumen
 C 0x62CF lee las marcas del motor de sonido
 C 0x62D7 cada uno de los 8 canales, con su bit en 0xC1E4

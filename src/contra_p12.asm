@@ -378,16 +378,16 @@ L_942E:
 	call 00041h		;9439   ; BIOS DISSCR - Inhibits the screen display | la pantalla apagada
 	call 050c5h		;943c   ; borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
 	ld hl,0c300h		;943f   ; el mapa 0xC300-0xC4FF a 0xFF (vacio)...
-	ld de,0c301h		;9442
-	ld bc,00200h		;9445
+	ld de,0c301h		;9442   ; desde 0xC301
+	ld bc,00200h		;9445   ; 0x200 bytes
 	ld (hl),0ffh		;9448
 	ldir		;944a
 	ld hl,0c4a6h		;944c   ; ...y una fila de suelo (2) en 0xC4C0, y una casilla en 0xC4A6
 	ld (hl),002h		;944f
-	ld hl,0c4c0h		;9451
+	ld hl,0c4c0h		;9451   ; la fila 0xC4C0-0xC4DF...
 	ld de,0c4c1h		;9454
 	ld bc,00020h		;9457
-	ld (hl),002h		;945a
+	ld (hl),002h		;945a   ; ...a 2: suelo
 	ldir		;945c
 	ld (ix+00ah),0e0h		;945e   ; el jugador abajo a la izquierda (y 0xE0, x 0)
 	ld (ix+00bh),000h		;9462   ; x = 0
@@ -401,7 +401,7 @@ L_942E:
 	xor a			;947f
 	call L_95BE		;9480   ; color 0: el texto empieza sin verse
 	ld hl,0e305h		;9483   ; los nueve bytes del texto (0xE305-0xE30D) a cero
-	ld b,009h		;9486
+	ld b,009h		;9486   ; nueve bytes
 L_9488:
 	ld (hl),000h		;9488
 	inc hl			;948a
@@ -412,12 +412,12 @@ L_9488:
 	ld (0e1c3h),a		;9494
 L_9497:
 	ld a,(0e1c3h)		;9497   ; cada dos cuadros: el texto (p12:94BB) y el jugador anda solo (p12:95D2)...
-	cp 002h		;949a
+	cp 002h		;949a   ; cada dos cuadros
 	jr c,L_9497		;949c
 	xor a			;949e
 	ld (0e1c3h),a		;949f
-	call L_94BB		;94a2
-	call L_95D2		;94a5
+	call L_94BB		;94a2   ; el texto...
+	call L_95D2		;94a5   ; ...y el jugador
 	ld ix,0e320h		;94a8   ; ...hasta que acaba (0xE355)
 	ld a,(ix+035h)		;94ac   ; acaba cuando 0xE355 no es cero
 	and a			;94af
@@ -430,13 +430,13 @@ L_94BB:
 	ld iy,0e305h		;94bb   ; el texto del final, por pasos (0xE305 la fase del texto, 0xE307 el paso)
 	ld a,(iy+000h)		;94bf   ; 0xE305: aparecer y desaparecer o escribir
 	and a			;94c2
-	jr z,L_94C8		;94c3
+	jr z,L_94C8		;94c3   ; aparecer o desaparecer: p12:9562
 	jp L_9562		;94c5
 L_94C8:
 	ld a,(iy+002h)		;94c8   ; paso 0: escribir las lineas del bloque (IY+3)...
 	and a			;94cb   ; 0xE307: escribir (0), aparecer (1) o ya visto (2)
 	jr z,L_94DA		;94cc
-	cp 001h		;94ce
+	cp 001h		;94ce   ; 1: aparecer
 	jr z,L_951D		;94d0
 	ld (iy+002h),000h		;94d2   ; visto: a desaparecer
 	inc (iy+000h)		;94d6
@@ -445,12 +445,12 @@ L_94DA:
 	ld a,(iy+003h)		;94da   ; ...cuantas lineas tiene el bloque (p12:95CC) y sus punteros (p12:95FC)...
 	ld hl,095cch		;94dd   ; el bloque 0xE308 de la tabla de lineas p12:95CC...
 	call 051b8h		;94e0   ; lee_tabla: HL = HL + A y A = (HL)
-	ld b,a			;94e3
+	ld b,a			;94e3   ; B = las lineas
 	ld hl,095f6h		;94e4   ; ...y sus punteros en p12:95F6 / p12:95FC
 	ld a,(iy+003h)		;94e7
 	call 051b8h		;94ea   ; lee_tabla: HL = HL + A y A = (HL)
 	ld hl,095fch		;94ed
-	add a,a			;94f0
+	add a,a			;94f0   ; el bloque x 2
 	call 051b8h		;94f1   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,(hl)			;94f4
 	inc hl			;94f5
@@ -472,17 +472,17 @@ L_94FE:
 	ld a,040h		;950e   ; con la letra de la fila 0x40, dos filas mas abajo cada una
 	call 051b8h		;9510   ; lee_tabla: HL = HL + A y A = (HL)
 	pop bc			;9513
-	djnz L_94FE		;9514
+	djnz L_94FE		;9514   ; cada linea
 	inc (iy+002h)		;9516   ; ...y el bloque siguiente
 	inc (iy+003h)		;9519   ; el bloque siguiente
 	ret			;951c
 L_951D:
 	ld a,(iy+005h)		;951d   ; la cuenta: el color sube cada dos cuadros...
-	and a			;9520
+	and a			;9520   ; apareciendo
 	jr nz,L_9542		;9521
 	inc (iy+004h)		;9523
 	ld a,(iy+004h)		;9526
-	cp 002h		;9529
+	cp 002h		;9529   ; cada dos cuadros
 	ret c			;952b
 	ld (iy+004h),000h		;952c
 	ld a,(iy+006h)		;9530   ; ...0x11 cada vez (rojo-azul y verde a la vez)...
@@ -495,7 +495,7 @@ L_951D:
 	ret			;9541
 L_9542:
 	inc (iy+004h)		;9542   ; ...se queda 0xB0 cuadros...
-	ld a,(iy+004h)		;9545
+	ld a,(iy+004h)		;9545   ; la cuenta del texto quieto
 	cp 0b0h		;9548   ; 0xB0 cuadros leyendolo
 	ret c			;954a
 	ld (iy+004h),000h		;954b

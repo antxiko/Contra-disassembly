@@ -15,7 +15,11 @@ C 0x9433 ...y a la paleta (p00:46A4)
 C 0x9437 los 16 pasos
 C 0x9439 la pantalla apagada
 C 0x943F el mapa 0xC300-0xC4FF a 0xFF (vacio)...
+C 0x9442 desde 0xC301
+C 0x9445 0x200 bytes
 C 0x944C ...y una fila de suelo (2) en 0xC4C0, y una casilla en 0xC4A6
+C 0x9451 la fila 0xC4C0-0xC4DF...
+C 0x945A ...a 2: suelo
 C 0x945E el jugador abajo a la izquierda (y 0xE0, x 0)
 C 0x9462 x = 0
 C 0x9466 0xE355 a cero: el final no ha acabado
@@ -24,31 +28,43 @@ C 0x9476 con sprites
 C 0x947A el color de la primera linea del texto (p12:95BE)
 C 0x9480 color 0: el texto empieza sin verse
 C 0x9483 los nueve bytes del texto (0xE305-0xE30D) a cero
+C 0x9486 nueve bytes
 C 0x948D la pantalla encendida
 C 0x9491 sin 0xE2CE
 C 0x9497 cada dos cuadros: el texto (p12:94BB) y el jugador anda solo (p12:95D2)...
+C 0x949A cada dos cuadros
+C 0x94A2 el texto...
+C 0x94A5 ...y el jugador
 C 0x94A8 ...hasta que acaba (0xE355)
 C 0x94AC acaba cuando 0xE355 no es cero
 C 0x94B2 la pantalla apagada y fin
 C 0x94B5 A = 1 al volver
 C 0x94BB el texto del final, por pasos (0xE305 la fase del texto, 0xE307 el paso)
 C 0x94BF 0xE305: aparecer y desaparecer o escribir
+C 0x94C3 aparecer o desaparecer: p12:9562
 C 0x94C8 paso 0: escribir las lineas del bloque (IY+3)...
 C 0x94CB 0xE307: escribir (0), aparecer (1) o ya visto (2)
+C 0x94CE 1: aparecer
 C 0x94D2 visto: a desaparecer
 C 0x94DA ...cuantas lineas tiene el bloque (p12:95CC) y sus punteros (p12:95FC)...
 C 0x94DD el bloque 0xE308 de la tabla de lineas p12:95CC...
+C 0x94E3 B = las lineas
 C 0x94E4 ...y sus punteros en p12:95F6 / p12:95FC
+C 0x94F0 el bloque x 2
 C 0x94F8 el puntero a la linea siguiente, en 0xE282
 C 0x94FB ...una debajo de otra desde la casilla 0x148 (dos filas de separacion)...
 C 0x9503 cada linea, desde el puntero
 C 0x950E con la letra de la fila 0x40, dos filas mas abajo cada una
+C 0x9514 cada linea
 C 0x9516 ...y el bloque siguiente
 C 0x9519 el bloque siguiente
 C 0x951D la cuenta: el color sube cada dos cuadros...
+C 0x9520 apareciendo
+C 0x9529 cada dos cuadros
 C 0x9530 ...0x11 cada vez (rojo-azul y verde a la vez)...
 C 0x953B ...hasta 0x77 (el texto ya se ve del todo)
 C 0x9542 ...se queda 0xB0 cuadros...
+C 0x9545 la cuenta del texto quieto
 C 0x9548 0xB0 cuadros leyendolo
 C 0x9553 el paso siguiente
 C 0x9556 ...y tras el sexto bloque, la musica para (0x83)

@@ -422,21 +422,21 @@ L_7800:
 	ret			;781f
 L_7820:
 	call 09a24h		;7820   ; 4: el soldado que baja: guarda su posicion y sus colores (p03:A8D5)...
-	ld bc,0a8d5h		;7823
+	ld bc,0a8d5h		;7823   ; sus colores
 	call 05e45h		;7826   ; colores_ficha: pone el color de (BC) en las 16 lineas del sprite de la ficha IY (VRAM 0x7400 + ...)
 	ld a,(iy+008h)		;7829   ; ...su paso (p00:5E40) y velocidad -2
 	call 05cb6h		;782c   ; paso_de_direccion: el paso en x y en y de la direccion IY+8 (32 direcciones)
 	call 05e40h		;782f
-	ld a,0feh		;7832
+	ld a,0feh		;7832   ; velocidad -2
 	call 05c75h		;7834   ; velocidad: la velocidad A del objeto IY
 	ret			;7837
 L_7838:
 	inc (iy+005h)		;7838   ; 3: el que se esconde, al salir: 4 mas abajo, espera al azar (8 a 0x3F)...
 	call 09a24h		;783b
 	ld a,(iy+00ah)		;783e   ; lee la y guardada del objeto (p02:9A24)
-	add a,004h		;7841
+	add a,004h		;7841   ; 4 mas abajo
 	ld (iy+00ah),a		;7843   ; guarda la y guardada del objeto (p02:9A24)
-	ld a,r		;7846
+	ld a,r		;7846   ; espera al azar
 	and 03fh		;7848
 	set 3,a		;784a
 	ld (iy+00dh),a		;784c   ; guarda la segunda cuenta del objeto (p02:9921)

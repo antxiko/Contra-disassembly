@@ -1153,13 +1153,13 @@ libera_4:		; libera la ficha IY y las tres siguientes (fuera de la pantalla)
 	ld bc,0003fh		;a889   ; libera cuatro fichas: las dos de arriba y las dos de abajo...
 	call L_A8C0		;a88c
 L_A88F:
-	ld (iy+021h),0ech		;a88f
+	ld (iy+021h),0ech		;a88f   ; las dos fichas de la derecha fuera...
 	ld (iy+031h),0ech		;a893
 	ld (iy+020h),0ech		;a897
 	ld (iy+030h),0ech		;a89b
-	ld (iy+024h),000h		;a89f
+	ld (iy+024h),000h		;a89f   ; ...y libres
 	ld (iy+034h),000h		;a8a3
-	jr L_A8AF		;a8a7
+	jr L_A8AF		;a8a7   ; y las de la izquierda
 libera_2:		; libera la ficha IY y la de debajo
 	ld bc,0001fh		;a8a9   ; ...dos...
 	call L_A8C0		;a8ac
@@ -1297,7 +1297,7 @@ L_AE56:
 	xor a			;ae56   ; al acabar: sin palanca, sin salto...
 	ld (0e180h),a		;ae57   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ld (ix+009h),a		;ae5a   ; sin caer ni hundirse
-	ld (ix+01bh),a		;ae5d
+	ld (ix+01bh),a		;ae5d   ; guarda lo hundido que va el jugador en el agua (p03:B292)
 	inc a			;ae60   ; un salto al salir (0xE062)
 	ld (0e062h),a		;ae61
 	ld a,010h		;ae64   ; ...la energia llena (0x10), la barra en el marcador y p03:BFF1
@@ -1792,38 +1792,38 @@ L_B253:
 L_B262:
 	ld hl,0b43ah		;b262   ; los sprites del jugador segun la postura: la tabla de alturas p03:B43A
 	ld a,(ix+005h)		;b265   ; las posturas 0x0C y 0x15 (saltando), 0x0E-0x11 y 0x14 (agachado, de lado) van aparte
-	cp 00ch		;b268
+	cp 00ch		;b268   ; saltando (0x0C) o tumbado en el agua (0x15): p03:B2FE
 	jp z,L_B2FE		;b26a
 	cp 015h		;b26d
 	jp z,L_B2FE		;b26f
-	cp 014h		;b272
+	cp 014h		;b272   ; agachado (0x14): p03:B310
 	jp z,L_B310		;b274
 	cp 012h		;b277
 	jr nc,L_B280		;b279
-	cp 00eh		;b27b
+	cp 00eh		;b27b   ; dando vueltas (0x0E-0x11): p03:B310
 	jp nc,L_B310		;b27d
 L_B280:
 	call 051b8h		;b280   ; lee_tabla: HL = HL + A y A = (HL)
-	ld b,(hl)			;b283
+	ld b,(hl)			;b283   ; B = la altura de la postura
 	ld a,(0e020h)		;b284   ; en el agua de la fase 0 (y >= 0xAF) se hunde poco a poco (IX+1B hasta 6)...
 	and a			;b287
 	jr nz,L_B2B8		;b288
 	ld a,(ix+00ah)		;b28a   ; lee la y del jugador (p03:B176)
-	cp 0afh		;b28d
+	cp 0afh		;b28d   ; fuera del agua: normal
 	jr c,L_B2BB		;b28f
 	ld c,a			;b291
-	ld a,(ix+01bh)		;b292
+	ld a,(ix+01bh)		;b292   ; se hunde hasta 6 puntos (IX+1B)
 	cp 006h		;b295
 	jr nc,L_B29D		;b297
 	inc a			;b299
-	ld (ix+01bh),a		;b29a
+	ld (ix+01bh),a		;b29a   ; guarda lo hundido que va el jugador en el agua (p03:B292)
 L_B29D:
 	add a,c			;b29d
 	ld (ix+00dh),024h		;b29e   ; ...con el dibujo de abajo 0x24 (el agua)...
 	push bc			;b2a2
 	push af			;b2a3
 	ld a,(0e2cfh)		;b2a4   ; ...y la primera vez el sonido 0x39 (0xE2CF)
-	and a			;b2a7
+	and a			;b2a7   ; el sonido del agua solo la primera vez
 	jr nz,L_B2B4		;b2a8
 	ld a,039h		;b2aa
 	call 05052h		;b2ac   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
@@ -1836,33 +1836,33 @@ L_B2B4:
 L_B2B8:
 	ld a,(ix+00ah)		;b2b8   ; lee la y del jugador (p03:B176)
 L_B2BB:
-	ld (ix+01bh),000h		;b2bb
+	ld (ix+01bh),000h		;b2bb   ; fuera del agua, sin hundirse
 L_B2BF:
 	sub b			;b2bf   ; la y de arriba = la del jugador menos la altura de la postura (2 menos en la fase 18)
 	ld b,a			;b2c0
 L_B2C1:
 	ld a,(0e020h)		;b2c1   ; lee la fase (0-19; la 8 se salta)
-	cp 012h		;b2c4
+	cp 012h		;b2c4   ; en la fase 18...
 	jr nz,L_B2CC		;b2c6
 	ld a,b			;b2c8
-	sub 002h		;b2c9
+	sub 002h		;b2c9   ; ...dos mas arriba
 	ld b,a			;b2cb
 L_B2CC:
 	ld a,b			;b2cc
 	ld (ix-020h),a		;b2cd   ; los cuatro sprites: los dos de arriba (IX-20, IX-10) a esa y, los de abajo 0x10 mas
-	ld (ix-010h),a		;b2d0
-	add a,010h		;b2d3
+	ld (ix-010h),a		;b2d0   ; la y de los sprites de arriba
+	add a,010h		;b2d3   ; los de abajo, 0x10 mas
 	ld (ix+000h),a		;b2d5
 	ld (ix+010h),a		;b2d8
 L_B2DB:
 	ld a,(ix+00bh)		;b2db   ; la misma x en los cuatro
-	ld (ix+001h),a		;b2de
+	ld (ix+001h),a		;b2de   ; la misma x a los cuatro
 	ld (ix+011h),a		;b2e1
 	ld (ix-01fh),a		;b2e4
 	ld (ix-00fh),a		;b2e7
 L_B2EA:
 	ld (ix-01eh),000h		;b2ea   ; los dibujos 0, 4, 8 y 0x0C (los cuatro de 16 x 16 del jugador)
-	ld (ix-00eh),004h		;b2ee
+	ld (ix-00eh),004h		;b2ee   ; los dibujos: 0 y 4 arriba, 8 y 0x0C abajo
 	ld (ix+002h),008h		;b2f2
 	ld (ix+012h),00ch		;b2f6
 	ld a,(ix+00ah)		;b2fa   ; lee la y del jugador (p03:B176)
@@ -1874,7 +1874,7 @@ L_B2FE:
 	sub b			;b305
 	ld b,a			;b306
 	ld a,(ix+00fh)		;b307   ; ...y los sprites de lado segun hacia donde mira
-	and a			;b30a
+	and a			;b30a   ; mirando a la izquierda
 	jp nz,L_B375		;b30b
 	jr L_B33A		;b30e
 L_B310:
@@ -1884,7 +1884,7 @@ L_B310:
 	sub b			;b317
 	ld b,a			;b318
 	ld a,(ix+005h)		;b319   ; agachado o tumbado: cada postura su colocacion
-	cp 00eh		;b31c
+	cp 00eh		;b31c   ; cada postura de vueltas o agachado
 	jr z,L_B2C1		;b31e
 	cp 00fh		;b320
 	jr z,L_B36F		;b322
@@ -1902,14 +1902,14 @@ L_B334:
 	jr nz,L_B375		;b338
 L_B33A:
 	ld a,(ix+00bh)		;b33a   ; tumbado mirando a la derecha: los de arriba a la izquierda (x - 8) y los otros 0x10 a la derecha
-	sub 008h		;b33d
+	sub 008h		;b33d   ; tumbado: los de la izquierda 8 a la izquierda...
 	ld (ix+001h),a		;b33f
 	ld (ix+011h),a		;b342
-	add a,010h		;b345
+	add a,010h		;b345   ; ...los otros 0x10 a la derecha
 	ld (ix-01fh),a		;b347
 	ld (ix-00fh),a		;b34a
 L_B34D:
-	ld a,b			;b34d
+	ld a,b			;b34d   ; todos a la misma y (tumbado)
 	ld (ix+000h),a		;b34e
 	ld (ix+010h),a		;b351
 	ld (ix-020h),a		;b354
@@ -1917,9 +1917,9 @@ L_B34D:
 	jp L_B2EA		;b35a
 L_B35D:
 	ld a,b			;b35d   ; de pie: los de arriba 0x10 por encima
-	ld (ix+000h),a		;b35e
+	ld (ix+000h),a		;b35e   ; de pie: abajo...
 	ld (ix+010h),a		;b361
-	add a,010h		;b364
+	add a,010h		;b364   ; ...y arriba 0x10 mas arriba
 	ld (ix-020h),a		;b366
 	ld (ix-010h),a		;b369
 	jp L_B2DB		;b36c
@@ -1929,7 +1929,7 @@ L_B36F:
 	jr nz,L_B33A		;b373
 L_B375:
 	ld a,(ix+00bh)		;b375   ; tumbado mirando a la izquierda, al reves
-	sub 008h		;b378
+	sub 008h		;b378   ; al reves si mira a la izquierda
 	ld (ix-01fh),a		;b37a
 	ld (ix-00fh),a		;b37d
 	add a,010h		;b380
@@ -1938,7 +1938,7 @@ L_B375:
 	jr L_B34D		;b388
 L_B38A:
 	call choca_derecha		;b38a   ; a la derecha: si no hay pared, un paso
-	jp c,L_B1F2		;b38d
+	jp c,L_B1F2		;b38d   ; con pared, no se mueve
 	inc (ix+00bh)		;b390   ; sube la x del jugador (p03:B17A; medida jugando)
 	jp L_B1F2		;b393
 L_B396:
@@ -1948,7 +1948,7 @@ L_B396:
 	jp L_B1F2		;b39f
 paso_de_andar:		; A = el paso de la animacion de andar (bits 3-4 de la cuenta 0xE1C2)
 	ld a,(0e1c2h)		;b3a2   ; el paso de andar: la cuenta de cuadros 0xE1C2 / 8 (de 0 a 3)
-	and 018h		;b3a5
+	and 018h		;b3a5   ; la cuenta de cuadros / 8, de 0 a 3
 	srl a		;b3a7
 	srl a		;b3a9
 	srl a		;b3ab
@@ -1982,10 +1982,10 @@ DATA_B3AE:
 L_B4A5:
 	ld bc,0e804h		;b4a5   ; en una plataforma fina? dos casillas bajo los pies (IX+15 la de la izquierda)
 	call casilla_bajo		;b4a8   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
-	ld (ix+015h),a		;b4ab
-	ld bc,0e80ah		;b4ae
+	ld (ix+015h),a		;b4ab   ; la casilla de debajo a la izquierda
+	ld bc,0e80ah		;b4ae   ; y la de la derecha
 	call casilla_bajo		;b4b1   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
-	cp 002h		;b4b4
+	cp 002h		;b4b4   ; dibujo 2: suelo fino
 	jr z,L_B4BF		;b4b6
 	ld a,(ix+015h)		;b4b8
 	cp 002h		;b4bb
@@ -1998,61 +1998,61 @@ L_B4C1:
 	ret			;b4c2
 choca_derecha:		; acarreo si a la derecha del jugador hay pared (dibujos por debajo de 3)
 	ld a,(ix+00ah)		;b4c3   ; pared a la derecha: fuera de la pantalla por arriba o por abajo, no
-	cp 010h		;b4c6
+	cp 010h		;b4c6   ; por arriba de la pantalla, no hay pared
 	jr c,L_B4C1		;b4c8
-	cp 0ech		;b4ca
+	cp 0ech		;b4ca   ; por abajo tampoco
 	jr nc,L_B4C1		;b4cc
 	ld bc,0000ch		;b4ce   ; la casilla de la derecha (12 a la derecha) y las dos de encima
 	call casilla_bajo		;b4d1   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
-	ld (ix+016h),a		;b4d4
-	cp 003h		;b4d7
+	ld (ix+016h),a		;b4d4   ; la casilla de los pies (12 a la derecha)
+	cp 003h		;b4d7   ; pared...
 	jp c,L_B574		;b4d9
-	ld de,0ffe0h		;b4dc
+	ld de,0ffe0h		;b4dc   ; ...o la de encima (una fila menos)...
 	add hl,de			;b4df
 	ld a,(hl)			;b4e0
 	cp 003h		;b4e1
 	jp c,L_B574		;b4e3
-	add hl,de			;b4e6
+	add hl,de			;b4e6   ; ...o la de mas arriba
 	ld a,(hl)			;b4e7
 	cp 003h		;b4e8
 	jp c,L_B574		;b4ea
 	ld b,(ix+014h)		;b4ed   ; y la de los pies
-	ld c,00ch		;b4f0
+	ld c,00ch		;b4f0   ; y la de la x del jugador + 12
 	call casilla_bajo		;b4f2   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
 	ld (ix+015h),a		;b4f5
 	jr L_B55D		;b4f8
 hay_suelo:		; acarreo si bajo los pies del jugador hay suelo (un dibujo por debajo de 3 en el mapa)
 	ld a,(ix+00ah)		;b4fa   ; suelo: solo en la ultima linea de una casilla (y de 8 en 8)...
-	and 007h		;b4fd
+	and 007h		;b4fd   ; solo en la ultima linea de la casilla
 	cp 007h		;b4ff
 	jp nz,L_B572		;b501
 	ld bc,00104h		;b504   ; ...las dos casillas bajo los pies (4 y 0x0A a la derecha)...
 	call casilla_bajo		;b507   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
 	ld (ix+015h),a		;b50a
-	ld bc,0010ah		;b50d
+	ld bc,0010ah		;b50d   ; la segunda casilla bajo los pies
 	call casilla_bajo		;b510   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
 	ld (ix+016h),a		;b513
 	cp 003h		;b516   ; ...un dibujo por debajo de 3 es suelo...
-	jr c,L_B529		;b518
+	jr c,L_B529		;b518   ; suelo: acarreo
 	ld a,(ix+015h)		;b51a
 	cp 003h		;b51d
 	jr c,L_B529		;b51f
 	ld a,(0e2c5h)		;b521   ; ...y encima de una plataforma que se mueve (0xE2C5) tambien
-	and a			;b524
+	and a			;b524   ; en la plataforma que se mueve tambien
 	jr nz,L_B529		;b525
 L_B527:
-	xor a			;b527
+	xor a			;b527   ; sin suelo
 	ret			;b528
 L_B529:
 	scf			;b529
 	ret			;b52a
 choca_izquierda:		; acarreo si a la izquierda del jugador hay pared
 	ld a,(ix+00ah)		;b52b   ; pared a la izquierda: lo mismo 2 a la izquierda
-	cp 010h		;b52e
+	cp 010h		;b52e   ; por arriba, no
 	jr c,L_B527		;b530
 	cp 0ech		;b532
 	jr nc,L_B527		;b534
-	ld bc,00002h		;b536
+	ld bc,00002h		;b536   ; 2 a la derecha (el borde izquierdo del jugador)
 	call casilla_bajo		;b539   ; casilla_bajo: A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
 	ld (ix+016h),a		;b53c
 	cp 003h		;b53f
@@ -2072,7 +2072,7 @@ choca_izquierda:		; acarreo si a la izquierda del jugador hay pared
 	ld (ix+015h),a		;b55a
 L_B55D:
 	ld a,(ix+00ah)		;b55d   ; si los dos son suelo o las dos paredes
-	cp 00fh		;b560
+	cp 00fh		;b560   ; por arriba de 0x0F, no
 	jr c,L_B572		;b562
 	ld a,(ix+015h)		;b564
 	cp 003h		;b567
@@ -2085,7 +2085,7 @@ L_B572:
 	ret			;b573
 L_B574:
 	cp 001h		;b574   ; 1 (el suelo fino) solo cuenta sin estar cayendo
-	jr nz,L_B589		;b576
+	jr nz,L_B589		;b576   ; 1 (suelo fino) cuenta como pared solo...
 	ld a,(ix+016h)		;b578
 	cp 003h		;b57b
 	jr nc,L_B583		;b57d
@@ -2093,7 +2093,7 @@ L_B57F:
 	cp 001h		;b57f
 	jr nz,L_B589		;b581
 L_B583:
-	ld a,(ix+006h)		;b583
+	ld a,(ix+006h)		;b583   ; ...si no esta saltando
 	and a			;b586
 	jr nz,L_B572		;b587
 L_B589:
@@ -2101,19 +2101,19 @@ L_B589:
 	ret			;b58a
 cambia_tramo:		; suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	di			;b58b   ; cambia de tramo: el banco de la fase en 0x6000 (p03:BAE4)...
-	ld hl,0bae4h		;b58c
+	ld hl,0bae4h		;b58c   ; la tabla del banco de cada fase
 	ld a,(0e020h)		;b58f   ; lee la fase (0-19; la 8 se salta)
 	call 051b8h		;b592   ; lee_tabla: HL = HL + A y A = (HL)
 	call 04f78h		;b595   ; pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 	ld a,(0e022h)		;b598   ; ...el tramo + B (si pasa de 0xF0, no)...
 	add a,b			;b59b
-	cp 0f0h		;b59c
+	cp 0f0h		;b59c   ; el tramo pasaria de 0xF0: no
 	jr nc,L_B5BF		;b59e
 	ld (0e022h),a		;b5a0   ; guarda el tramo: la pantalla de la lista de la fase
 	push af			;b5a3
 	ld hl,06000h		;b5a4   ; ...la lista de pantallas de la fase (0x6000 + 2 x fase)...
 	ld a,(0e020h)		;b5a7   ; lee la fase (0-19; la 8 se salta)
-	add a,a			;b5aa
+	add a,a			;b5aa   ; la lista de la fase
 	add a,l			;b5ab
 	ld l,a			;b5ac
 	ld e,(hl)			;b5ad
@@ -2123,9 +2123,9 @@ cambia_tramo:		; suma B al tramo (0xE022) si la lista de la fase sigue; acarreo 
 	pop af			;b5b1
 	call 051b8h		;b5b2   ; lee_tabla: HL = HL + A y A = (HL)
 	and a			;b5b5   ; ...y si la de ese tramo es 0 (el final de la lista), se deja como estaba: sin cambio (A = 0)
-	jr nz,L_B5C2		;b5b6
+	jr nz,L_B5C2		;b5b6   ; hay pantalla: cambia
 	ld a,(0e022h)		;b5b8   ; lee el tramo: la pantalla de la lista de la fase
-	sub b			;b5bb
+	sub b			;b5bb   ; no la hay: el tramo como estaba
 	ld (0e022h),a		;b5bc   ; guarda el tramo: la pantalla de la lista de la fase
 L_B5BF:
 	ei			;b5bf
@@ -2137,15 +2137,15 @@ L_B5C2:
 	ret			;b5c5
 casilla_bajo:		; A = el dibujo del mapa 0xC300 bajo el jugador + (B, C) en y, x (HL, su casilla)
 	ld a,(ix+00ah)		;b5c6   ; la casilla de (y + B, x + C): fila (y / 8) x 32...
-	add a,b			;b5c9
+	add a,b			;b5c9   ; y + B
 	ld b,a			;b5ca
-	ld a,(ix+00bh)		;b5cb
-	add a,c			;b5ce
+	ld a,(ix+00bh)		;b5cb   ; lee la x del jugador (p03:B17A; medida jugando)
+	add a,c			;b5ce   ; x + C
 	ld c,a			;b5cf
 L_B5D0:
 	ld hl,0c300h		;b5d0   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
 	ld a,b			;b5d3
-	srl a		;b5d4
+	srl a		;b5d4   ; la fila: y / 8
 	srl a		;b5d6
 	srl a		;b5d8
 	and a			;b5da
@@ -2157,7 +2157,7 @@ L_B5E1:
 	djnz L_B5E1		;b5e2
 L_B5E4:
 	ld a,c			;b5e4   ; ...mas la columna (x / 8)
-	srl a		;b5e5
+	srl a		;b5e5   ; la columna: x / 8
 	srl a		;b5e7
 	srl a		;b5e9
 	jp 051b8h		;b5eb   ; lee_tabla: HL = HL + A y A = (HL)
@@ -2168,44 +2168,44 @@ L_B5EE:
 	cp 012h		;b5f5
 	jr nz,L_B5FE		;b5f7
 L_B5F9:
-	ld (ix+006h),000h		;b5f9
+	ld (ix+006h),000h		;b5f9   ; agachado: sin salto
 	ret			;b5fd
 L_B5FE:
 	ld a,(ix+006h)		;b5fe   ; ya en el aire, a seguir
 	and a			;b601
-	jr nz,L_B642		;b602
+	jr nz,L_B642		;b602   ; en el aire: a seguir el salto
 	ld a,(0e062h)		;b604   ; con el boton de salto (0xE062)...
 	and a			;b607
-	ret z			;b608
-	xor a			;b609
+	ret z			;b608   ; sin boton, nada
+	xor a			;b609   ; el boton atendido, y el sonido del agua otra vez posible
 	ld (0e062h),a		;b60a
 	ld (0e2cfh),a		;b60d
 	ld a,(0e5c2h)		;b610   ; ...y sin 0xE5C2, sin empujon y en el suelo...
 	and a			;b613
 	ret nz			;b614
-	ld a,(ix-005h)		;b615
+	ld a,(ix-005h)		;b615   ; ni empujado...
 	and a			;b618
 	ret nz			;b619
-	ld a,(ix+009h)		;b61a
+	ld a,(ix+009h)		;b61a   ; ...ni cayendo
 	and a			;b61d
 	ret nz			;b61e
 	inc (ix+006h)		;b61f   ; ...empieza a subir; el sonido 1 por p00:49A0
-	ld (ix+01bh),000h		;b622
-	ld a,001h		;b626
+	ld (ix+01bh),000h		;b622   ; sin hundirse
+	ld a,001h		;b626   ; el sonido 1 del salto (p00:49A0)
 	call 049a0h		;b628
 	ld a,(0e180h)		;b62b   ; hacia donde salta: derecha (IX+8 = 2) o izquierda (1) segun la palanca
-	cp 002h		;b62e
+	cp 002h		;b62e   ; arriba: salto recto
 	jr c,L_B642		;b630
-	cp 005h		;b632
+	cp 005h		;b632   ; a la derecha (2-4): IX+8 = 1...
 	jr c,L_B63E		;b634
 	jr z,L_B642		;b636
-	ld (ix+008h),002h		;b638
+	ld (ix+008h),002h		;b638   ; ...a la izquierda (6-8): IX+8 = 2
 	jr L_B642		;b63c
 L_B63E:
 	ld (ix+008h),001h		;b63e
 L_B642:
 	ld hl,0b757h		;b642   ; la tabla del salto: la de siempre (p03:B757), o mas alta con 0xE031 1 (p03:B777) o 2 (p03:B797)
-	ld a,(0e031h)		;b645
+	ld a,(0e031h)		;b645   ; con 0xE031 (lo cogido) mas alto
 	and a			;b648
 	jr z,L_B655		;b649
 	ld hl,0b777h		;b64b
@@ -2213,42 +2213,42 @@ L_B642:
 	jr z,L_B655		;b650
 	ld hl,0b797h		;b652
 L_B655:
-	ld a,(ix+006h)		;b655
-	cp 001h		;b658
+	ld a,(ix+006h)		;b655   ; lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+	cp 001h		;b658   ; subiendo
 	jp nz,L_B6E2		;b65a
 	ld a,(0e000h)		;b65d   ; subiendo: en la partida, con el boton soltado y algo subido, deja de subir (salto corto)
 	and a			;b660
 	jr z,L_B677		;b661
-	ld a,(ix+007h)		;b663
+	ld a,(ix+007h)		;b663   ; algo subido...
 	cp 006h		;b666
 	jr c,L_B677		;b668
-	ld a,(0e063h)		;b66a
+	ld a,(0e063h)		;b66a   ; ...y el boton suelto...
 	and a			;b66d
 	jr nz,L_B677		;b66e
-	ld (ix+007h),020h		;b670
+	ld (ix+007h),020h		;b670   ; ...deja de subir: salto corto
 	jp L_B6DF		;b674
 L_B677:
 	ld a,(ix+007h)		;b677   ; hasta 0x20 pasos de subida
-	cp 020h		;b67a
+	cp 020h		;b67a   ; 0x20 pasos como mucho
 	jr nc,L_B6DF		;b67c
-	inc (ix+007h)		;b67e
+	inc (ix+007h)		;b67e   ; sube la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
 	call 051b8h		;b681   ; lee_tabla: HL = HL + A y A = (HL)
 	and a			;b684   ; cuanto sube en este paso (la tabla), punto a punto...
-	jp z,L_B746		;b685
+	jp z,L_B746		;b685   ; este paso no sube
 	ld b,a			;b688
 L_B689:
 	push bc			;b689
 	ld a,(ix+00ah)		;b68a   ; ...por arriba de la pantalla en las fases que suben (p03:B6C1)...
-	cp 010h		;b68d
+	cp 010h		;b68d   ; arriba de la pantalla en las verticales: la de arriba
 	jr nc,L_B694		;b68f
 	call L_B6C1		;b691
 L_B694:
-	ld a,(ix+00ah)		;b694
-	cp 0f8h		;b697
+	ld a,(ix+00ah)		;b694   ; lee la y del jugador (p03:B176)
+	cp 0f8h		;b697   ; por encima de 0xF8 (fuera), sin mirar el techo
 	jr nc,L_B6A3		;b699
 	call L_B4A5		;b69b   ; ...y si choca con el techo, no sube
 	jr c,L_B6A3		;b69e
-	dec (ix+00ah)		;b6a0
+	dec (ix+00ah)		;b6a0   ; baja la y del jugador (p03:B176)
 L_B6A3:
 	pop bc			;b6a3
 	djnz L_B689		;b6a4
@@ -2263,12 +2263,12 @@ L_B6B3:
 	pop af			;b6b3
 	ret			;b6b4
 L_B6B5:
-	push af			;b6b5
+	push af			;b6b5   ; con el arma 2 (0xE032)...
 	ld a,(0e032h)		;b6b6
 	cp 002h		;b6b9
 	jr nz,L_B6B3		;b6bb
 	pop af			;b6bd
-	add a,0f8h		;b6be
+	add a,0f8h		;b6be   ; ...el disparo sale 8 mas arriba
 	ret			;b6c0
 L_B6C1:
 	ld a,(0e020h)		;b6c1   ; en las fases 3 y 18, al llegar arriba, la pantalla siguiente (p03:B58B con B = 1) y abajo del todo
@@ -2281,7 +2281,7 @@ L_B6CC:
 	call cambia_tramo		;b6ce   ; cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	and a			;b6d1
 	jr z,L_B6DD		;b6d2
-	ld (ix+00ah),090h		;b6d4
+	ld (ix+00ah),090h		;b6d4   ; la y del jugador (p03:B176) = 0x90
 	call pantalla_nueva		;b6d8   ; pantalla_nueva: construye la pantalla del tramo y sus objetos
 	xor a			;b6db
 	ret			;b6dc
@@ -2294,8 +2294,8 @@ L_B6E2:
 	ld a,(ix+007h)		;b6e2   ; bajando: la misma tabla al reves...
 	and a			;b6e5
 	jr z,L_B720		;b6e6
-	dec (ix+007h)		;b6e8
-	ld a,(ix+007h)		;b6eb
+	dec (ix+007h)		;b6e8   ; baja la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
+	ld a,(ix+007h)		;b6eb   ; lee la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
 	call 051b8h		;b6ee   ; lee_tabla: HL = HL + A y A = (HL)
 	ld (ix+01dh),a		;b6f1
 	and a			;b6f4
@@ -2307,7 +2307,7 @@ L_B6F9:
 	and 007h		;b6fd
 	and a			;b6ff
 	jr z,L_B712		;b700
-	ld a,(ix+00ah)		;b702
+	ld a,(ix+00ah)		;b702   ; lee la y del jugador (p03:B176)
 	cp 0f8h		;b705
 	jr nc,L_B717		;b707
 	cp 010h		;b709
@@ -2328,8 +2328,8 @@ L_B71F:
 L_B720:
 	xor a			;b720   ; en el suelo: acaba el salto
 	ld (ix+008h),a		;b721
-	ld (ix+006h),a		;b724
-	ld (ix+007h),a		;b727
+	ld (ix+006h),a		;b724   ; guarda la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+	ld (ix+007h),a		;b727   ; guarda la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
 	ld (0e062h),a		;b72a
 	ld a,(0e094h)		;b72d   ; al caer en el suelo, el sonido (p00:499C); al agua, el 0x15
 	and a			;b730
@@ -2348,7 +2348,7 @@ L_B746:
 	srl a		;b74d
 	srl a		;b74f
 	add a,00eh		;b751
-	ld (ix+005h),a		;b753
+	ld (ix+005h),a		;b753   ; guarda la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda)
 	ret			;b756
 
 ; ----------------------------------------------------------------------
@@ -2370,7 +2370,7 @@ L_B7B7:
 	ld a,(ix+01ah)		;b7b7   ; el disparo: la cuenta del arma (IX+1A) entre disparo y disparo
 	and a			;b7ba
 	jr z,L_B7C4		;b7bb
-	dec (ix+01ah)		;b7bd
+	dec (ix+01ah)		;b7bd   ; baja la espera entre disparos del jugador (p03:B7BD)
 	xor a			;b7c0
 	ld (0e060h),a		;b7c1
 L_B7C4:
@@ -2390,7 +2390,7 @@ L_B7C4:
 	ld a,(ix+005h)		;b7db   ; la postura de disparar y la direccion de la palanca (IX+19)
 	ld (ix+004h),a		;b7de
 	ld a,(0e180h)		;b7e1   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
-	ld (ix+019h),a		;b7e4
+	ld (ix+019h),a		;b7e4   ; guarda hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4)
 	ld hl,0b7f3h		;b7e7   ; la direccion elige en la tabla p03:B7F3 (9 entradas, una por direccion)
 	add a,a			;b7ea
 	call 051b8h		;b7eb   ; lee_tabla: HL = HL + A y A = (HL)
@@ -2415,36 +2415,36 @@ L_B805:
 	ld (ix+019h),003h		;b805   ; a la derecha: en las bases, hacia el fondo (9), 0x1A por encima
 	call 0531bh		;b809   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr nc,L_B81D		;b80c
-	ld (ix+019h),009h		;b80e
-	ld a,(ix+00ah)		;b812
+	ld (ix+019h),009h		;b80e   ; hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x09
+	ld a,(ix+00ah)		;b812   ; lee la y del jugador (p03:B176)
 	sub 01ah		;b815
 	ld b,a			;b817
-	ld c,(ix+00bh)		;b818
+	ld c,(ix+00bh)		;b818   ; lee la x del jugador (p03:B17A; medida jugando)
 	jr L_B84E		;b81b
 L_B81D:
 	ld a,(ix+00fh)		;b81d   ; quieto y mirando a la izquierda: a la izquierda (7)
 	and a			;b820
 	jr z,L_B86C		;b821
-	ld (ix+019h),007h		;b823
+	ld (ix+019h),007h		;b823   ; hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x07
 	jp L_B926		;b827
 L_B82A:
 	call 0531bh		;b82a   ; arriba: (en las bases, al fondo) la postura 0x16 y el disparo 0x25 por encima, recto
 	jr c,L_B805		;b82d
-	ld a,(ix+006h)		;b82f
+	ld a,(ix+006h)		;b82f   ; lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
 	and a			;b832
 	jr nz,L_B839		;b833
-	ld (ix+005h),016h		;b835
+	ld (ix+005h),016h		;b835   ; la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x16
 L_B839:
-	ld a,(ix+00ah)		;b839
+	ld a,(ix+00ah)		;b839   ; lee la y del jugador (p03:B176)
 	sub 025h		;b83c
 	ld b,a			;b83e
 	ld c,002h		;b83f
-	ld a,(ix+00fh)		;b841
+	ld a,(ix+00fh)		;b841   ; lee hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)
 	and a			;b844
 	jr z,L_B849		;b845
 	ld c,0feh		;b847
 L_B849:
-	ld a,(ix+00bh)		;b849
+	ld a,(ix+00bh)		;b849   ; lee la x del jugador (p03:B17A; medida jugando)
 	add a,c			;b84c
 	ld c,a			;b84d
 L_B84E:
@@ -2452,44 +2452,44 @@ L_B84E:
 L_B851:
 	call 0531bh		;b851   ; arriba a la derecha: 0x24 por encima y 6 a la derecha
 	jp c,L_B805		;b854
-	ld a,(ix+00ah)		;b857
+	ld a,(ix+00ah)		;b857   ; lee la y del jugador (p03:B176)
 	sub 024h		;b85a
-	ld b,(ix+01bh)		;b85c
+	ld b,(ix+01bh)		;b85c   ; lee lo hundido que va el jugador en el agua (p03:B292)
 	call L_B6A9		;b85f
 	add a,b			;b862
 	ld b,a			;b863
-	ld a,(ix+00bh)		;b864
+	ld a,(ix+00bh)		;b864   ; lee la x del jugador (p03:B17A; medida jugando)
 	add a,006h		;b867
 	ld c,a			;b869
 	jr L_B8DA		;b86a
 L_B86C:
 	call 0531bh		;b86c   ; a la derecha: la postura 1, 0x1D por encima y 7 a la derecha
 	jp c,L_B805		;b86f
-	ld a,(ix+006h)		;b872
+	ld a,(ix+006h)		;b872   ; lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
 	and a			;b875
 	jr nz,L_B87C		;b876
-	ld (ix+005h),001h		;b878
+	ld (ix+005h),001h		;b878   ; la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x01
 L_B87C:
-	ld a,(ix+00ah)		;b87c
+	ld a,(ix+00ah)		;b87c   ; lee la y del jugador (p03:B176)
 	sub 01dh		;b87f
-	ld b,(ix+01bh)		;b881
+	ld b,(ix+01bh)		;b881   ; lee lo hundido que va el jugador en el agua (p03:B292)
 	call L_B6A9		;b884
 	add a,b			;b887
 	ld b,a			;b888
-	ld a,(ix+00bh)		;b889
+	ld a,(ix+00bh)		;b889   ; lee la x del jugador (p03:B17A; medida jugando)
 	add a,007h		;b88c
 	ld c,a			;b88e
 	jr L_B8DA		;b88f
 L_B891:
 	call 0531bh		;b891   ; abajo a la derecha: 0x1A por encima y 6 a la derecha
 	jp c,L_B805		;b894
-	ld a,(ix+00ah)		;b897
+	ld a,(ix+00ah)		;b897   ; lee la y del jugador (p03:B176)
 	sub 01ah		;b89a
-	ld b,(ix+01bh)		;b89c
+	ld b,(ix+01bh)		;b89c   ; lee lo hundido que va el jugador en el agua (p03:B292)
 	call L_B6A9		;b89f
 	add a,b			;b8a2
 	ld b,a			;b8a3
-	ld a,(ix+00bh)		;b8a4
+	ld a,(ix+00bh)		;b8a4   ; lee la x del jugador (p03:B17A; medida jugando)
 	add a,006h		;b8a7
 	ld c,a			;b8a9
 	jr L_B8DA		;b8aa
@@ -2497,90 +2497,90 @@ L_B8AC:
 	ld a,(ix+006h)		;b8ac   ; abajo: en el aire, hacia abajo; en el agua de la fase 0, como a la derecha
 	and a			;b8af
 	jp nz,L_B966		;b8b0
-	ld a,(ix+009h)		;b8b3
+	ld a,(ix+009h)		;b8b3   ; lee 1 si el jugador esta cayendo (p03:BA72)
 	and a			;b8b6
 	jp nz,L_B966		;b8b7
 	ld a,(0e020h)		;b8ba   ; lee la fase (0-19; la 8 se salta)
 	and a			;b8bd
 	jr nz,L_B8C8		;b8be
-	ld a,(ix+00ah)		;b8c0
+	ld a,(ix+00ah)		;b8c0   ; lee la y del jugador (p03:B176)
 	cp 0afh		;b8c3
 	jp z,L_B805		;b8c5
 L_B8C8:
 	call 0531bh		;b8c8   ; en las bases, al fondo (9)
 	jr nc,L_B8DD		;b8cb
-	ld (ix+019h),009h		;b8cd
-	ld a,(ix+00ah)		;b8d1
+	ld (ix+019h),009h		;b8cd   ; hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x09
+	ld a,(ix+00ah)		;b8d1   ; lee la y del jugador (p03:B176)
 	sub 010h		;b8d4
 	ld b,a			;b8d6
-	ld c,(ix+00bh)		;b8d7
+	ld c,(ix+00bh)		;b8d7   ; lee la x del jugador (p03:B17A; medida jugando)
 L_B8DA:
 	jp L_B97D		;b8da
 L_B8DD:
 	ld (ix+005h),015h		;b8dd   ; en el suelo: tumbado (postura 0x15), hacia donde mira, 0x0C por encima
-	ld a,(ix+00fh)		;b8e1
+	ld a,(ix+00fh)		;b8e1   ; lee hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)
 	and a			;b8e4
 	jr z,L_B8ED		;b8e5
-	ld (ix+019h),007h		;b8e7
+	ld (ix+019h),007h		;b8e7   ; hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x07
 	jr L_B8F1		;b8eb
 L_B8ED:
-	ld (ix+019h),003h		;b8ed
+	ld (ix+019h),003h		;b8ed   ; hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x03
 L_B8F1:
-	ld a,(ix+00ah)		;b8f1
+	ld a,(ix+00ah)		;b8f1   ; lee la y del jugador (p03:B176)
 	sub 00ch		;b8f4
 	call L_B6B5		;b8f6
 	ld b,a			;b8f9
 	ld c,00ch		;b8fa
-	ld a,(ix+00fh)		;b8fc
+	ld a,(ix+00fh)		;b8fc   ; lee hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)
 	and a			;b8ff   ; 0x10 a la izquierda si mira a la izquierda
 	jr z,L_B904		;b900
 	ld c,0f0h		;b902
 L_B904:
-	ld a,(ix+00bh)		;b904
+	ld a,(ix+00bh)		;b904   ; lee la x del jugador (p03:B17A; medida jugando)
 	add a,c			;b907
 	ld c,a			;b908
 	jr L_B97D		;b909
 L_B90B:
 	call 0531bh		;b90b   ; abajo a la izquierda: 0x1A por encima y 6 a la izquierda
 	jp c,L_B805		;b90e
-	ld a,(ix+00ah)		;b911
+	ld a,(ix+00ah)		;b911   ; lee la y del jugador (p03:B176)
 	sub 01ah		;b914
-	ld b,(ix+01bh)		;b916
+	ld b,(ix+01bh)		;b916   ; lee lo hundido que va el jugador en el agua (p03:B292)
 	call L_B6A9		;b919
 	add a,b			;b91c
 	ld b,a			;b91d
-	ld a,(ix+00bh)		;b91e
+	ld a,(ix+00bh)		;b91e   ; lee la x del jugador (p03:B17A; medida jugando)
 	sub 006h		;b921
 	ld c,a			;b923
 	jr L_B97D		;b924
 L_B926:
 	call 0531bh		;b926   ; a la izquierda: la postura 1, 0x1D por encima y 3 a la izquierda
 	jp c,L_B805		;b929
-	ld a,(ix+006h)		;b92c
+	ld a,(ix+006h)		;b92c   ; lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
 	and a			;b92f
 	jr nz,L_B936		;b930
-	ld (ix+005h),001h		;b932
+	ld (ix+005h),001h		;b932   ; la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x01
 L_B936:
-	ld a,(ix+00ah)		;b936
+	ld a,(ix+00ah)		;b936   ; lee la y del jugador (p03:B176)
 	sub 01dh		;b939
-	ld b,(ix+01bh)		;b93b
+	ld b,(ix+01bh)		;b93b   ; lee lo hundido que va el jugador en el agua (p03:B292)
 	call L_B6A9		;b93e
 	add a,b			;b941
 	ld b,a			;b942
-	ld a,(ix+00bh)		;b943
+	ld a,(ix+00bh)		;b943   ; lee la x del jugador (p03:B17A; medida jugando)
 	sub 003h		;b946
 	ld c,a			;b948
 	jr L_B97D		;b949
 L_B94B:
 	call 0531bh		;b94b   ; arriba a la izquierda: 0x24 por encima y 6 a la izquierda
 	jp c,L_B805		;b94e
-	ld a,(ix+00ah)		;b951
+	ld a,(ix+00ah)		;b951   ; lee la y del jugador (p03:B176)
 	sub 024h		;b954
-	ld b,(ix+01bh)		;b956
+	ld b,(ix+01bh)		;b956   ; lee lo hundido que va el jugador en el agua (p03:B292)
 	call L_B6A9		;b959
 	add a,b			;b95c
 	ld b,a			;b95d
-	ld a,(ix+00bh)		;b95e
+	ld a,(ix+00bh)		;b95e   ; lee la x del jugador (p03:B17A; medida jugando)
 	sub 006h		;b961
 	ld c,a			;b963
 	jr L_B97D		;b964
@@ -2588,13 +2588,13 @@ L_B966:
 	ld a,(ix+006h)		;b966   ; hacia abajo (5), en el aire: 0x10 por encima
 	and a			;b969
 	jr nz,L_B970		;b96a
-	ld (ix+005h),000h		;b96c
+	ld (ix+005h),000h		;b96c   ; la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x00
 L_B970:
-	ld (ix+019h),005h		;b970
-	ld a,(ix+00ah)		;b974
+	ld (ix+019h),005h		;b970   ; hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x05
+	ld a,(ix+00ah)		;b974   ; lee la y del jugador (p03:B176)
 	sub 010h		;b977
 	ld b,a			;b979
-	ld c,(ix+00bh)		;b97a
+	ld c,(ix+00bh)		;b97a   ; lee la x del jugador (p03:B17A; medida jugando)
 L_B97D:
 	ld iy,0e340h		;b97d   ; la bala nueva: primero las dos fichas de 0xE340...
 	ld d,002h		;b981
@@ -2633,7 +2633,7 @@ L_B9AC:
 	dec d			;b9b9
 	jr nz,L_B9AC		;b9ba
 	ld a,(ix+004h)		;b9bc   ; sin ficha libre: la postura de antes
-	ld (ix+005h),a		;b9bf
+	ld (ix+005h),a		;b9bf   ; guarda la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda)
 	ret			;b9c2
 L_B9C3:
 	ld a,(0e032h)		;b9c3   ; el tipo de la bala: el arma + 1 (en las bases, el 4)
@@ -2652,7 +2652,7 @@ L_B9D9:
 	ld (iy+000h),b		;b9dd   ; guarda la y del objeto (p00:4BBB)
 	ld (iy+001h),c		;b9e0   ; guarda la x del objeto (p00:4BBB)
 	ld (iy+00fh),001h		;b9e3   ; ...y si el jugador esta tumbado en el agua (dibujo 0x33), IY+0D = 1
-	ld a,(ix+00dh)		;b9e7
+	ld a,(ix+00dh)		;b9e7   ; lee el dibujo de abajo del jugador (p00:4B6D)
 	cp 033h		;b9ea
 	jr nz,L_B9F2		;b9ec
 	ld (iy+00dh),001h		;b9ee   ; la segunda cuenta del objeto (p02:9921) = 0x01
@@ -2719,7 +2719,7 @@ L_BA5C:
 	ld a,(ix+006h)		;ba5c   ; la caida: saltando no
 	and a			;ba5f
 	ret nz			;ba60
-	ld a,(ix+009h)		;ba61
+	ld a,(ix+009h)		;ba61   ; lee 1 si el jugador esta cayendo (p03:BA72)
 	and a			;ba64
 	jr nz,L_BA7F		;ba65
 	ld a,(ix+00ah)		;ba67   ; en el agua (y >= 0xB0), sigue cayendo (p03:BAAD)
@@ -2727,12 +2727,12 @@ L_BA5C:
 	jr c,L_BA77		;ba6c
 	call L_BAAD		;ba6e
 	ret c			;ba71
-	ld (ix+009h),001h		;ba72
+	ld (ix+009h),001h		;ba72   ; 1 si el jugador esta cayendo (p03:BA72) = 0x01
 	ret			;ba76
 L_BA77:
 	call hay_suelo		;ba77   ; sin suelo debajo: a caer (IX+9 = 1)
 	ret c			;ba7a
-	ld (ix+009h),001h		;ba7b
+	ld (ix+009h),001h		;ba7b   ; 1 si el jugador esta cayendo (p03:BA72) = 0x01
 L_BA7F:
 	call hay_suelo		;ba7f   ; cayendo: hasta encontrar suelo, dos puntos por cuadro...
 	jr c,L_BA9E		;ba82
@@ -2746,12 +2746,12 @@ L_BA7F:
 	and 00ch		;ba96
 	rrca			;ba98
 	rrca			;ba99
-	ld (ix+005h),a		;ba9a
+	ld (ix+005h),a		;ba9a   ; guarda la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda)
 	ret			;ba9d
 L_BA9E:
 	xor a			;ba9e   ; en el suelo: el sonido 0x15
 	ld (0e2ceh),a		;ba9f
-	ld (ix+009h),a		;baa2
+	ld (ix+009h),a		;baa2   ; guarda 1 si el jugador esta cayendo (p03:BA72)
 	ld (ix+008h),a		;baa5
 	ld a,015h		;baa8
 	jp 05052h		;baaa   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
@@ -2759,7 +2759,7 @@ L_BAAD:
 	ld a,(ix+00ah)		;baad   ; un punto mas abajo, hasta el fondo (0xAF)...
 	cp 0afh		;bab0
 	jr nc,$+11		;bab2
-	inc (ix+00ah)		;bab4
+	inc (ix+00ah)		;bab4   ; sube la y del jugador (p03:B176)
 	xor a			;bab7
 	ret			;bab8
 
@@ -2793,7 +2793,7 @@ L_BADB:
 	ld a,(ix-002h)		;badb   ; el parpadeo del jugador baja (IX-2)
 	and a			;bade
 	ret z			;badf
-	dec (ix-002h)		;bae0
+	dec (ix-002h)		;bae0   ; baja el parpadeo del jugador (bit 0: sin sprites este cuadro, p00:4B8C)
 	ret			;bae3
 
 ; ----------------------------------------------------------------------
@@ -2829,8 +2829,8 @@ pantalla_nueva:		; construye la pantalla del tramo y sus objetos
 	push af			;bb0f
 	ld a,001h		;bb10
 	ld (0e093h),a		;bb12
-	call construye_pantalla		;bb15   ; construye_pantalla: construye la pantalla del tramo 0xE022: mapa 0xC300 y dibujos en la VRAM
-	call 0531bh		;bb18   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+	call construye_pantalla		;bb15   ; el fondo (p03:BB3C)...
+	call 0531bh		;bb18   ; ...en las bases, en la primera sala, p00:51BF (la del principio)
 	jr nc,L_BB26		;bb1b
 	ld a,(0e022h)		;bb1d   ; lee el tramo: la pantalla de la lista de la fase
 	and a			;bb20
@@ -2841,7 +2841,7 @@ L_BB26:
 	ld (0e33ch),a		;bb27
 	pop af			;bb2a
 	ld (0e093h),a		;bb2b
-	call 04532h		;bb2e   ; pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+	call 04532h		;bb2e   ; con el banco 12, p12:9966: los arreglos del mapa de algunas pantallas
 	call 09966h		;bb31
 	call 0452dh		;bb34   ; devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 	xor a			;bb37   ; 0xE30F a cero
@@ -2853,14 +2853,14 @@ construye_pantalla:		; construye la pantalla del tramo 0xE022: mapa 0xC300 y dib
 	ld (0e18bh),a		;bb40   ; guarda los blancos de la sala que quedan (bases 3D)
 	dec a			;bb43
 	ld (0e30fh),a		;bb44
-	call 050d6h		;bb47   ; apaga_pantalla: apaga la pantalla (DISSCR)
-	call 0531bh		;bb4a   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+	call 050d6h		;bb47   ; la pantalla apagada
+	call 0531bh		;bb4a   ; fuera de las bases: la VRAM 0-0x5BFF a cero...
 	jr c,L_BB66		;bb4d
 	ld hl,00000h		;bb4f
 	ld bc,05c00h		;bb52
 	xor a			;bb55
 	call 00056h		;bb56   ; BIOS FILVRM - Fills VRAM with value
-	ld hl,0c300h		;bb59   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
+	ld hl,0c300h		;bb59   ; ...y el mapa (0xC300-0xC5FF) a 0xFF (vacio)
 	ld de,0c301h		;bb5c
 	ld bc,002ffh		;bb5f
 	ld (hl),0ffh		;bb62
@@ -2884,7 +2884,7 @@ L_BB66:
 	inc hl			;bb8c
 	ld d,(hl)			;bb8d
 	ex de,hl			;bb8e
-	ld a,(0e022h)		;bb8f   ; lee el tramo: la pantalla de la lista de la fase
+	ld a,(0e022h)		;bb8f   ; ...el numero de la pantalla del tramo...
 	call 051b8h		;bb92   ; lee_tabla: HL = HL + A y A = (HL)
 	ld hl,06100h		;bb95   ; ...y sus ordenes: el puntero de 0x6100 + 2 x pantalla
 L_BB98:
@@ -2906,20 +2906,20 @@ L_BBA2:
 	call L_BBC8		;bbad   ; ...y si no, una pieza (p03:BBC8)
 	jr L_BBA2		;bbb0
 L_BBB2:
-	ld a,(de)			;bbb2
+	ld a,(de)			;bbb2   ; el puntero de las ordenes compartidas
 	inc de			;bbb3
 	ld l,a			;bbb4
 	ld a,(de)			;bbb5
 	inc de			;bbb6
 	ld h,a			;bbb7
 	push de			;bbb8
-	ex de,hl			;bbb9
+	ex de,hl			;bbb9   ; se siguen alli
 L_BBBA:
-	ld a,(de)			;bbba
+	ld a,(de)			;bbba   ; cada orden de alli hasta su 0xFF
 	inc de			;bbbb
 	cp 0ffh		;bbbc
 	jr z,L_BBC5		;bbbe
-	call L_BBC8		;bbc0
+	call L_BBC8		;bbc0   ; una pieza
 	jr L_BBBA		;bbc3
 L_BBC5:
 	pop de			;bbc5
@@ -3025,7 +3025,7 @@ L_BC68:
 	add a,h			;bc76
 	ld h,a			;bc77
 	ld a,(de)			;bc78
-	call 0486eh		;bc79   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+	call 0486eh		;bc79   ; ...con p00:486E
 	pop bc			;bc7c
 	pop de			;bc7d
 	pop hl			;bc7e
@@ -3066,11 +3066,11 @@ L_BCAB:
 L_BCB9:
 	ld hl,(0e1b1h)		;bcb9   ; la fila siguiente del mapa y de la pantalla (0x20 casillas)
 	push de			;bcbc
-	ld de,00020h		;bcbd
+	ld de,00020h		;bcbd   ; 0x20: la fila siguiente
 	add hl,de			;bcc0
 	pop de			;bcc1
 	ld (0e1b1h),hl		;bcc2
-	ld hl,(0e1aeh)		;bcc5
+	ld hl,(0e1aeh)		;bcc5   ; y en la pantalla
 	push de			;bcc8
 	ld de,00020h		;bcc9
 	add hl,de			;bccc
@@ -3085,7 +3085,7 @@ L_BCD7:
 	ld (0e1b3h),de		;bce1
 	jp L_BCB9		;bce5
 L_BCE8:
-	ld hl,0c300h		;bce8   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
+	ld hl,0c300h		;bce8   ; la fila A: HL = 0xC300 + A x 32...
 	and a			;bceb
 	ld c,a			;bcec
 	jr z,L_BCF8		;bced
@@ -3183,11 +3183,11 @@ L_BD5C:
 L_BD7B:
 	ld iy,0e500h		;bd7b   ; los objetos de la pantalla: cada byte de la lista DE (hasta 0xFF) es el tipo de uno...
 L_BD7F:
-	ld a,(de)			;bd7f
+	ld a,(de)			;bd7f   ; cada tipo de objeto de la lista...
 	inc de			;bd80
 	cp 0ffh		;bd81
 	jp z,L_BDD6		;bd83
-	call L_BD8B		;bd86
+	call L_BD8B		;bd86   ; ...a una ficha de 0xE500
 	jr L_BD7F		;bd89
 L_BD8B:
 	push af			;bd8b   ; ...en la primera ficha libre de 0xE500 (si no hay, se pierde)
@@ -3269,7 +3269,7 @@ L_BDFD:
 	add a,b			;be0f
 	ld (0e1afh),a		;be10
 L_BE13:
-	push de			;be13
+	push de			;be13   ; las fichas de los sprites de la pantalla, de 16 en 16
 	ld de,00010h		;be14
 	add iy,de		;be17
 	pop de			;be19

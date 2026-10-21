@@ -138,6 +138,9 @@ C 0x8435 el numero del grupo para IX+0F de cada una
 C 0x843C ninguno libre: acarreo
 C 0x8440 cinco grupos en 0xE400...
 C 0x8449 ...o diez en 0xE380
+C 0x8456 libres las dos fichas (IX+4 e IX+14)?
+C 0x845E el numero del grupo siguiente
+C 0x8465 no hay: acarreo
 C 0x8468 los numeros de sus cuatro fichas en IX+0F, +1F, +2F y +3F
 C 0x8470 sus numeros en IX+0F e IX+1F
 C 0x847A 19 fichas de 0xE380 una a una
@@ -180,87 +183,186 @@ C 0x85A2 cada 0x30 cuadros: tres disparos del tipo 0x1F...
 C 0x85A9 ...hacia arriba a la izquierda (IY+8 = 0x10)...
 C 0x85AF hacia arriba a la izquierda (direccion 0x10)
 C 0x85B8 ...hacia arriba (0x13)...
+C 0x85BE hacia arriba (0x13)
 C 0x85C7 ...y hacia arriba a la derecha (0x0D)
+C 0x85CD hacia arriba a la derecha (0x0D)
 C 0x85D7 el disparo le da? (8 de energia, pieza p03:AD2C)
+C 0x85DA 8 de energia
 C 0x85E3 destruido: 0x50 puntos y uno mas destruido
+C 0x85EB 0x50 puntos
 C 0x85F1 abierto 0x20 cuadros y cerrado otra vez
+C 0x85F3 al estado 1
+C 0x85FA cerrado
 C 0x8601 un disparo en una ficha libre...
 C 0x8605 ...con la direccion de IY+8 en su IY+8
+C 0x8608 IY+8 del disparo nuevo...
+C 0x860C ...con la direccion
 C 0x8620 el canon que gira: espera al azar (8 a 0x38)...
+C 0x8622 multiplo de 8, al menos 8
 C 0x8629 ...mirando a una de las 8 direcciones al azar (IY+0A)
+C 0x862B direccion al azar (0-7)
+C 0x8634 sin disparos ni golpes
 C 0x863F cada 8 cuadros...
+C 0x8644 aun no
 C 0x8647 la direccion hacia el jugador (p00:5C1A)
+C 0x864D no le apunta: a girar
 C 0x864F si ya le apunta, dispara (estado 2) si p00:5C48 lo permite
+C 0x8652 p00:5C48 dice si puede (B)
 C 0x8662 si no, gira un paso hacia el (la tabla p02:8738, de 8)
+C 0x8665 la diferencia de direcciones...
+C 0x866A ...dice hacia donde gira (p02:8738)
+C 0x8672 la nueva direccion (de 8)
 C 0x8679 el disparo: una ficha libre...
+C 0x867E sin ficha, no dispara
 C 0x8680 ...del tipo 0x23, dibujo 0xF4...
+C 0x8688 dibujo 0xF4
 C 0x868C ...en la direccion del canon...
+C 0x868F la direccion del canon x 4 (de 32)
+C 0x8696 y la boca, por la direccion de 8
 C 0x869B ...saliendo de la boca (la tabla p02:8728, una x y una y por direccion)
 C 0x86AD tres disparos y descansa (estado 4)
+C 0x86B0 tres disparos...
+C 0x86B7 ...y a descansar
 C 0x86C3 las esperas: 0x0C cuadros entre disparos...
+C 0x86C5 0x0C cuadros
 C 0x86C7 ...0x40 al descansar
 C 0x86D0 la pieza del canon segun su direccion (la tabla p02:8740, 8 piezas)
+C 0x86D3 la pieza de su direccion
 C 0x86E3 el disparo le da? (p00:5AF8 con p02:8750)
 C 0x86EA seis golpes para destruirlo
+C 0x86F0 seis golpes
 C 0x86F3 destruido: el sonido 0x28...
 C 0x86F8 ...la ficha libre...
 C 0x86FC ...una explosion (tipo 0x0B, dibujo 0x1C)...
+C 0x86FF la explosion, tipo 0x0B dibujo 0x1C
 C 0x870A ...0x20 puntos y la pieza rota (p03:AABD)
+C 0x870D la pieza rota
 C 0x8713 la x y la y de la tabla HL (entrada E) sumadas a las de IY, en la ficha IX
+C 0x8715 dos bytes por entrada: dy y dx
 C 0x8754 el que dispara de lado: al empezar, espera al azar de 0x30 a 0x6F...
+C 0x875A espera al azar de 0x30 a 0x6F
 C 0x8763 ...y su pieza segun hacia donde mira (IY+3: p03:AAC4 o p03:AAD3)
+C 0x8766 mirando a la izquierda: la otra pieza
 C 0x8772 cada espera, un disparo del tipo 0x22...
+C 0x8777 la espera siguiente: de 0x40 a 0x7F
+C 0x8782 el disparo: tipo 0x22, dibujo 0xFC
 C 0x8790 ...a la derecha (0x0A mas alla, IY+0E = 3)...
+C 0x8793 hacia donde mira
 C 0x87A4 ...o a la izquierda (0x10 mas aca, IY+0E = -3)
 C 0x87AF el disparo le da? (6 de energia)
+C 0x87B2 la pieza p03:AAE2, 6 de energia
 C 0x87BB destruido: 0x40 o 0x30 puntos
+C 0x87C3 0x40 puntos...
+C 0x87C8 ...o 0x30
 C 0x87DC la puerta del jefe: sus piezas segun la fase...
+C 0x87DF IY+0F = 0x80
 C 0x87E3 ...las fases 0 y 3: p03:AB1E y p03:AB2D...
+C 0x87E6 la fase 0...
+C 0x87E9 ...la 3...
 C 0x87ED ...la 10, la 13 y de la 16 en adelante: p03:AB4B y p03:AB5A...
+C 0x87EF ...la 10, la 13...
+C 0x87F5 ...y de la 16 en adelante
 C 0x87F9 ...las demas: p03:AAF1 y p03:AB00
 C 0x880F abre y cierra cada 8 cuadros
 C 0x8814 cuando le dan (p00:5AF8 con p02:886C)...
 C 0x881E ...sale un objeto del tipo 0x24 (p02:838B)...
+C 0x8821 el objeto del tipo 0x24 (dibujo 0x2C)
 C 0x882C ...y la puerta pasa a ser del tipo 0x1D, 4 puntos mas abajo, con su pieza abierta
+C 0x883F 4 mas abajo
+C 0x885A la pieza abierta de cada fase: p03:AB0F...
+C 0x8860 ...p03:AB3C...
+C 0x8866 ...o p03:AB69
 C 0x8878 el nucleo: con las cuatro torretas destruidas (0xE5C7 = 4) se pone en marcha
+C 0x887B hasta cuatro torretas destruidas, nada
+C 0x8881 su casilla del fondo, guardada en IY+2/IY+3
+C 0x888D empieza en el paso 0
 C 0x8893 cada 0x38 cuadros (la cuenta IY+0D) se para...
+C 0x889A el paso de ahora...
+C 0x88A2 ...los cuatro primeros, puede recibir disparos
 C 0x88A9 ...y si no, se mueve: la x de la tabla p02:8997 (32 pasos)
+C 0x88AC la pieza de antes, la de ahora y la siguiente
+C 0x88BB la x del paso (p02:8997)
 C 0x88CC el disparo le da? (0x10 de energia, pieza p03:AB93)
+C 0x88CE la caja p02:89B7, la pieza p03:AB93
+C 0x88D8 0x10 de energia
 C 0x88E5 le han dado: un golpe menos (IY+6) y 3 puntos
+C 0x88E6 un golpe menos para romperlo
 C 0x88ED destruido: tipo 0x1D, en x = 0x80...
+C 0x88F1 dibujo 4
 C 0x88FD ...y fuera (p03:A0E4)
 C 0x8902 en la fase 12, mientras 0xE2D4 no sea cero, no acaba
+C 0x8905 en la fase 12...
+C 0x8909 ...hasta que 0xE2D4 llegue a cero
 C 0x890E cuando la cuenta IY+0D llega a IY+0C:
 C 0x8915 fase superada (0xE094 = 0, 0xE184 = 1)
+C 0x8919 sin torretas que contar
 C 0x8920 la musica de jefe destruido (0x0E); en la fase 19, la del ultimo (0x0F)
+C 0x8923 la fase 19
 C 0x8927 (la fase 19 se mira dos veces)
+C 0x892B la musica 0x0E
+C 0x8931 la 0x0F
 C 0x8936 con 6 destruidos, cada 0x28 cuadros y a veces (uno de cada cuatro)...
+C 0x8939 seis destruidos
+C 0x8942 uno de cada cuatro
 C 0x8947 ...un objeto del tipo 7, dibujo 0xE8
+C 0x894A el tipo 7, dibujo 0xE8
 C 0x8951 la pieza del nucleo, alternando p03:AB93 y p03:ABA2
 C 0x8961 la pieza p03:ABB1, y la casilla del fondo segun el paso (la tabla p02:8977)
+C 0x8964 el paso del nucleo...
+C 0x896C ...su casilla del fondo (p02:8977)
 C 0x89BB este sale con 8 destruidos (0xE18A): espera al azar de 0x80 a 0xBF
+C 0x89C1 con 8 destruidos sale
+C 0x89C7 la espera al azar: 0x80 a 0xBF
 C 0x89D3 su casilla del fondo, guardada en IY+2 e IY+3
+C 0x89DF empieza en el paso 0
 C 0x89E5 cada 0x18 cuadros, la pieza p03:ACF4...
 C 0x89F2 ...y recorre 25 pasos: la casilla (p02:8A5F) y la x (p02:8A78) de cada uno
+C 0x89F5 25 pasos y vuelta a empezar
+C 0x8A02 la casilla de cada paso (p02:8A5F)...
+C 0x8A0D ...y su x (p02:8A78)
 C 0x8A1A la pieza alterna p03:ACDC y p03:ACE8
+C 0x8A1D alterna cada cuadro
 C 0x8A2E cada 0x20 cuadros (IY+0D), a veces (uno de cada 8) un objeto del tipo 0x27
+C 0x8A35 uno de cada 8
+C 0x8A3E el tipo 0x27, dibujo 0x10
 C 0x8A44 el disparo le da? (0x30 de energia)
+C 0x8A47 la caja p03:ACF4, 0x30 de energia
 C 0x8A50 destruido: 2 puntos y fuera
+C 0x8A54 dibujo 2
 C 0x8A95 al empezar: espera al azar de 0x60 a 0x9F...
+C 0x8A9B espera al azar
 C 0x8AA4 ...en la casilla 0xC3B8, x = 0xB8, y = 0x30...
+C 0x8AA8 la casilla 0xC3B8 del mapa
 C 0x8AB8 ...con la pieza p03:ABC0, y 0xE045 = 1
+C 0x8ABE el jefe vivo
 C 0x8AC3 de vez en cuando (uno de cada 64) se mueve:
+C 0x8AC5 uno de cada 64 cuadros se mueve
 C 0x8ACF a la izquierda (hasta 0xE9 pasos)...
+C 0x8AD1 al azar, a un lado o al otro
+C 0x8AD5 a la izquierda: un paso menos...
+C 0x8AD9 ...hasta -0x17
+C 0x8AE0 su casilla del fondo una a la izquierda
 C 0x8AEB ...o a la derecha (hasta 0), una casilla cada vez
+C 0x8AEE a la derecha: un paso mas, hasta 0
+C 0x8AF6 su casilla una a la derecha
 C 0x8B07 si no, abre y cierra (p03:ABC0 y p03:ABE3)
+C 0x8B0D cada 0x20 cuadros
 C 0x8B12 cada IY+0C cuadros (IY+0D): un disparo del tipo 0x0D...
+C 0x8B1A la bala sale 0x16 a la derecha y 0x14 abajo
 C 0x8B26 ...con la direccion 0x16 (p00:5CB6)
+C 0x8B2B direccion 0x16
 C 0x8B35 el disparo le da? (0x30 de energia)
+C 0x8B3E 0x30 de energia
 C 0x8B44 destruido: 0xE045 a cero, 4 puntos...
 C 0x8B4D ...fuera, y el objeto pasa al tipo 0x1F (la explosion)
+C 0x8B52 la explosion dura 0xA0 cuadros
+C 0x8B58 el tipo 0x1F
+C 0x8B64 su casilla rota
 C 0x8B72 la casilla del fondo (IY+6/7) se mueve H x 8 y L en la x
 C 0x8B89 al empezar: en x = 0xC8, la casilla 0xC317...
+C 0x8B91 la casilla 0xC317
 C 0x8B9D ...cada cuantos cuadros dispara, al azar (IY+0A)...
+C 0x8BA3 la distancia de disparo: de 0x24 a 0x43
 C 0x8BAC ...y la pieza p03:AC29
 C 0x8BB7 cada 0x40 cuadros se mueve hacia el jugador (p02:8C56 o p02:8C63)
 C 0x8BCF cada IY+0A cuadros (IY+0D): un objeto del tipo 0x15...
@@ -282,6 +384,8 @@ C 0x8D17 si le dan (p00:5AF8 con p02:8D2C)...
 C 0x8D1E ...con 0x0C de energia: fuera (p03:A0E4, 6)
 C 0x8D3B al empezar: espera al azar (impar) y 0xE045 = 1
 C 0x8D52 cada espera: otra espera al azar y un objeto del tipo 0x10 (dibujo 0x64)
+C 0x8D6C un objeto del tipo 0x10 con dibujo 0x64 en dos fichas
+C 0x8D77 creado: acarreo
 C 0x8D7B abre y cierra (p03:ACB6 y p03:ACC9) cada 0x30 cuadros
 C 0x8D86 el disparo le da? (0x10 de energia)
 C 0x8D92 destruido: 0xE045 a cero, 1 punto y la casilla 2
@@ -301,6 +405,8 @@ C 0x8E8E ...sale un soldado (dibujo 0x78) del tipo de IY+0A...
 C 0x8E9D ...hacia donde diga IY+8
 C 0x8EA6 con el jugador pasada la mitad, deja de salir
 C 0x8EB1 si queda alguno del tipo 0x0F en 0xE500, sigue; si no, para
+C 0x8EBF un objeto del tipo 0x0F en 0xE500?
+C 0x8EC6 ninguno: ya no salen
 C 0x8ECB el que cae del cielo: espera al azar...
 C 0x8EE0 ...cada 0x90 cuadros...
 C 0x8EE6 ...y cada IY+0E (IY+0D)...
@@ -346,6 +452,10 @@ C 0x91E6 el ultimo va hacia donde este el jugador (0xE32B):
 C 0x91FE a la izquierda (x 0x60, direccion 0x14)...
 C 0x9203 ...en medio (0x78, 0x10)...
 C 0x9208 ...o a la derecha (0x90, 0x0C)
+C 0x920B la x y la direccion del soldado...
+C 0x9211 ...que corre su primer cuadro
+C 0x9216 la siguiente espera
+C 0x921C uno mas lanzado
 C 0x9234 una ficha del tipo 5 en y = 0x70
 C 0x923E el tipo 0x1C con IY+0F a 1
 C 0x925D 0x10 a la izquierda
@@ -355,8 +465,17 @@ C 0x9286 un objeto de dibujo 0x1C del tipo 0x0B (la explosion)
 C 0x92EC mientras queden blancos en la sala, la cuenta de IY no baja
 C 0x92F9 cada 0x2C cuadros, otro paso y el sonido 0x29
 C 0x930D las explosiones segun el dibujo (IY+2): 4, 6, 9, 5 o 1 trozos...
+C 0x9310 dibujo 0: cuatro trozos...
+C 0x9314 ...1: seis...
+C 0x9318 ...2: nueve...
+C 0x931C ...4: cinco; los demas, uno
 C 0x933F ...cada uno en la posicion de la tabla, del tipo 0x0B con dibujo 0x1C
+C 0x9340 la posicion de cada trozo (dx, dy)
+C 0x9343 tipo 0x0B, dibujo 0x1C
 C 0x9351 la pieza de su fondo segun IY+3: p03:93B7, 93C6, 93E5 o 93D2
+C 0x9354 0: sin pieza
+C 0x9358 1: p03:93B7
+C 0x935E 2: p03:93C6
 C 0x9373 a los 0x30 cuadros, uno menos en 0xE2D4 y fuera
 C 0x9407 al pasar de la mitad de la pantalla se da la vuelta
 C 0x9412 sus colores (p02:9D18) y su dibujo (p03:A905)
@@ -440,6 +559,9 @@ C 0x999A un paso en y, hasta el jugador
 C 0x99C5 con 0x10 cuadros (p03:A869), dispara hacia el jugador (tipo 0x25)
 C 0x99E5 cada 0x20 cuadros (p03:A871)
 C 0x99F5 su dibujo: la tabla p02:9A14 (la otra mitad si va a la izquierda), por la cuenta de IY+26
+C 0x9A02 la cuenta (IY+26) elige entre los cuatro dibujos
+C 0x9A0D la figura...
+C 0x9A11 ...a las fichas
 C 0x9A24 guarda la posicion (y, x) en IY+0A/IY+0B
 C 0x9A3C el que lanza granadas: estado 3, dibujos 0x44 y 0x48 (dos fichas), sus colores
 C 0x9A53 la direccion hacia el jugador y su paso
@@ -479,12 +601,16 @@ C 0x9D24 un paso a la derecha o a la izquierda
 C 0x9D32 en el aire (IY+16): a caer
 C 0x9D3E en el borde de la pantalla, la vuelta (o a caer)
 C 0x9D49 se acaba el suelo? (p00:5E66 o p00:5E5C)
+C 0x9D57 sin suelo delante: la vuelta
 C 0x9D59 los del tipo 1, a veces (3 de cada 8) se dan la vuelta
+C 0x9D60 al azar: 3 de cada 8
 C 0x9D70 los del tipo 0x17 no se paran; los demas, al acabar la cuenta, a otra cosa (p02:9E4A)
 C 0x9D8E sin suelo: a caer (IY+16 = 1)...
 C 0x9D9F ...cada dos cuadros...
 C 0x9DB4 ...baja lo que dice p03:A04C
 C 0x9DC0 o salta (p03:A079): B pasos hasta encontrar suelo (p00:5ECD)
+C 0x9DC7 cae B pasos...
+C 0x9DCC ...hasta encontrar suelo
 C 0x9DD2 en el suelo: el sonido 0x3B
 C 0x9DDF los del tipo 0x17, a veces (uno de cada 4), estado 2
 C 0x9DF0 en la fase 5, por debajo de 0x90 no se dan la vuelta...
@@ -493,6 +619,9 @@ C 0x9E23 su dibujo al correr: los del tipo 1 y 0x17, p03:A8F3/A8FF; los demas, p
 C 0x9E4A al acabar la cuenta: los del tipo 1 miran al jugador y le disparan...
 C 0x9E5A ...la direccion hacia el (p00:5D1D) y si se puede (p00:5C48)...
 C 0x9E67 ...el dibujo de disparar segun hacia donde (p03:A905, +0x12 al otro lado, +6 por altura)
+C 0x9E75 la altura del disparo: recto...
+C 0x9E7D ...6 mas en la tabla...
+C 0x9E85 ...o 12
 C 0x9E91 si no, otra cuenta al azar y a correr
 C 0x9E9D 0x20 cuadros apuntando (p03:A879)
 C 0x9EA5 el disparo: los del tipo 1 una bala hacia el jugador (p02:9ED8)...

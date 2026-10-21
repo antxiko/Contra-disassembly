@@ -4,8 +4,12 @@
 C 0x7800 lo que pide E (p03:A0E4): 1 p14:7860, 2 p14:7937, 3 p14:7838, 4 p14:7820...
 C 0x780F ...5 p14:7A11, 6 p14:7A66, 7 p14:7A87, 8 p14:7AA0; si no, nada
 C 0x7820 4: el soldado que baja: guarda su posicion y sus colores (p03:A8D5)...
+C 0x7823 sus colores
 C 0x7829 ...su paso (p00:5E40) y velocidad -2
+C 0x7832 velocidad -2
 C 0x7838 3: el que se esconde, al salir: 4 mas abajo, espera al azar (8 a 0x3F)...
+C 0x7841 4 mas abajo
+C 0x7846 espera al azar
 C 0x784F ...sus colores, su figura (p03:A92C) y la direccion -2
 C 0x7860 1: el que va a la izquierda por la base: uno a la izquierda por cuadro
 C 0x7865 al llegar al borde (x 8), fuera

@@ -24,12 +24,12 @@ L_6009:
 	ld a,001h		;6009   ; arranque: el sonido 1 (todo callado)
 	call L_603D		;600b   ; pide el sonido A, o una orden: 0x80 ponerse en marcha, 0x81 pausa, 0x82 parar, 0x83 y 0x84 bajar el volumen
 	ld a,0ffh		;600e   ; 0xC1EB-0xC1EC a 0xFF: hay que mandar todo al SCC
-	ld hl,0c1ebh		;6010
+	ld hl,0c1ebh		;6010   ; 0xC1EB y 0xC1EC a 0xFF
 	ld (hl),a			;6013
 	inc hl			;6014
 	ld (hl),a			;6015
 	inc hl			;6016
-	ld de,0c1eeh		;6017
+	ld de,0c1eeh		;6017   ; y las marcas de los canales (0xC1EE, 14 bytes)
 	ld (hl),001h		;601a   ; a 1
 	ld bc,0000eh		;601c
 	ldir		;601f
@@ -38,7 +38,7 @@ L_6009:
 	ld (09000h),a		;6026   ; el mapper: pone en 0x8000 el banco de A
 	xor a			;6029   ; ...con sus canales apagados...
 	ld (0988fh),a		;602a   ; al SCC: los canales del SCC encendidos
-	ld a,002h		;602d
+	ld a,002h		;602d   ; el sonido 2 al arrancar
 	ld (09000h),a		;602f   ; el mapper: pone en 0x8000 el banco de A
 	ld a,0bfh		;6032   ; el registro 7 del PSG: 0xBF (tonos sin ruido)
 	ld (0c1e3h),a		;6034   ; guarda el registro 7 del PSG (los canales y el ruido)
@@ -48,43 +48,43 @@ L_6009:
 L_603D:
 	ld c,a			;603d   ; pide el sonido A, o una orden: 0x80 ponerse en marcha, 0x81 pausa, 0x82 parar, 0x83 y 0x84 bajar el volumen
 	cp 082h		;603e   ; 0x82: parar
-	jp z,L_6163		;6040
+	jp z,L_6163		;6040   ; 0x82: para
 	cp 083h		;6043   ; 0x83: bajar el volumen
-	jp z,L_616A		;6045
+	jp z,L_616A		;6045   ; 0x83: baja el volumen
 	cp 084h		;6048   ; 0x84: bajar el volumen
-	jp z,L_6175		;604a
+	jp z,L_6175		;604a   ; 0x84
 	cp 080h		;604d   ; 0x80: en marcha
-	jp z,L_618C		;604f
-	cp 081h		;6052
+	jp z,L_618C		;604f   ; 0x80
+	cp 081h		;6052   ; 0x81: la pausa
 	call z,L_61F0		;6054   ; orden 0x81: pausa
 	ld hl,0c1cch		;6057   ; 0xC1CC = el sonido
-	ld (hl),c			;605a
+	ld (hl),c			;605a   ; el sonido que se pide, en 0xC1CC
 	ld hl,06e12h		;605b   ; su cabecera: la palabra A de la tabla 0x6E12
 	ld a,c			;605e   ; el sonido x 2
-	add a,c			;605f
+	add a,c			;605f   ; el numero x 2...
 	ld e,a			;6060
 	ld d,000h		;6061
-	add hl,de			;6063
+	add hl,de			;6063   ; ...en la tabla de cabeceras (p04:6E12)
 	ld e,(hl)			;6064
 	inc hl			;6065
 	ld d,(hl)			;6066
 	ex de,hl			;6067
 	ld de,0c1cdh		;6068   ; 18 bytes a 0xC1CD: [canales][prioridad][una palabra por canal]
-	ld bc,00012h		;606b
+	ld bc,00012h		;606b   ; 0x12 bytes de cabecera a 0xC1CD
 	ldir		;606e
 	ld ix,0c1cfh		;6070   ; IX: las palabras de la cabecera
 	ld hl,0c1cdh		;6074   ; cada canal marcado (del bit 7 al 0) se pone en marcha con su partitura
-	bit 7,(hl)		;6077
+	bit 7,(hl)		;6077   ; bit 7 de la mascara: el canal de 0xC001
 	jr z,L_6087		;6079
 	inc hl			;607b
 	ld a,(hl)			;607c   ; la prioridad
 	ld hl,0c001h		;607d   ; su prioridad
 	call L_6104		;6080   ; pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 	inc ix		;6083   ; la palabra siguiente
-	inc ix		;6085
+	inc ix		;6085   ; el puntero siguiente de la cabecera
 L_6087:
 	ld hl,0c1cdh		;6087   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 6,(hl)		;608a
+	bit 6,(hl)		;608a   ; bit 6: el canal de 0xC034
 	jr z,L_609A		;608c
 	inc hl			;608e
 	ld a,(hl)			;608f
@@ -94,7 +94,7 @@ L_6087:
 	inc ix		;6098
 L_609A:
 	ld hl,0c1cdh		;609a   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 5,(hl)		;609d
+	bit 5,(hl)		;609d   ; bit 5: el de 0xC067
 	jr z,L_60AD		;609f
 	inc hl			;60a1
 	ld a,(hl)			;60a2
@@ -104,7 +104,7 @@ L_609A:
 	inc ix		;60ab
 L_60AD:
 	ld hl,0c1cdh		;60ad   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 4,(hl)		;60b0
+	bit 4,(hl)		;60b0   ; bit 4: el de 0xC09A
 	jr z,L_60C0		;60b2
 	inc hl			;60b4
 	ld a,(hl)			;60b5
@@ -114,7 +114,7 @@ L_60AD:
 	inc ix		;60be
 L_60C0:
 	ld hl,0c1cdh		;60c0   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 3,(hl)		;60c3
+	bit 3,(hl)		;60c3   ; bit 3: el de 0xC0CD
 	jr z,L_60D3		;60c5
 	inc hl			;60c7
 	ld a,(hl)			;60c8
@@ -124,7 +124,7 @@ L_60C0:
 	inc ix		;60d1
 L_60D3:
 	ld hl,0c1cdh		;60d3   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 2,(hl)		;60d6
+	bit 2,(hl)		;60d6   ; bit 2: el de 0xC100
 	jr z,L_60E6		;60d8
 	inc hl			;60da
 	ld a,(hl)			;60db
@@ -134,7 +134,7 @@ L_60D3:
 	inc ix		;60e4
 L_60E6:
 	ld hl,0c1cdh		;60e6   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 1,(hl)		;60e9
+	bit 1,(hl)		;60e9   ; bit 1: el de 0xC133
 	jr z,L_60F9		;60eb
 	inc hl			;60ed
 	ld a,(hl)			;60ee
@@ -144,7 +144,7 @@ L_60E6:
 	inc ix		;60f7
 L_60F9:
 	ld hl,0c1cdh		;60f9   ; apunta a la cabecera del sonido que se pide (18 bytes)
-	bit 0,(hl)		;60fc
+	bit 0,(hl)		;60fc   ; bit 0: el de 0xC166
 	ret z			;60fe
 	inc hl			;60ff
 	ld a,(hl)			;6100
@@ -152,9 +152,9 @@ L_60F9:
 L_6104:
 	ld b,(hl)			;6104   ; pone en marcha el canal de HL si la prioridad A no es menor que la que suena
 	cp b			;6105   ; menor: no
-	ret c			;6106
+	ret c			;6106   ; si el canal tiene un sonido mas importante, no se toca
 	ex de,hl			;6107   ; el sonido y la prioridad
-	ld (de),a			;6108
+	ld (de),a			;6108   ; la prioridad y el sonido del canal...
 	dec de			;6109
 	ld hl,0c1cch		;610a   ; apunta a el sonido que se pide
 	ld a,(hl)			;610d
@@ -164,11 +164,11 @@ L_6104:
 	ld a,(ix+000h)		;6111   ; la partitura
 	ld (de),a			;6114
 	inc de			;6115
-	ld a,(ix+001h)		;6116
+	ld a,(ix+001h)		;6116   ; ...y por donde empieza su partitura
 	ld (de),a			;6119
 	inc de			;611a
 	ld hl,06124h		;611b   ; y el resto del canal, de la plantilla de 0x6124 (46 bytes)
-	ld bc,0002eh		;611e
+	ld bc,0002eh		;611e   ; y lo demas del canal desde la plantilla (0x2E bytes)
 	ldir		;6121
 	ret			;6123
 
@@ -187,11 +187,11 @@ DATA_6124:
 
 L_6163:
 	ld hl,0c1cbh		;6163   ; orden 0x82: para (bit 0 de 0xC1CB a cero)
-	res 0,(hl)		;6166
+	res 0,(hl)		;6166   ; para: el bit 0 de 0xC1CB a cero
 	jr L_6184		;6168
 L_616A:
 	ld hl,0c1dfh		;616a   ; orden 0x83: baja el volumen poco a poco (0x25 cuadros por paso, 10 pasos)
-	ld (hl),025h		;616d
+	ld (hl),025h		;616d   ; 0x25 cuadros por paso, 10 pasos
 	inc hl			;616f
 	ld (hl),00ah		;6170
 	jp L_617D		;6172
@@ -202,18 +202,18 @@ L_6175:
 	ld (hl),00ah		;617b
 L_617D:
 	ld hl,0c1cbh		;617d   ; bit 0 de 0xC1CB: bajando el volumen
-	set 0,(hl)		;6180
+	set 0,(hl)		;6180   ; bajando el volumen (bit 0)
 	res 4,(hl)		;6182
 L_6184:
 	ld hl,0c1e1h		;6184   ; la cuenta a cero
-	xor a			;6187
+	xor a			;6187   ; 0xC1EB y 0xC1EC a cero
 	ld (hl),a			;6188
 	inc hl			;6189
 	ld (hl),a			;618a
 	ret			;618b
 L_618C:
 	ld hl,0c1cbh		;618c   ; orden 0x80: sigue tras la pausa
-	bit 1,(hl)		;618f
+	bit 1,(hl)		;618f   ; la pausa: con el bit 1 ya puesto, se quita
 	ld b,000h		;6191
 	jr nz,L_6197		;6193
 	ld b,001h		;6195
@@ -221,11 +221,11 @@ L_6197:
 	res 1,(hl)		;6197
 	bit 3,(hl)		;6199
 	jr z,L_61A1		;619b
-	res 3,(hl)		;619d
+	res 3,(hl)		;619d   ; la marca de pausa (bit 3) a la de bajando (bit 0)
 	set 0,(hl)		;619f
 L_61A1:
 	ld hl,0c198h		;61a1   ; devuelve el canal 3 guardado en 0xC198
-	ld de,0c099h		;61a4
+	ld de,0c099h		;61a4   ; devuelve los volumenes guardados (0xC1FE, 0xC1FF)
 	call L_6281		;61a7   ; copia un canal (0x33 bytes)
 	ld a,(0c00dh)		;61aa   ; devuelve los volumenes del PSG guardados en 0xC1FE/0xC1FF
 	ld e,a			;61ad   ; el canal 0
@@ -253,17 +253,17 @@ L_61A1:
 	ld (09000h),a		;61d7   ; el mapper: pone en 0x8000 el banco de A
 	ld a,(0c1fch)		;61da   ; lee los canales del SCC que suenan
 	ld (0988fh),a		;61dd   ; al SCC: los canales del SCC encendidos
-	ld a,002h		;61e0
+	ld a,002h		;61e0   ; el sonido 2
 	ld (09000h),a		;61e2   ; el mapper: pone en 0x8000 el banco de A
 	ld a,0ffh		;61e5   ; 0xC1EB-0xC1EC a 0xFF: todo al SCC otra vez
-	ld hl,0c1ebh		;61e7
+	ld hl,0c1ebh		;61e7   ; 0xC1EB y 0xC1EC a 2
 	ld (hl),a			;61ea
 	inc hl			;61eb
 	ld (hl),a			;61ec
 	jp L_6CDA		;61ed
 L_61F0:
 	ld hl,0c1cbh		;61f0   ; orden 0x81: pausa
-	bit 1,(hl)		;61f3
+	bit 1,(hl)		;61f3   ; pausa: B = 1 si ya estaba
 	ld b,000h		;61f5
 	jr z,L_61FB		;61f7
 	ld b,001h		;61f9
@@ -275,7 +275,7 @@ L_61FB:
 	set 3,(hl)		;6203
 L_6205:
 	ld hl,0c099h		;6205   ; guarda el canal 3 en 0xC198
-	ld de,0c198h		;6208
+	ld de,0c198h		;6208   ; guarda los volumenes de los canales 0-2 en 0xC1FE y 0xC1FF
 	call L_6281		;620b   ; copia un canal (0x33 bytes)
 	ld a,(0c00dh)		;620e   ; los volumenes del PSG a cero, guardandolos
 	ld d,a			;6211   ; el canal 0: su volumen a 0xC1FE...
@@ -306,7 +306,7 @@ L_6205:
 	and 0f0h		;623f
 	ld (0c073h),a		;6241
 	ld a,(0c00ch)		;6244   ; sin el bit 4 de las marcas de los canales 0-2
-	res 4,a		;6247
+	res 4,a		;6247   ; y los quita (bit 4 de sus marcas)
 	ld (0c00ch),a		;6249
 	ld a,(0c03fh)		;624c
 	res 4,a		;624f
@@ -324,12 +324,12 @@ L_6205:
 	ld (0988ch),a		;626d   ; al SCC: el volumen del canal 3 del SCC
 	ld (0988dh),a		;6270   ; al SCC: el volumen del canal 4 del SCC
 	ld (0988eh),a		;6273   ; al SCC: el volumen del canal 5 del SCC
-	ld a,002h		;6276
+	ld a,002h		;6276   ; C = 2
 	ld (09000h),a		;6278   ; el mapper: pone en 0x8000 el banco de A
 	ld a,b			;627b   ; B = 0: C = 2
 	or a			;627c
 	ret nz			;627d
-	ld c,038h		;627e
+	ld c,038h		;627e   ; C = 0x38
 	ret			;6280
 L_6281:
 	ld bc,00033h		;6281   ; copia un canal (0x33 bytes)
@@ -337,14 +337,14 @@ L_6281:
 	ret			;6286
 L_6287:
 	ld a,(0c1e3h)		;6287   ; un cuadro del motor: el registro 7 del PSG
-	call L_6B59		;628a
+	call L_6B59		;628a   ; el cuadro del motor
 	ld a,(0fda2h)		;628d   ; 0xFDA2 (el cuadro de la BIOS) contra el del motor (0xC1FD)
-	ld hl,0c1fdh		;6290
+	ld hl,0c1fdh		;6290   ; la cuenta de cuadros 0xC1FD
 	cp (hl)			;6293   ; van a la par?
 	jr z,L_62BA		;6294
 	ld ix,0c099h		;6296   ; si no van a la par, las ondas del SCC se vuelven a mandar
 	set 7,(ix+00fh)		;629a   ; pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
-	ld ix,0c0cch		;629e
+	ld ix,0c0cch		;629e   ; los canales del SCC: 0xC0CC, 0xC0FF, 0xC132...
 	set 7,(ix+00fh)		;62a2   ; pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
 	ld ix,0c0ffh		;62a6
 	set 7,(ix+00fh)		;62aa   ; pone a uno el bit 7 de las marcas de la envolvente (bit 0 en marcha, 1-5 su fase, 7 onda nueva)
@@ -355,9 +355,9 @@ L_6287:
 L_62BA:
 	inc (hl)			;62ba   ; el cuadro siguiente
 	ld a,(hl)			;62bb   ; a 0xFDA2
-	ld (0fda2h),a		;62bc
+	ld (0fda2h),a		;62bc   ; 0xFDA2
 	ld hl,0c1cbh		;62bf   ; en pausa, solo el canal 3
-	bit 1,(hl)		;62c2
+	bit 1,(hl)		;62c2   ; en pausa: p04:6343
 	jp nz,L_6343		;62c4
 	ld a,(0c1cbh)		;62c7   ; bajando el volumen
 	bit 0,a		;62ca

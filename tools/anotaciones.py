@@ -165,7 +165,7 @@ RAM16 = {}
 
 # La ficha del jugador: IX = 0xE320 (p00:42A0), el estado que va detras de sus
 # sprites (los registros 0-3 de 0xE300). Los tramos de p03 en los que corre con
-# IX en ella sin cargarlo: la rutina del jugador, p03:AE38-B3AE.
+# IX en ella sin cargarlo: la rutina del jugador y las suyas, p03:AE38-BAE3.
 CAMPOS_JUGADOR = {
     -0x07: "1 si el jugador ha entrado en el pasillo (bases 3D; p03:AFE2, p03:B0FF)",
     -0x05: "la direccion del empujon del ultimo golpe (p03:AEDE)",
@@ -175,6 +175,9 @@ CAMPOS_JUGADOR = {
     0x06: "la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)",
     0x07: "la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)",
     0x19: "hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4)",
+    0x09: "1 si el jugador esta cayendo (p03:BA72)",
+    0x1A: "la espera entre disparos del jugador (p03:B7BD)",
+    0x1B: "lo hundido que va el jugador en el agua (p03:B292)",
     0x0F: "hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)",
     0x0A: "la y del jugador (p03:B176)",
     0x0B: "la x del jugador (p03:B17A; medida jugando)",
@@ -200,7 +203,7 @@ CAMPOS_OBJETO = {
     0x0D: "la segunda cuenta del objeto (p02:9921)",
 }
 FICHAS_OBJETO = tuple(0xE300 + 16 * k for k in range(4, 48))
-FICHAS = (((0xE320,), {3: ((0xAE38, 0xB3AE),)}, CAMPOS_JUGADOR),
+FICHAS = (((0xE320,), {3: ((0xAE38, 0xBAE4),)}, CAMPOS_JUGADOR),
           (FICHAS_OBJETO, {2: ((0x8000, 0xA000),), 3: ((0xA000, 0xAE38), (0xB3AE, 0xC000)),
                            14: ((0x7800, 0x8000),), 0: ((0x54DF, 0x5A12),)}, CAMPOS_OBJETO, "iy"),
           (tuple(0xE300 + 16 * k for k in range(32) if k != 2), {}, CAMPOS_SPRITE))

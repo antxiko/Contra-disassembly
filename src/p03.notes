@@ -180,6 +180,9 @@ C 0xA869 cada A cuadros (IY+0C), el estado siguiente
 C 0xA871 cada A cuadros (IY+0C), el estado B
 C 0xA879 lo mismo con la cuenta IY+0D
 C 0xA889 libera cuatro fichas: las dos de arriba y las dos de abajo...
+C 0xA88F las dos fichas de la derecha fuera...
+C 0xA89F ...y libres
+C 0xA8A7 y las de la izquierda
 C 0xA8A9 ...dos...
 C 0xA8BD ...o una: sus 16 bytes a cero...
 C 0xA8CA ...y fuera de la pantalla (y, x = 0xEC)
@@ -326,53 +329,128 @@ C 0xB253 dos bytes por postura: el dibujo de arriba y el de abajo
 C 0xB256 dos bytes por postura
 C 0xB262 los sprites del jugador segun la postura: la tabla de alturas p03:B43A
 C 0xB265 las posturas 0x0C y 0x15 (saltando), 0x0E-0x11 y 0x14 (agachado, de lado) van aparte
+C 0xB268 saltando (0x0C) o tumbado en el agua (0x15): p03:B2FE
+C 0xB272 agachado (0x14): p03:B310
+C 0xB27B dando vueltas (0x0E-0x11): p03:B310
+C 0xB283 B = la altura de la postura
 C 0xB284 en el agua de la fase 0 (y >= 0xAF) se hunde poco a poco (IX+1B hasta 6)...
+C 0xB28D fuera del agua: normal
+C 0xB292 se hunde hasta 6 puntos (IX+1B)
 C 0xB29E ...con el dibujo de abajo 0x24 (el agua)...
 C 0xB2A4 ...y la primera vez el sonido 0x39 (0xE2CF)
+C 0xB2A7 el sonido del agua solo la primera vez
+C 0xB2BB fuera del agua, sin hundirse
 C 0xB2BF la y de arriba = la del jugador menos la altura de la postura (2 menos en la fase 18)
+C 0xB2C4 en la fase 18...
+C 0xB2C9 ...dos mas arriba
 C 0xB2CD los cuatro sprites: los dos de arriba (IX-20, IX-10) a esa y, los de abajo 0x10 mas
+C 0xB2D0 la y de los sprites de arriba
+C 0xB2D3 los de abajo, 0x10 mas
 C 0xB2DB la misma x en los cuatro
+C 0xB2DE la misma x a los cuatro
 C 0xB2EA los dibujos 0, 4, 8 y 0x0C (los cuatro de 16 x 16 del jugador)
+C 0xB2EE los dibujos: 0 y 4 arriba, 8 y 0x0C abajo
 C 0xB301 saltando: la y de la postura...
 C 0xB307 ...y los sprites de lado segun hacia donde mira
+C 0xB30A mirando a la izquierda
 C 0xB319 agachado o tumbado: cada postura su colocacion
+C 0xB31C cada postura de vueltas o agachado
 C 0xB33A tumbado mirando a la derecha: los de arriba a la izquierda (x - 8) y los otros 0x10 a la derecha
+C 0xB33D tumbado: los de la izquierda 8 a la izquierda...
+C 0xB345 ...los otros 0x10 a la derecha
+C 0xB34D todos a la misma y (tumbado)
 C 0xB35D de pie: los de arriba 0x10 por encima
+C 0xB35E de pie: abajo...
+C 0xB364 ...y arriba 0x10 mas arriba
 C 0xB375 tumbado mirando a la izquierda, al reves
+C 0xB378 al reves si mira a la izquierda
 C 0xB38A a la derecha: si no hay pared, un paso
+C 0xB38D con pared, no se mueve
 C 0xB396 a la izquierda: si no hay pared, un paso
 C 0xB3A2 el paso de andar: la cuenta de cuadros 0xE1C2 / 8 (de 0 a 3)
+C 0xB3A5 la cuenta de cuadros / 8, de 0 a 3
 C 0xB4A5 en una plataforma fina? dos casillas bajo los pies (IX+15 la de la izquierda)
+C 0xB4AB la casilla de debajo a la izquierda
+C 0xB4AE y la de la derecha
+C 0xB4B4 dibujo 2: suelo fino
 C 0xB4C3 pared a la derecha: fuera de la pantalla por arriba o por abajo, no
+C 0xB4C6 por arriba de la pantalla, no hay pared
+C 0xB4CA por abajo tampoco
 C 0xB4CE la casilla de la derecha (12 a la derecha) y las dos de encima
+C 0xB4D4 la casilla de los pies (12 a la derecha)
+C 0xB4D7 pared...
+C 0xB4DC ...o la de encima (una fila menos)...
+C 0xB4E6 ...o la de mas arriba
 C 0xB4ED y la de los pies
+C 0xB4F0 y la de la x del jugador + 12
 C 0xB4FA suelo: solo en la ultima linea de una casilla (y de 8 en 8)...
+C 0xB4FD solo en la ultima linea de la casilla
 C 0xB504 ...las dos casillas bajo los pies (4 y 0x0A a la derecha)...
+C 0xB50D la segunda casilla bajo los pies
 C 0xB516 ...un dibujo por debajo de 3 es suelo...
+C 0xB518 suelo: acarreo
 C 0xB521 ...y encima de una plataforma que se mueve (0xE2C5) tambien
+C 0xB524 en la plataforma que se mueve tambien
+C 0xB527 sin suelo
 C 0xB52B pared a la izquierda: lo mismo 2 a la izquierda
+C 0xB52E por arriba, no
+C 0xB536 2 a la derecha (el borde izquierdo del jugador)
 C 0xB55D si los dos son suelo o las dos paredes
+C 0xB560 por arriba de 0x0F, no
 C 0xB574 1 (el suelo fino) solo cuenta sin estar cayendo
+C 0xB576 1 (suelo fino) cuenta como pared solo...
+C 0xB583 ...si no esta saltando
 C 0xB58B cambia de tramo: el banco de la fase en 0x6000 (p03:BAE4)...
+C 0xB58C la tabla del banco de cada fase
 C 0xB598 ...el tramo + B (si pasa de 0xF0, no)...
+C 0xB59C el tramo pasaria de 0xF0: no
 C 0xB5A4 ...la lista de pantallas de la fase (0x6000 + 2 x fase)...
+C 0xB5AA la lista de la fase
 C 0xB5B5 ...y si la de ese tramo es 0 (el final de la lista), se deja como estaba: sin cambio (A = 0)
+C 0xB5B6 hay pantalla: cambia
+C 0xB5BB no la hay: el tramo como estaba
 C 0xB5C2 cambiado: A = 1
 C 0xB5C6 la casilla de (y + B, x + C): fila (y / 8) x 32...
+C 0xB5C9 y + B
+C 0xB5CE x + C
+C 0xB5D4 la fila: y / 8
 C 0xB5E4 ...mas la columna (x / 8)
+C 0xB5E5 la columna: x / 8
 C 0xB5EE el salto: agachado (dibujos 0x0D o 0x12) no salta
+C 0xB5F9 agachado: sin salto
 C 0xB5FE ya en el aire, a seguir
+C 0xB602 en el aire: a seguir el salto
 C 0xB604 con el boton de salto (0xE062)...
+C 0xB608 sin boton, nada
+C 0xB609 el boton atendido, y el sonido del agua otra vez posible
 C 0xB610 ...y sin 0xE5C2, sin empujon y en el suelo...
+C 0xB615 ni empujado...
+C 0xB61A ...ni cayendo
 C 0xB61F ...empieza a subir; el sonido 1 por p00:49A0
+C 0xB622 sin hundirse
+C 0xB626 el sonido 1 del salto (p00:49A0)
 C 0xB62B hacia donde salta: derecha (IX+8 = 2) o izquierda (1) segun la palanca
+C 0xB62E arriba: salto recto
+C 0xB632 a la derecha (2-4): IX+8 = 1...
+C 0xB638 ...a la izquierda (6-8): IX+8 = 2
 C 0xB642 la tabla del salto: la de siempre (p03:B757), o mas alta con 0xE031 1 (p03:B777) o 2 (p03:B797)
+C 0xB645 con 0xE031 (lo cogido) mas alto
+C 0xB658 subiendo
 C 0xB65D subiendo: en la partida, con el boton soltado y algo subido, deja de subir (salto corto)
+C 0xB663 algo subido...
+C 0xB66A ...y el boton suelto...
+C 0xB670 ...deja de subir: salto corto
 C 0xB677 hasta 0x20 pasos de subida
+C 0xB67A 0x20 pasos como mucho
 C 0xB684 cuanto sube en este paso (la tabla), punto a punto...
+C 0xB685 este paso no sube
 C 0xB68A ...por arriba de la pantalla en las fases que suben (p03:B6C1)...
+C 0xB68D arriba de la pantalla en las verticales: la de arriba
+C 0xB697 por encima de 0xF8 (fuera), sin mirar el techo
 C 0xB69B ...y si choca con el techo, no sube
 C 0xB6A9 con 0xE032 = 2, B = -8 (la x del disparo)
+C 0xB6B5 con el arma 2 (0xE032)...
+C 0xB6BE ...el disparo sale 8 mas arriba
 C 0xB6C1 en las fases 3 y 18, al llegar arriba, la pantalla siguiente (p03:B58B con B = 1) y abajo del todo
 C 0xB6DF arriba del todo: a bajar
 C 0xB6E2 bajando: la misma tabla al reves...
@@ -442,6 +520,10 @@ C 0xBB95 ...y sus ordenes: el puntero de 0x6100 + 2 x pantalla
 C 0xBBA2 las ordenes: 0xFF acaba (y siguen los objetos, p03:BD7B)...
 C 0xBBA9 ...0xFE y un puntero: las ordenes de otro sitio, hasta su 0xFF (piezas compartidas)...
 C 0xBBAD ...y si no, una pieza (p03:BBC8)
+C 0xBBB2 el puntero de las ordenes compartidas
+C 0xBBB9 se siguen alli
+C 0xBBBA cada orden de alli hasta su 0xFF
+C 0xBBC0 una pieza
 C 0xBBC8 una pieza: con el bit 7, la forma corta (repetida); sin el, la larga
 C 0xBBCC la fila (p03:BCE8) y su casilla en 0xE1B1...
 C 0xBBD4 ...el puntero a su dibujo...
@@ -465,6 +547,8 @@ C 0xBC9E ...y si no quedan, la orden siguiente
 C 0xBCA5 si no, la siguiente fila de la pieza desde el principio...
 C 0xBCAF ...y al acabar su alto, otra vez desde arriba (la pieza se repite hacia abajo)
 C 0xBCB9 la fila siguiente del mapa y de la pantalla (0x20 casillas)
+C 0xBCBD 0x20: la fila siguiente
+C 0xBCC5 y en la pantalla
 C 0xBCE8 la fila A: HL = 0xC300 + A x 32...
 C 0xBCF8 ...la columna del byte siguiente...
 C 0xBCFF ...y la casilla en la pantalla (fila x 32 + columna) en 0xE1AE y 0xE1B7
@@ -476,12 +560,15 @@ C 0xBD52 cada fila de la pieza...
 C 0xBD5C ...cada dibujo distinto de cero, a la pantalla...
 C 0xBD6C ...y la fila siguiente (0x20 casillas)
 C 0xBD7B los objetos de la pantalla: cada byte de la lista DE (hasta 0xFF) es el tipo de uno...
+C 0xBD7F cada tipo de objeto de la lista...
+C 0xBD86 ...a una ficha de 0xE500
 C 0xBD8B ...en la primera ficha libre de 0xE500 (si no hay, se pierde)
 C 0xBDA4 ...y detras: IY+3, la fila (y = fila x 8) y la columna (x = (columna + 1) x 8)...
 C 0xBDC1 ...y su casilla en el mapa (p03:BCE8) en IY+6/7 y la de la VRAM en IY+8/9
 C 0xBDD6 los sprites de la pantalla en 0xE400 (como mucho 0x14): tipo, cuantos, y, x
 C 0xBDF7 una y de 0 es fuera de la pantalla (0xEC)
 C 0xBE06 IY+0F el numero de cada uno, seguidos desde 0x0A
+C 0xBE13 las fichas de los sprites de la pantalla, de 16 en 16
 C 0xBE1E los dibujos de sprite de la pantalla: en las fases 6, 9, 10, 16 y 17 por tramo...
 C 0xBE44 ...en las demas, uno por fase (p03:BE6F)
 C 0xBE52 si cambian (0xE097), se cargan (p00:49BF)
@@ -779,6 +866,7 @@ C 0xA8CE la x del objeto (p00:4BBB) = 0xEC
 C 0xAE4D pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 C 0xAE53 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 C 0xAE57 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAE5D guarda lo hundido que va el jugador en el agua (p03:B292)
 C 0xAE66 guarda la energia del jugador
 C 0xAE95 lee la y del jugador (p03:B176)
 C 0xAEB3 sube la y del jugador (p03:B176)
@@ -865,6 +953,7 @@ C 0xB25A guarda el dibujo de arriba del jugador (p00:4B54)
 C 0xB25F guarda el dibujo de abajo del jugador (p00:4B6D)
 C 0xB280 lee_tabla: HL = HL + A y A = (HL)
 C 0xB28A lee la y del jugador (p03:B176)
+C 0xB29A guarda lo hundido que va el jugador en el agua (p03:B292)
 C 0xB2AC pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 C 0xB2B8 lee la y del jugador (p03:B176)
 C 0xB2C1 lee la fase (0-19; la 8 se salta)
@@ -893,27 +982,89 @@ C 0xB5A7 lee la fase (0-19; la 8 se salta)
 C 0xB5B2 lee_tabla: HL = HL + A y A = (HL)
 C 0xB5B8 lee el tramo: la pantalla de la lista de la fase
 C 0xB5BC guarda el tramo: la pantalla de la lista de la fase
+C 0xB5CB lee la x del jugador (p03:B17A; medida jugando)
 C 0xB5D0 apunta a el mapa de la pantalla: 32 x 24 dibujos
 C 0xB5EB lee_tabla: HL = HL + A y A = (HL)
+C 0xB655 lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+C 0xB67E sube la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
 C 0xB681 lee_tabla: HL = HL + A y A = (HL)
+C 0xB694 lee la y del jugador (p03:B176)
+C 0xB6A0 baja la y del jugador (p03:B176)
 C 0xB6CE cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
+C 0xB6D4 la y del jugador (p03:B176) = 0x90
 C 0xB6D8 pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xB6E8 baja la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
+C 0xB6EB lee la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
 C 0xB6EE lee_tabla: HL = HL + A y A = (HL)
+C 0xB702 lee la y del jugador (p03:B176)
 C 0xB70D hay_suelo: acarreo si bajo los pies del jugador hay suelo (un dibujo por debajo de 3 en el mapa)
+C 0xB724 guarda la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+C 0xB727 guarda la altura del salto del jugador (sube hasta 0x20; p03:B670, p03:B67E)
 C 0xB734 hay_suelo: acarreo si bajo los pies del jugador hay suelo (un dibujo por debajo de 3 en el mapa)
 C 0xB740 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xB753 guarda la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda)
+C 0xB7BD baja la espera entre disparos del jugador (p03:B7BD)
 C 0xB7E1 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xB7E4 guarda hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4)
 C 0xB7EB lee_tabla: HL = HL + A y A = (HL)
 C 0xB809 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB80E hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x09
+C 0xB812 lee la y del jugador (p03:B176)
+C 0xB818 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB823 hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x07
+C 0xB82F lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+C 0xB835 la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x16
+C 0xB839 lee la y del jugador (p03:B176)
+C 0xB841 lee hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)
+C 0xB849 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB857 lee la y del jugador (p03:B176)
+C 0xB85C lee lo hundido que va el jugador en el agua (p03:B292)
+C 0xB864 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB872 lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+C 0xB878 la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x01
+C 0xB87C lee la y del jugador (p03:B176)
+C 0xB881 lee lo hundido que va el jugador en el agua (p03:B292)
+C 0xB889 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB897 lee la y del jugador (p03:B176)
+C 0xB89C lee lo hundido que va el jugador en el agua (p03:B292)
+C 0xB8A4 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB8B3 lee 1 si el jugador esta cayendo (p03:BA72)
 C 0xB8BA lee la fase (0-19; la 8 se salta)
+C 0xB8C0 lee la y del jugador (p03:B176)
+C 0xB8CD hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x09
+C 0xB8D1 lee la y del jugador (p03:B176)
+C 0xB8D7 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB8E1 lee hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)
+C 0xB8E7 hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x07
+C 0xB8ED hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x03
+C 0xB8F1 lee la y del jugador (p03:B176)
+C 0xB8FC lee hacia donde mira el jugador (0 derecha, 0xFF izquierda; p03:B10E, p03:B123)
+C 0xB904 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB911 lee la y del jugador (p03:B176)
+C 0xB916 lee lo hundido que va el jugador en el agua (p03:B292)
+C 0xB91E lee la x del jugador (p03:B17A; medida jugando)
+C 0xB92C lee la fase del salto del jugador (0 en el suelo, 1 subiendo, 2 bajando; p03:B61F)
+C 0xB932 la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x01
+C 0xB936 lee la y del jugador (p03:B176)
+C 0xB93B lee lo hundido que va el jugador en el agua (p03:B292)
+C 0xB943 lee la x del jugador (p03:B17A; medida jugando)
+C 0xB951 lee la y del jugador (p03:B176)
+C 0xB956 lee lo hundido que va el jugador en el agua (p03:B292)
+C 0xB95E lee la x del jugador (p03:B17A; medida jugando)
+C 0xB96C la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda) = 0x00
+C 0xB970 hacia donde dispara el jugador (la direccion de la palanca; p03:B7E4) = 0x05
+C 0xB974 lee la y del jugador (p03:B176)
+C 0xB97A lee la x del jugador (p03:B17A; medida jugando)
 C 0xB983 lee el tipo del objeto (p02:8000, p02:8063)
 C 0xB98A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 C 0xB9AC lee el tipo del objeto (p02:8000, p02:8063)
+C 0xB9BF guarda la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda)
 C 0xB9C7 guarda el tipo del objeto (p02:8000, p02:8063)
 C 0xB9CF es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 C 0xB9D5 el tipo del objeto (p02:8000, p02:8063) = 0x04
 C 0xB9DD guarda la y del objeto (p00:4BBB)
 C 0xB9E0 guarda la x del objeto (p00:4BBB)
+C 0xB9E7 lee el dibujo de abajo del jugador (p00:4B6D)
 C 0xB9EE la segunda cuenta del objeto (p02:9921) = 0x01
 C 0xBA09 guarda el estado del objeto (p03:A03E)
 C 0xBA0C guarda la y guardada del objeto (p02:9A24)
@@ -921,34 +1072,32 @@ C 0xBA17 lee el tipo del objeto (p02:8000, p02:8063)
 C 0xBA2D lee el tipo del objeto (p02:8000, p02:8063)
 C 0xBA54 borra_b: pone a cero B bytes desde HL
 C 0xBA57 la y del objeto (p00:4BBB) = 0xEC
+C 0xBA61 lee 1 si el jugador esta cayendo (p03:BA72)
+C 0xBA72 1 si el jugador esta cayendo (p03:BA72) = 0x01
+C 0xBA7B 1 si el jugador esta cayendo (p03:BA72) = 0x01
 C 0xBA89 hay_suelo: acarreo si bajo los pies del jugador hay suelo (un dibujo por debajo de 3 en el mapa)
+C 0xBA9A guarda la postura del jugador (la tabla de dibujos p03:B3AE, o p03:B3F4 mirando a la izquierda)
+C 0xBAA2 guarda 1 si el jugador esta cayendo (p03:BA72)
 C 0xBAAA pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xBAB4 sube la y del jugador (p03:B176)
 C 0xBACC cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 C 0xBAD6 pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xBAE0 baja el parpadeo del jugador (bit 0: sin sprites este cuadro, p00:4B8C)
 C 0xBAFA pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
-C 0xBB15 construye_pantalla: construye la pantalla del tramo 0xE022: mapa 0xC300 y dibujos en la VRAM
-C 0xBB18 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 C 0xBB1D lee el tramo: la pantalla de la lista de la fase
-C 0xBB2E pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 C 0xBB34 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 C 0xBB40 guarda los blancos de la sala que quedan (bases 3D)
-C 0xBB47 apaga_pantalla: apaga la pantalla (DISSCR)
-C 0xBB4A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
-C 0xBB59 apunta a el mapa de la pantalla: 32 x 24 dibujos
 C 0xBB6C lee la fase (0-19; la 8 se salta)
 C 0xBB6F lee_tabla: HL = HL + A y A = (HL)
 C 0xBB72 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 C 0xBB7F vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
 C 0xBB85 lee la fase (0-19; la 8 se salta)
-C 0xBB8F lee el tramo: la pantalla de la lista de la fase
 C 0xBB92 lee_tabla: HL = HL + A y A = (HL)
 C 0xBB9C lee_tabla: HL = HL + A y A = (HL)
 C 0xBBEB orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
 C 0xBBF3 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 C 0xBC39 orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
 C 0xBC41 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
-C 0xBC79 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
-C 0xBCE8 apunta a el mapa de la pantalla: 32 x 24 dibujos
 C 0xBCFB lee_tabla: HL = HL + A y A = (HL)
 C 0xBD3A guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 C 0xBD47 orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
