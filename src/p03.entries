@@ -1,0 +1,94 @@
+# Puntos de entrada del banco 3 (se ejecuta en 0xa000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de seis bancos. Los que ponen "tabla" salen de una tabla
+# del despachador (cartucho.DESPACHADOR), que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0xA001   # p02:9FFE sigue de largo (el codigo cruza la frontera de banco)
+0xA01A   # p02:9F6B jp
+0xA03E   # p02:81C2 call
+0xA041   # p00:5506 call
+0xA04C   # p02:9DB4 call
+0xA079   # p02:9DC0 call
+0xA0D0   # p02:8003 entrada 17 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA0D5   # p02:8003 entrada 16 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA0E4   # p02:88FF jp
+0xA0FF   # p14:7A08 jp
+0xA10A   # p02:8003 entrada 15 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA115   # p03:A10A entrada 0 de la tabla de 0xA10D (call 0xA03E en 0xA10A)
+0xA11A   # p03:A10A entrada 1 de la tabla de 0xA10D (call 0xA03E en 0xA10A)
+0xA12A   # p03:A10A entrada 2 de la tabla de 0xA10D (call 0xA03E en 0xA10A)
+0xA160   # p03:A10A entrada 3 de la tabla de 0xA10D (call 0xA03E en 0xA10A)
+0xA19C   # p02:8003 entrada 14 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA207   # p02:8003 entrada 13 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA28B   # p02:8003 entrada 12 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA29B   # p03:A292 entrada 0 de la tabla de 0xA295 (call 0xA03E en 0xA292)
+0xA2E0   # p03:A292 entrada 1 de la tabla de 0xA295 (call 0xA03E en 0xA292)
+0xA2E8   # p03:A292 entrada 2 de la tabla de 0xA295 (call 0xA03E en 0xA292)
+0xA34E   # p02:8003 entrada 9 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA3E0   # p02:8003 entrada 11 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA414   # p02:8003 entrada 32 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA424   # p02:8003 entrada 10 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA4AA   # p02:8003 entrada 8 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA4C6   # p03:A4BD entrada 0 de la tabla de 0xA4C0 (call 0xA03E en 0xA4BD)
+0xA4DC   # p03:A4BD entrada 1 de la tabla de 0xA4C0 (call 0xA03E en 0xA4BD)
+0xA4FD   # p03:A4BD entrada 2 de la tabla de 0xA4C0 (call 0xA03E en 0xA4BD)
+0xA535   # p02:8003 entrada 7 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA5A4   # p02:8003 entrada 6 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA5A5   # p02:8003 entrada 5 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA60E   # p02:8003 entrada 2 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA61F   # p03:A60E entrada 0 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA646   # p03:A60E entrada 1 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA66A   # p03:A60E entrada 2 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA67B   # p03:A60E entrada 3 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA682   # p03:A60E entrada 4 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA692   # p03:A60E entrada 5 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA69D   # p03:A60E entrada 6 de la tabla de 0xA611 (call 0xA03E en 0xA60E)
+0xA6D2   # p02:8003 entrada 3 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA6DB   # p03:A6D2 entrada 0 de la tabla de 0xA6D5 (call 0xA03E en 0xA6D2)
+0xA6E9   # p03:A6D2 entrada 1 de la tabla de 0xA6D5 (call 0xA03E en 0xA6D2)
+0xA6FD   # p03:A6D2 entrada 2 de la tabla de 0xA6D5 (call 0xA03E en 0xA6D2)
+0xA74A   # p02:8003 entrada 4 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA753   # p03:A74A entrada 0 de la tabla de 0xA74D (call 0xA03E en 0xA74A)
+0xA772   # p03:A74A entrada 1 de la tabla de 0xA74D (call 0xA03E en 0xA74A)
+0xA78B   # p03:A74A entrada 2 de la tabla de 0xA74D (call 0xA03E en 0xA74A)
+0xA7B9   # p00:581B jp
+0xA7F1   # p02:9FC1 call
+0xA7F3   # p02:9FBC call
+0xA811   # p02:8003 entrada 19 de la tabla de 0x8006 (call 0xA03E en 0x8003)
+0xA869   # p14:7997 call
+0xA871   # p02:99E9 call
+0xA879   # p02:8208 jp
+0xA881   # p02:9F1C call
+0xA88F   # p02:9F4E jp
+0xA8A9   # p14:797A jp cc
+0xAF98   # entrada 0 de la tabla p03:AF86
+0xAFAF   # entrada 1 de la tabla p03:AF86
+0xAFEA   # entrada 5 de la tabla p03:AF86
+0xB051   # entrada 4 de la tabla p03:AF86
+0xB05B   # entrada 2 de la tabla p03:AF86
+0xB06E   # entrada 3 de la tabla p03:AF86
+0xB0B1   # entrada 6 de la tabla p03:AF86
+0xB0BB   # entrada 8 de la tabla p03:AF86
+0xB0C5   # entrada 7 de la tabla p03:AF86
+0xB5D0   # p00:5EEC call
+0xB805   # entrada 0 de la tabla p03:B7F3
+0xB82A   # entrada 1 de la tabla p03:B7F3
+0xB851   # entrada 2 de la tabla p03:B7F3
+0xB86C   # entrada 3 de la tabla p03:B7F3
+0xB891   # entrada 4 de la tabla p03:B7F3
+0xB8AC   # entrada 5 de la tabla p03:B7F3
+0xB90B   # entrada 6 de la tabla p03:B7F3
+0xB926   # entrada 7 de la tabla p03:B7F3
+0xB94B   # entrada 8 de la tabla p03:B7F3
+0xBA4F   # p00:572B jp
+0xBAF8   # p00:41AC call
+0xBD1F   # p02:8410 call
+0xBEAC   # p00:4C6E jp cc

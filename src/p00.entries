@@ -1,0 +1,86 @@
+# Puntos de entrada del banco 0 (se ejecuta en 0x4000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de seis bancos. Los que ponen "tabla" salen de una tabla
+# del despachador (cartucho.DESPACHADOR), que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x402E   # cabecera AB: INIT
+0x452D   # p03:BB34 call
+0x4532   # p03:BB2E call
+0x4576   # p12:9921 call
+0x45AA   # p03:AF4C call
+0x45C3   # p03:AE6A call
+0x45DA   # p03:AF1C call
+0x46A4   # p12:9433 call
+0x485E   # p03:BBE6 call
+0x486E   # p03:BC79 call
+0x492E   # p03:BB79 call
+0x4937   # p03:BB7C call
+0x4950   # p03:AEB0 call cc
+0x4958   # p03:AEAC call cc
+0x4987   # p03:BFFD jp
+0x499C   # p03:B731 jp cc
+0x49A0   # p03:B628 call
+0x49BF   # p03:BE5D call
+0x49E3   # entrada 0 de la tabla p00:49D3
+0x49E9   # entrada 1 de la tabla p00:49D3
+0x4A04   # entrada 2 de la tabla p00:49D3
+0x4A2E   # entrada 3 de la tabla p00:49D3
+0x4A3D   # entrada 4 de la tabla p00:49D3
+0x4A5A   # entrada 5 de la tabla p00:49D3
+0x4A6B   # entrada 6 de la tabla p00:49D3
+0x4A88   # entrada 7 de la tabla p00:49D3
+0x4B86   # p03:BB7F call
+0x4BD2   # gancho de interrupcion H.KEYI: INIT escribe esta direccion en 0xFD9B y 0xC3 en 0xFD9A (p00:40E3-p00:40EB)
+0x4F78   # p03:BB72 call
+0x5052   # p03:B2AC call
+0x50D6   # p03:BB47 call
+0x51B2   # p03:BA54 call
+0x51B8   # p03:B257 call
+0x51BF   # p03:BB23 call
+0x531B   # p03:B94B call
+0x54CB   # p02:9BAC entrada 0 de la tabla de 0x9BAF (call 0xA03E en 0x9BAC)
+0x54DA   # p02:9BA2 call
+0x54DF   # p03:BA1B call cc
+0x5521   # p00:5506 entrada 4 de la tabla de 0x5509 (call 0xA03E en 0x5506)
+0x5526   # p00:5506 entrada 3 de la tabla de 0x5509 (call 0xA03E en 0x5506)
+0x552C   # p00:5506 entrada 5 de la tabla de 0x5509 (call 0xA03E en 0x5506)
+0x5585   # p00:5506 entrada 1 de la tabla de 0x5509 (call 0xA03E en 0x5506)
+0x55A0   # p00:5506 entrada 2 de la tabla de 0x5509 (call 0xA03E en 0x5506)
+0x55E4   # p00:55D1 entrada 2 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
+0x5644   # p00:55D1 entrada 1 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
+0x5721   # p00:55D1 entrada 0 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
+0x57A2   # p00:55D1 entrada 6 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
+0x581E   # p00:55D1 entrada 7 de la tabla de 0x55D4 (call 0xA03E en 0x55D1)
+0x5A5A   # p14:79FD call
+0x5A61   # p02:8277 call
+0x5A68   # p02:9FCF call cc
+0x5ACE   # p02:9578 call
+0x5AF8   # p02:90B5 call
+0x5C1A   # p02:8647 call
+0x5C48   # p02:9E60 call
+0x5D1D   # p02:9495 call
+0x5DF4   # p03:BE64 call
+0x5E15   # p02:948C call
+0x5E24   # p02:9CD2 call
+0x5E31   # p14:7852 call
+0x5E40   # p14:782F call
+0x5E57   # p03:A4BA call
+0x5E5C   # p02:9D54 call
+0x5E66   # p02:9D4F call
+0x5E7B   # p02:9D2F call
+0x5E96   # p02:9D2A call
+0x5ECD   # p02:955C call
+0x5F19   # p02:8292 call
+0x5F1D   # p02:8171 call
+0x5F21   # p02:9102 call
+0x5F25   # p02:8B4A call
+0x5F2D   # p02:8DF4 call
+0x5F33   # p02:813D jp

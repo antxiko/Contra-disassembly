@@ -1,0 +1,35 @@
+# Zonas que el trazador NO puede entrar a desensamblar como codigo.
+#
+# La tabla de destinos del despachador de Konami (cartucho.DESPACHADOR) va pegada JUSTO
+# DETRAS de su `call`: sin declararla, el trazador sigue de largo y se la come
+# como instrucciones, y ademas sigue desde ahi. Es la contaminacion mas facil
+# de este cartucho.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x8006 0x8062   tabla de 46 palabras del despachador (call 0xA03E en 0x8003)
+0x8069 0x80B3   tabla de 37 palabras del despachador (call 0xA03E en 0x8066)
+0x8186 0x818A   tabla de 2 palabras del despachador (call 0xA03E en 0x8183)
+0x81C5 0x81CD   tabla de 4 palabras del despachador (call 0xA03E en 0x81C2)
+0x82E7 0x82ED   tabla de 3 palabras del despachador (call 0xA03E en 0x82E4)
+0x8511 0x8517   tabla de 3 palabras del despachador (call 0xA03E en 0x850E)
+0x8579 0x8581   tabla de 4 palabras del despachador (call 0xA03E en 0x8576)
+0x8616 0x8620   tabla de 5 palabras del despachador (call 0xA03E en 0x8613)
+0x87D6 0x87DC   tabla de 3 palabras del despachador (call 0xA03E en 0x87D3)
+0x8874 0x8878   tabla de 2 palabras del despachador (call 0xA03E en 0x8871)
+0x8B83 0x8B89   tabla de 3 palabras del despachador (call 0xA03E en 0x8B80)
+0x8C8E 0x8C9C   tabla de 7 palabras del despachador (call 0xA03E en 0x8C8B)
+0x8E19 0x8E37   tabla de 15 palabras del despachador (call 0xA03E en 0x8E16)
+0x8FBB 0x8FC3   tabla de 4 palabras del despachador (call 0xA03E en 0x8FB8)
+0x924B 0x9251   tabla de 3 palabras del despachador (call 0xA03E en 0x9248)
+0x92D5 0x92DB   tabla de 3 palabras del despachador (call 0xA03E en 0x92D2)
+0x93F7 0x9407   tabla de 8 palabras del despachador (call 0xA03E en 0x93F4)
+0x946E 0x947E   tabla de 8 palabras del despachador (call 0xA03E en 0x946B)
+0x94D5 0x94DF   tabla de 5 palabras del despachador (call 0xA03E en 0x94D2)
+0x959C 0x95A8   tabla de 6 palabras del despachador (call 0xA03E en 0x9599)
+0x9620 0x9626   tabla de 3 palabras del despachador (call 0xA03E en 0x961D)
+0x992C 0x993C   tabla de 8 palabras del despachador (call 0xA03E en 0x9929)
+0x9A34 0x9A3C   tabla de 4 palabras del despachador (call 0xA03E en 0x9A31)
+0x9ADB 0x9AE5   tabla de 5 palabras del despachador (call 0xA03E en 0x9AD8)
+0x9BAF 0x9BBF   tabla de 8 palabras del despachador (call 0xA03E en 0x9BAC)
+0x9BC2 0x9BCA   tabla de 4 palabras del despachador (call 0xA03E en 0x9BBF)
+0x9CEB 0x9CFB   tabla de 8 palabras del despachador (call 0xA03E en 0x9CE8)
