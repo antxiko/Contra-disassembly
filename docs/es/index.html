@@ -1,0 +1,98 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contra - desensamblado comentado</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<header class="top">
+  <img src="data:image/png;base64,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" alt="Contra">
+  <p class="claim">Las diecinueve fases enteras y la que el juego se salta, las cuatro bases en 3D con el mapa de sus puertas, el jugador con todas sus armas, los enemigos, los jefes, las demostraciones y el final animados, la partida grabada en el <em>Game Master 2</em> y la m&uacute;sica sacada de su propio motor.</p>
+  <p class="ficha">Konami - <b>(c) Konami 1989</b> - Cartucho <b>RC-762</b>, MegaROM de 128 KB (Konami con SCC) - <b>MSX2</b> - Volcado <b>f823346e...</b></p>
+</header>
+<p class="ficha" style="border:1px solid var(--oro);padding:.8em 1em;margin:1.5em 0">
+<b>Aqu&iacute; no hay ninguna captura.</b> Los mapas, los jefes, los enemigos y los letreros los <b>pinta el propio cartucho</b>, ejecutado fuera del emulador con sus propias &oacute;rdenes del V9938, y se han cotejado con la VRAM de openMSX; las animaciones son la partida ejecutada cuadro a cuadro.</p>
+<nav><a href="LAS-FASES.html">Las fases</a><a href="LAS-BASES.html">Las bases</a><a href="EL-JUGADOR.html">El jugador</a><a href="LOS-ENEMIGOS.html">Los enemigos</a><a href="LOS-JEFES.html">Los jefes</a><a href="LAS-SECUENCIAS.html">Las secuencias</a><a href="LA-MUSICA.html">La m&uacute;sica</a><a href="LOS-TEXTOS.html">Los textos</a><span style="opacity:.35">|</span><a href="CURIOSIDADES.html">Curiosidades</a><span style="opacity:.35">|</span><a href="POR-DENTRO.html">Por dentro</a><a href="../" style="margin-left:auto;color:var(--oro)">In English</a></nav>
+<section id="numbers">
+  <h2>El cartucho en cifras</h2>
+  <div class="cifras"><div class="cifra"><b>100 %</b><span>del binario explicado</span></div><div class="cifra"><b>1.487</b><span>rutinas y etiquetas</span></div><div class="cifra"><b>40,9 %</b><span>del listado comentado</span></div><div class="cifra"><b>25.069</b><span>bytes de código</span></div><div class="cifra"><b>106.003</b><span>bytes de datos</span></div><div class="cifra"><b>0</b><span>bytes sin identificar</span></div></div>
+</section>
+<section id="pages"><h2>Lo que hay dentro</h2><div class="hall"><h3>El juego</h3><ul><li><a href="LAS-FASES.html">Las fases</a>: las diecinueve fases, cada mapa entero y un clip de cada una.</li><li><a href="LAS-BASES.html">Las bases</a>: las cuatro bases en 3D: c&oacute;mo se anda y el mapa de sus puertas.</li><li><a href="EL-JUGADOR.html">El jugador</a>: los mandos, las vidas, las c&aacute;psulas, el men&uacute; y cada arma disparando.</li><li><a href="LOS-ENEMIGOS.html">Los enemigos</a>: todos los enemigos que salen en el juego, por tipo.</li><li><a href="LOS-JEFES.html">Los jefes</a>: el jefe de cada fase, animado.</li><li><a href="LAS-SECUENCIAS.html">Las secuencias</a>: el logotipo, el t&iacute;tulo, las demostraciones y el final, animados.</li><li><a href="LA-MUSICA.html">La m&uacute;sica</a>: las 11 m&uacute;sicas, de su propio motor de sonido.</li><li><a href="LOS-TEXTOS.html">Los textos</a>: todos los textos del cartucho, con su propia letra.</li></ul></div><div class="hall"><h3>Curiosidades</h3><ul><li><a href="CURIOSIDADES.html">Curiosidades</a>: la fase que se salta, las armas ocultas, el Game Master 2, lo que queda abierto.</li></ul></div><div class="hall"><h3>Por dentro</h3><ul><li><a href="POR-DENTRO.html">Por dentro</a>: rehacer la ROM, el mapper, la interrupci&oacute;n, la RAM y el c&oacute;digo.</li></ul></div></section>
+<footer><p>Esto es trabajo de documentación y preservación: el código y los gráficos siguen siendo de sus autores y de Konami, y la imagen del cartucho no se distribuye.</p></footer>

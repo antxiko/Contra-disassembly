@@ -162,5 +162,14 @@ clean:
 	      $(WORK)/contra_reensamblada.rom $(WORK)/pasmo.err
 
 
-.PHONY: all comprueba reconoce paginas semillas trace listado verify \
+JEKYLL ?= C:/msys64/mingw64/bin/ruby C:/msys64/mingw64/bin/jekyll
+web: $(ROM)
+	python3 tools/jekyll.py docs
+	python3 tools/make_web.py docs/imagenes docs/index.html en
+	python3 tools/make_web.py docs/imagenes docs/es/index.html es
+	rm -rf $(WORK)/_site
+	$(JEKYLL) build -s docs -d $(WORK)/_site
+	python3 tools/check_enlaces.py $(WORK)/_site
+
+.PHONY: web all comprueba reconoce paginas semillas trace listado verify \
         sanity densidad test clean
