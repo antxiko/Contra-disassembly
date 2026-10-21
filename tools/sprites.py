@@ -20,8 +20,12 @@ Los tipos son de una sola tabla para todo el cartucho (p02:8000), asi que
 
 Uso: sprites.py fase <fase> <salida.png> [segundos] [tramo]
      sprites.py todas <salida.png> [segundos por tramo]
+     sprites.py hoja <salida.png>      (rehace la hoja con work/enemigos.pkl)
+     sprites.py fases <salida.png> [segundos por tramo]   una fila por fase
+     sprites.py hoja_fases <salida.png>  (rehace esa hoja con work/enemigos_fases.pkl)
 """
 import os
+import pickle
 import sys
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -218,9 +222,21 @@ def pinta(m, ks):
     return im
 
 
+def paleta_de_fase(f):
+    """Los 16 colores (R, G, B) de la fase f: el numero de paleta de la tabla
+    p00:4652 y sus 32 bytes en p00:46BE + 32 x numero (rojo x 16 + azul, verde),
+    como los pone pon_paleta (p00:468E)."""
+    rom = fases.ROM
+    n = rom[0x4652 - 0x4000 + f]
+    o = 0x46BE - 0x4000 + 32 * n
+    return [((rom[o + 2 * k] >> 4) & 7, rom[o + 2 * k + 1] & 7, rom[o + 2 * k] & 7)
+            for k in range(16)]
+
+
 def recoge(f, segundos=25, tramo=None, vistos=None):
     """{tipo: [imagenes distintas]} de los objetos que se ven en la fase."""
     vistos = {} if vistos is None else vistos
+    paleta = paleta_de_fase(f)
     m = anima.partida(f, tramo)
     m.apunta = False
     n = [0]
@@ -236,7 +252,8 @@ def recoge(f, segundos=25, tramo=None, vistos=None):
         d = anima.HACIA.get(f, 3)
         m.palanca = {1: d} if d else {}
         m.botones = {1} | ({3} if n[0] % 45 < 8 else set())
-        if m.cuadro > fases.PULSA + 120 and n[0] % 2 == 0:
+        # solo con la paleta de la fase puesta: no en el fundido de entrada
+        if m.cuadro > fases.PULSA + 120 and n[0] % 2 == 0 and list(m.vdp.pal) == paleta:
             for tipos, ks in objetos(m):
                 if set(tipos) <= NO_ENEMIGOS:
                     continue
@@ -254,27 +271,105 @@ def recoge(f, segundos=25, tramo=None, vistos=None):
 
 
 def hoja(vistos, escala=3, fondo=(40, 40, 48)):
-    """Una fila por tipo de objeto, con sus dibujos (como mucho POR_TIPO)."""
+    """Una fila por tipo de objeto, con sus dibujos (como mucho POR_TIPO), cada
+    uno en una casilla del mismo tamano, centrado y apoyado abajo."""
     from PIL import Image, ImageDraw
     filas = sorted(vistos.items())
     if not filas:
         return Image.new("RGB", (64, 16), fondo)
-    alto = [max(i.height for i in ims) + 4 for _, ims in filas]
-    ancho = max(sum(i.width + 4 for i in ims) for _, ims in filas) + 44
-    h = Image.new("RGB", (ancho, sum(alto)), fondo)
+    cw = max(i.width for _, ims in filas for i in ims) + 6
+    ch = max(i.height for _, ims in filas for i in ims) + 6
+    h = Image.new("RGB", (44 + cw * POR_TIPO, ch * len(filas)), fondo)
     d = ImageDraw.Draw(h)
-    y = 0
-    for (tipo, ims), a in zip(filas, alto):
-        d.text((1, y + a // 2 - 4), "+".join("%02X" % x for x in tipo), fill=(150, 150, 150))
-        x = 40
-        for im in ims:
-            h.paste(im, (x, y + (a - im.height) // 2), im)
-            x += im.width + 4
-        y += a
+    for k, (tipo, ims) in enumerate(filas):
+        y = k * ch
+        d.text((2, y + ch // 2 - 5), "+".join("%02X" % x for x in tipo), fill=(150, 150, 150))
+        for n, im in enumerate(ims):
+            x = 44 + n * cw + (cw - im.width) // 2
+            h.paste(im, (x, y + ch - 3 - im.height), im)
+    return h.resize((h.width * escala, h.height * escala), Image.NEAREST)
+
+
+POR_TIPO_FASE = 2
+NUMERO = {f: (f + 1 if f < 8 else f) for f in range(20)}     # el que sale en pantalla (p00:4576)
+
+
+def normales(xs):
+    """Los POR_TIPO_FASE dibujos de un tipo con el tamano que mas se repite: el de
+    la figura entera. Un sprite que falta en un cuadro deja una figura a medias
+    (unas piernas sin cuerpo) y dos fichas juntas, una doble: las dos se van."""
+    from collections import Counter
+    tam = Counter(i.size for i in xs)
+    bueno = max(tam, key=lambda s: (tam[s], s[0] * s[1]))
+    out = [i for i in xs if i.size == bueno]
+    out += sorted((i for i in xs if i.size != bueno),
+                  key=lambda i: abs(i.width - bueno[0]) + abs(i.height - bueno[1]))
+    return out[:POR_TIPO_FASE]
+
+
+def hoja_por_fases(por_fase, escala=3, fondo=(112, 112, 120)):
+    """Una fila por fase con sus enemigos: de cada tipo, los POR_TIPO_FASE
+    dibujos del tamano que mas se repite (normales()) de los vistos con la
+    paleta de la fase; cada uno en una casilla del mismo tamano, centrado y apoyado abajo. El
+    fondo, gris medio: hay dibujos muy oscuros y muy claros."""
+    from PIL import Image, ImageDraw
+    filas = []
+    for f in sorted(por_fase):
+        ims = [im for _, xs in sorted(por_fase[f].items()) for im in normales(xs)]
+        if ims:
+            filas.append((f, ims))
+    cw = max(i.width for _, ims in filas for i in ims) + 6
+    ch = max(i.height for _, ims in filas for i in ims) + 6
+    ancho = max(len(ims) for _, ims in filas)
+    h = Image.new("RGB", (30 + cw * ancho, ch * len(filas)), fondo)
+    d = ImageDraw.Draw(h)
+    for k, (f, ims) in enumerate(filas):
+        y = k * ch
+        d.text((4, y + ch // 2 - 5), "%d" % NUMERO[f], fill=(170, 170, 170))
+        for n, im in enumerate(ims):
+            h.paste(im, (30 + n * cw + (cw - im.width) // 2, y + ch - 3 - im.height), im)
     return h.resize((h.width * escala, h.height * escala), Image.NEAREST)
 
 
 def main(argv):
+    if len(argv) >= 3 and argv[1] == "fases":
+        seg = int(argv[3]) if len(argv) > 3 else 6
+        ruta = os.path.join(os.path.dirname(AQUI), "work", "enemigos_fases.pkl")
+        por_fase = {}
+        for f in fases.FASES:
+            por_fase[f] = {}
+            for tramo in range(len(fases.lista(f)[2])):
+                recoge(f, seg, tramo, por_fase[f])
+                print("fase %d tramo %d: %d tipos" % (f, tramo, len(por_fase[f])), flush=True)
+            with open(ruta, "wb") as g:
+                pickle.dump(por_fase, g)
+            hoja_por_fases(por_fase).save(argv[2])
+        return
+    if len(argv) >= 3 and argv[1] == "una":
+        # una fase sola (para repartir las fases en varios procesos):
+        # sprites.py una <fase> <salida.pkl> [segundos por tramo]
+        f, seg = int(argv[2]), int(argv[4]) if len(argv) > 4 else 6
+        v = {}
+        for tramo in range(len(fases.lista(f)[2])):
+            recoge(f, seg, tramo, v)
+        with open(argv[3], "wb") as g:
+            pickle.dump({f: v}, g)
+        print("fase %d: %d tipos" % (f, len(v)), flush=True)
+        return
+    if len(argv) >= 3 and argv[1] == "junta":
+        # junta los .pkl de `una` y `fases` en work/enemigos_fases.pkl y pinta la hoja
+        por_fase = {}
+        for r in argv[3:]:
+            with open(r, "rb") as g:
+                por_fase.update(pickle.load(g))
+        with open(os.path.join(os.path.dirname(AQUI), "work", "enemigos_fases.pkl"), "wb") as g:
+            pickle.dump(por_fase, g)
+        hoja_por_fases(por_fase).save(argv[2])
+        return
+    if len(argv) >= 3 and argv[1] == "hoja_fases":
+        with open(os.path.join(os.path.dirname(AQUI), "work", "enemigos_fases.pkl"), "rb") as g:
+            hoja_por_fases(pickle.load(g)).save(argv[2])
+        return
     if len(argv) >= 3 and argv[1] == "todas":
         seg = int(argv[3]) if len(argv) > 3 else 10
         vistos = {}
@@ -283,6 +378,12 @@ def main(argv):
                 recoge(f, seg, tramo, vistos)
                 print("fase %d tramo %d: %d tipos" % (f, tramo, len(vistos)), flush=True)
                 hoja(vistos).save(argv[2])
+                with open(os.path.join(os.path.dirname(AQUI), "work", "enemigos.pkl"), "wb") as g:
+                    pickle.dump(vistos, g)
+        return
+    if len(argv) >= 3 and argv[1] == "hoja":
+        with open(os.path.join(os.path.dirname(AQUI), "work", "enemigos.pkl"), "rb") as g:
+            hoja(pickle.load(g)).save(argv[2])
         return
     if len(argv) < 4 or argv[1] != "fase":
         sys.exit(__doc__)

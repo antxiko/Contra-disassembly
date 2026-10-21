@@ -46,7 +46,7 @@ PORTADA = {
     "es": dict(
         titulo="Contra - desensamblado comentado",
         claim="Las diecinueve fases enteras y la que el juego se salta, las cuatro bases "
-              "en 3D con el mapa de sus puertas, el jugador con todas sus armas, los "
+              "en 3D con la ruta hasta su n&uacute;cleo, el jugador con todas sus armas, los "
               "enemigos, los jefes, las demostraciones y el final animados, la partida "
               "grabada en el <em>Game Master 2</em> y la m&uacute;sica sacada de su "
               "propio motor.",
@@ -62,7 +62,7 @@ PORTADA = {
     "en": dict(
         titulo="Contra - commented disassembly",
         claim="All nineteen stages in full and the one the game skips, the four 3D bases "
-              "with the map of their doors, the player with every weapon, the enemies, "
+              "with the route to their core, the player with every weapon, the enemies, "
               "the bosses, the demos and the ending animated, the game saved on the "
               "<em>Game Master 2</em> and the music taken from its own engine.",
         ficha=["Konami - <b>(c) Konami 1989</b>",
@@ -82,14 +82,14 @@ PAGINAS = [
       "the nineteen stages, every map whole and a clip of each",
       "las diecinueve fases, cada mapa entero y un clip de cada una"),
      ("THE-BASES.html", "LAS-BASES.html", "The bases", "Las bases",
-      "the four 3D bases: how you get around and the map of their doors",
-      "las cuatro bases en 3D: c&oacute;mo se anda y el mapa de sus puertas"),
+      "the four 3D bases: how you get around and the route to the core",
+      "las cuatro bases en 3D: c&oacute;mo se anda y la ruta hasta el n&uacute;cleo"),
      ("THE-PLAYER.html", "EL-JUGADOR.html", "The player", "El jugador",
       "controls, lives, capsules, the weapon menu and every weapon firing",
       "los mandos, las vidas, las c&aacute;psulas, el men&uacute; y cada arma disparando"),
      ("THE-ENEMIES.html", "LOS-ENEMIGOS.html", "The enemies", "Los enemigos",
-      "every enemy seen in the whole game, by type",
-      "todos los enemigos que salen en el juego, por tipo"),
+      "the enemies of every stage, with its palette",
+      "los enemigos de cada fase, con su paleta"),
      ("THE-BOSSES.html", "LOS-JEFES.html", "The bosses", "Los jefes",
       "the boss of every stage, animated",
       "el jefe de cada fase, animado"),
