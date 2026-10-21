@@ -455,7 +455,7 @@ L_7860:
 	ld a,(0e18bh)		;786d
 	and a			;7870
 	jp nz,0a8a9h		;7871
-	call 0a03eh		;7874
+	call 0a03eh		;7874   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x7877..0x7881  (10 bytes)
@@ -596,7 +596,7 @@ L_7976:
 	ld a,(iy+005h)		;7983
 	cp 002h		;7986
 	jr z,L_799C		;7988
-	ld a,(0e022h)		;798a
+	ld a,(0e022h)		;798a   ; lee el tramo: la pantalla de la lista de la fase
 	cp 002h		;798d
 	jr z,L_7995		;798f
 	ld a,030h		;7991
@@ -709,11 +709,11 @@ L_7A66:
 	ld (iy+003h),003h		;7a66
 	ld (iy+002h),004h		;7a6a
 	ld hl,08d30h		;7a6e
-	ld de,0e0d0h		;7a71
+	ld de,0e0d0h		;7a71   ; apunta a la orden del VDP que se manda (registros 32-46)
 	ld bc,0000bh		;7a74
 	ldir		;7a77
 	ld b,024h		;7a79
-	call 0507bh		;7a7b
+	call 0507bh		;7a7b   ; orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
 	call 0813bh		;7a7e
 	call 08564h		;7a81
 	jp 08564h		;7a84

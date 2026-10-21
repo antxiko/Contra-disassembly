@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+"""Los sprites que se ven en cada fase, como los pinta el V9938, sacados de la
+partida ejecutada (tools/anima.py).
+
+En Contra cada objeto es un sprite de 16 x 16 del modo 2: los 32 registros de
+16 bytes de 0xE300 (y, x y numero de dibujo en sus tres primeros bytes) los
+copia p00:4BBB a 0xE100 y de ahi p00:4BA4 a la tabla de atributos de la VRAM
+(0x7600); los colores van por linea en la tabla de 0x7400. Dos sprites
+seguidos con el bit CC en el segundo se pintan juntos, con sus colores
+sumados (OR): asi tiene el jugador mas de un color por linea.
+
+Aqui, cada cuadro de la partida, se recorta cada sprite (o cada grupo CC) de
+la imagen que pinta tools/msx2run.py y se guarda una vez por dibujo distinto.
+Los registros 0 a 3 (0xE300-0xE33F) son el jugador: dos parejas CC de 16 x 16,
+una encima de otra (medido: y 144 y 160 con la misma x); el resto del
+codigo lleva su estado con IX = 0xE320. Van aparte.
+
+Uso: sprites.py fase <fase> <salida.png> [segundos] [tramo]
+"""
+import os
+import sys
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, AQUI)
+import anima       # noqa: E402
+import fases       # noqa: E402
+
+JUGADOR = (0, 1, 2, 3)
+
+
+def grupos(v):
+    """[(sprites del grupo, y, x)] de la tabla de atributos de ahora."""
+    attr = ((v.r[11] & 3) << 15) | ((v.r[5] & 0xFC) << 7)
+    cols = attr - 0x200
+    out = []
+    for n in range(32):
+        y = v.vram[attr + 4 * n]
+        if y == 216:
+            break
+        cc = v.vram[cols + 16 * n] & 0x40
+        if cc and out:
+            out[-1][0].append(n)
+        elif not cc:
+            out.append(([n], y, v.vram[attr + 4 * n + 1]))
+    return out
+
+
+def recorta(m, ns):
+    """El dibujo del grupo ns (PIL, 16 x 16 con transparencia) pintado solo."""
+    from PIL import Image
+    v = m.vdp
+    attr = ((v.r[11] & 3) << 15) | ((v.r[5] & 0xFC) << 7)
+    cols = attr - 0x200
+    pat = (v.r[6] & 0x3F) << 11
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = im.load()
+    y0 = v.vram[attr + 4 * ns[0]]
+    x0 = v.vram[attr + 4 * ns[0] + 1]
+    puntos = {}
+    for n in ns:
+        y, x, d = v.vram[attr + 4 * n:attr + 4 * n + 3]
+        d &= 0xFC
+        for fila in range(16):
+            c = v.vram[cols + 16 * n + fila]
+            for col in range(16):
+                b = v.vram[pat + 8 * d + (col // 8) * 16 + fila]
+                if (b >> (7 - col % 8)) & 1:
+                    k = (col + x - x0, fila + y - y0)
+                    if 0 <= k[0] < 16 and 0 <= k[1] < 16:
+                        puntos[k] = puntos.get(k, 0) | (c & 15)
+    for (xx, yy), c in puntos.items():
+        if c:
+            px[xx, yy] = v.rgb(c) + (255,)
+    return im
+
+
+CLAVE = (255, 0, 255)
+
+
+def figuras(m):
+    """[(imagen RGBA, x, y, ancho, alto)] de cada figura del cuadro: los
+    sprites pintados por el V9938 (tools/msx2run.py) sobre un fondo clave, y
+    cada mancha de puntos pegados (a dos puntos, para que la capsula del arma
+    salga entera) es una figura."""
+    from PIL import Image
+    im = Image.new("RGB", (256, 212), CLAVE)
+    m.vdp.sprites(im)
+    px = im.load()
+    marca = [[px[x, y] != CLAVE for x in range(256)] for y in range(212)]
+    visto = [[False] * 256 for _ in range(212)]
+    out = []
+    for y in range(212):
+        for x in range(256):
+            if not marca[y][x] or visto[y][x]:
+                continue
+            pila = [(x, y)]
+            visto[y][x] = True
+            x0 = x1 = x
+            y0 = y1 = y
+            while pila:
+                a, b = pila.pop()
+                x0, x1, y0, y1 = min(x0, a), max(x1, a), min(y0, b), max(y1, b)
+                for dx in (-2, -1, 0, 1, 2):
+                    for dy in (-2, -1, 0, 1, 2):
+                        c, d = a + dx, b + dy
+                        if 0 <= c < 256 and 0 <= d < 212 and marca[d][c] and not visto[d][c]:
+                            visto[d][c] = True
+                            pila.append((c, d))
+            rec = im.crop((x0, y0, x1 + 1, y1 + 1)).convert("RGBA")
+            q = rec.load()
+            for yy in range(rec.height):
+                for xx in range(rec.width):
+                    if q[xx, yy][:3] == CLAVE:
+                        q[xx, yy] = (0, 0, 0, 0)
+            out.append((rec, x0, y0, x1 - x0 + 1, y1 - y0 + 1))
+    return out
+
+
+def del_jugador(m):
+    """El rectangulo del jugador: sus sprites (registros 2 y 3)."""
+    v = m.vdp
+    attr = ((v.r[11] & 3) << 15) | ((v.r[5] & 0xFC) << 7)
+    rs = []
+    for n in JUGADOR:
+        y, x = v.vram[attr + 4 * n], v.vram[attr + 4 * n + 1]
+        if y != 216:
+            rs.append(((x, (y + 1) & 0xFF)))
+    return rs
+
+
+def recoge(f, segundos=20, tramo=None):
+    """{bytes del dibujo: (imagen, es_jugador)} de lo que se ve en la fase."""
+    vistos = {}
+    m = anima.partida(f, tramo)
+    m.apunta = False
+    n = [0]
+
+    def mando(m):
+        n[0] += 1
+        m.teclas = {8: 0xFE} if fases.PULSA <= m.cuadro < fases.PULSA + 6 else {}
+        m.mem[anima.VIDAS] = 3
+        m.mem[anima.ENERGIA] = 0x10
+        if m.cuadro < fases.PULSA + 60:
+            m.palanca, m.botones = {}, set()
+            return
+        d = anima.HACIA.get(f, 3)
+        m.palanca = {1: d} if d else {}
+        m.botones = {1} | ({3} if n[0] % 45 < 8 else set())
+        if m.cuadro > fases.PULSA + 120 and n[0] % 3 == 0:
+            jug = del_jugador(m)
+            for im, x, y, w, h in figuras(m):
+                if w < 8 or h < 8:
+                    continue                    # las balas y las chispas
+                k = im.tobytes() + bytes([w, h])
+                forma = bytes(1 if a else 0 for a in im.getchannel("A").tobytes()) + bytes([w, h])
+                cuantas = sum(1 for kk in vistos if vistos[kk][2] == forma)
+                if k not in vistos and cuantas < 1:
+                    es = any(x - 2 <= jx + 8 <= x + w + 2 and y - 2 <= jy + 8 <= y + h + 2
+                             for jx, jy in jug)
+                    vistos[k] = (im, es, forma)
+    m.cuadros(fases.PULSA + 120 + segundos * 60, cada=mando)
+    return vistos
+
+
+def hoja(vistos, ancho=640, escala=2, fondo=(40, 40, 48), jugador=False):
+    """Las figuras en filas, de la mas alta a la mas baja."""
+    from PIL import Image
+    ims = sorted((im for im, jug, _ in vistos.values() if jug == jugador),
+                 key=lambda i: (-i.height, -i.width))
+    pos, x, y, alto = [], 2, 2, 0
+    for im in ims:
+        if x + im.width + 2 > ancho // escala:
+            x, y, alto = 2, y + alto + 3, 0
+        pos.append((im, x, y))
+        x += im.width + 3
+        alto = max(alto, im.height)
+    h = Image.new("RGB", (ancho // escala, y + alto + 2), fondo)
+    for im, x, y in pos:
+        h.paste(im, (x, y), im)
+    return h.resize((h.width * escala, h.height * escala), Image.NEAREST)
+
+
+def main(argv):
+    if len(argv) < 4 or argv[1] != "fase":
+        sys.exit(__doc__)
+    f, salida = int(argv[2]), argv[3]
+    seg = int(argv[4]) if len(argv) > 4 else 20
+    tramo = int(argv[5]) if len(argv) > 5 else None
+    v = recoge(f, seg, tramo)
+    hoja(v).save(salida)
+    print("fase %d: %d dibujos (%d del jugador) -> %s" % (
+        f, len(v), sum(1 for _, j, _ in v.values() if j), salida))
+
+
+if __name__ == "__main__":
+    main(sys.argv)

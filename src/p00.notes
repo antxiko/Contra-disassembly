@@ -1,0 +1,302 @@
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0x402E init el arranque del cartucho (INIT de la cabecera AB): RAM a cero, bancos 0-1-2-3, SCREEN 5, sonido y bucle
+L 0x4117 bucle_partida el bucle de cada partida: titulo, demostracion o juego
+L 0x4277 carga_fase carga la fase de 0xE020: paleta, graficos (p00:4666), pantalla y musica
+L 0x436A pon_colores pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a CHGCLR
+L 0x452D devuelve_banco_8000 devuelve a 0x8000 el banco guardado en 0xE2CC
+L 0x4532 pon_banco_12 guarda en 0xE2CC el banco de 0x8000 y pone el 12
+L 0x453A pon_banco_8000 pone el banco A en 0x8000 (y su copia en 0xE203)
+L 0x4629 borra pone a cero BC bytes desde HL
+L 0x468E pon_paleta pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+L 0x47BE carga_graficos pone el banco A en 0x6000 y lo copia entero a la VRAM con HMMC
+L 0x47CD carga_graficos_arriba copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
+L 0x47DF carga_graficos_abajo copia el banco A a la VRAM en la linea 0x40 de la pagina de dibujos
+L 0x484E orden_copia prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
+L 0x486E pinta_dibujo pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+L 0x48D3 escribe escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+L 0x48E6 borra_partida pantalla apagada, mapa 0xC300 a 0x10 y RAM de la partida a cero
+L 0x4B86 vuelca_sprites lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
+L 0x4BBB copia_sprites copia y, x y dibujo de las 32 fichas de 0xE300 a la tabla de 0xE100
+L 0x4BD2 interrupcion la interrupcion (H.KEYI): el cuadro del juego con los bancos 1-2 y el sonido con 4-5
+L 0x4F5E lee_palanca lee las dos palancas (GTSTCK 0 y 1) y deja la direccion en 0xE180
+L 0x4F78 pon_banco_6000_graficos apunta A en 0xE017 y lo pone en 0x6000
+L 0x4F7B pon_banco_6000 pone el banco A en 0x6000 (y su copia en 0xE202)
+L 0x4FD2 lee_disparo el disparo: GTTRIG(1) o el espacio (fila 8 de SNSMAT), en 0xE066
+L 0x5052 pide_sonido pide el sonido A al motor (p04:6003, con los bancos 4-5)
+L 0x507B orden_vdp manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+L 0x50C5 borra_vram_ff llena de 0xFF los 0x6800 primeros bytes de la VRAM
+L 0x50CC borra_vram pone a cero los 0x6A00 primeros bytes de la VRAM
+L 0x50D6 apaga_pantalla apaga la pantalla (DISSCR)
+L 0x51B2 borra_b pone a cero B bytes desde HL
+L 0x51B8 lee_tabla HL = HL + A y A = (HL)
+L 0x531B es_base_3d acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x403A apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x4083 el mapper: pone en 0x4000 el banco de A
+C 0x4087 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x408B pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x408F el mapper: pone en 0xA000 el banco de A
+C 0x4093 guarda la ranura del cartucho (para devolverla tras usar el otro)
+C 0x40A3 pon_colores: pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a CHGCLR
+C 0x40B4 apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x40B8 pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+C 0x40DF apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x40F2 lee la copia del banco de 0x6000
+C 0x40F6 lee la copia del banco de 0x8000
+C 0x40FC el mapper: pone en 0x6000 el banco de A
+C 0x4100 el mapper: pone en 0x8000 el banco de A
+C 0x4107 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x410B pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x411E guarda 1 en la demostracion (la palanca sale de su grabacion)
+C 0x4121 pon_colores: pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a CHGCLR
+C 0x4124 borra_vram: pone a cero los 0x6A00 primeros bytes de la VRAM
+C 0x4127 borra_partida: pantalla apagada, mapa 0xC300 a 0x10 y RAM de la partida a cero
+C 0x4132 carga_graficos_arriba: copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
+C 0x4137 pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+C 0x4154 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x4165 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x416E lee el disparo pulsado
+C 0x417E lee el disparo pulsado
+C 0x418F apunta a las 32 fichas de objeto de 16 bytes (las 4 primeras, el jugador)
+C 0x4194 borra_b: pone a cero B bytes desde HL
+C 0x4197 apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x419A borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x419F carga_graficos_arriba: copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
+C 0x41A3 guarda los cuadros que le quedan al paso de la demostracion
+C 0x41A9 pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+C 0x41B1 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0x41BD escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x41C6 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x41CA guarda el disparo pulsado
+C 0x41D6 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x41DF lee el disparo pulsado
+C 0x41E5 apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x41E9 guarda el disparo pulsado
+C 0x41EF guarda 1 en la demostracion (la palanca sale de su grabacion)
+C 0x41FB pon_colores: pone A en los colores de la BIOS (0xF3E9-0xF3EB) y llama a CHGCLR
+C 0x4200 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4216 guarda el puntero de la grabacion de la demostracion y el byte siguiente (16 bits)
+C 0x4219 borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x421C apunta a la fase (0-19; la 8 se salta)
+C 0x4221 borra_b: pone a cero B bytes desde HL
+C 0x4224 apunta a la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x4229 borra_b: pone a cero B bytes desde HL
+C 0x422C apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x423B guarda las vidas que quedan (en BCD)
+C 0x423E guarda la energia del jugador
+C 0x425A guarda la fase (0-19; la 8 se salta)
+C 0x4261 guarda las vidas que quedan (en BCD)
+C 0x4266 guarda la energia del jugador
+C 0x4269 borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x427E apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x4284 lee la fase (0-19; la 8 se salta)
+C 0x4288 lee_tabla: HL = HL + A y A = (HL)
+C 0x428B pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+C 0x4293 lee_tabla: HL = HL + A y A = (HL)
+C 0x4297 carga_graficos_arriba: copia el banco A a la VRAM en la linea 0 de la pagina de dibujos
+C 0x429D carga_graficos_abajo: copia el banco A a la VRAM en la linea 0x40 de la pagina de dibujos
+C 0x42B0 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0x42B6 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0x42E0 guarda el disparo pulsado
+C 0x42E3 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x42F3 guarda 1 en la demostracion (la palanca sale de su grabacion)
+C 0x4309 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4316 lee la fase (0-19; la 8 se salta)
+C 0x431C lee_tabla: HL = HL + A y A = (HL)
+C 0x431F pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4350 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4405 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x441B escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4420 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x442A guarda el disparo pulsado
+C 0x443A pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+C 0x443D apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x4440 borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x4443 bucle_partida: el bucle de cada partida: titulo, demostracion o juego
+C 0x445D lee la fase (0-19; la 8 se salta)
+C 0x447A pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x448D vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
+C 0x4496 lee la fase (0-19; la 8 se salta)
+C 0x449F guarda la fase (0-19; la 8 se salta)
+C 0x44A9 lee_tabla: HL = HL + A y A = (HL)
+C 0x44AC guarda el tramo: la pantalla de la lista de la fase
+C 0x44AF borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x44B9 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x44C1 guarda el tramo: la pantalla de la lista de la fase
+C 0x44D0 lee la fase (0-19; la 8 se salta)
+C 0x44D5 carga_fase: carga la fase de 0xE020: paleta, graficos (p00:4666), pantalla y musica
+C 0x44E2 guarda el disparo pulsado
+C 0x44E5 guarda la fase (0-19; la 8 se salta)
+C 0x44ED pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x44F0 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0x44F6 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0x44F9 bucle_partida: el bucle de cada partida: titulo, demostracion o juego
+C 0x4524 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4527 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0x452D lee el banco de 0x8000 guardado al poner el 12
+C 0x4532 lee la copia del banco de 0x8000
+C 0x4535 guarda el banco de 0x8000 guardado al poner el 12
+C 0x453A guarda la copia del banco de 0x8000
+C 0x453D el mapper: pone en 0x8000 el banco de A
+C 0x4541 lee la fase (0-19; la 8 se salta)
+C 0x4570 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4576 lee la fase (0-19; la 8 se salta)
+C 0x459E pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0x45A7 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x45AD lee las vidas que quedan (en BCD)
+C 0x45BB escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x45C9 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x45D4 lee la energia del jugador
+C 0x45E2 lee la energia del jugador
+C 0x461D lee_tabla: HL = HL + A y A = (HL)
+C 0x4697 lee_tabla: HL = HL + A y A = (HL)
+C 0x47BE guarda el banco de graficos que se carga
+C 0x47C1 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0x47CD carga_graficos: pone el banco A en 0x6000 y lo copia entero a la VRAM con HMMC
+C 0x47D6 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0x47DC devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0x47DF carga_graficos: pone el banco A en 0x6000 y lo copia entero a la VRAM con HMMC
+C 0x47EB apunta a la orden del VDP que se manda (registros 32-46)
+C 0x4816 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x4853 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x485E orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
+C 0x4891 lee la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0x489E guarda la orden del VDP que se manda (registros 32-46)
+C 0x48A3 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x48CA guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0x48D5 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0x48E0 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0x48E6 apaga_pantalla: apaga la pantalla (DISSCR)
+C 0x48E9 apunta a el mapa de la pantalla: 32 x 24 dibujos
+C 0x48F7 apunta a la copia de los atributos de sprite (32 x 4 bytes)
+C 0x48FD borra: pone a cero BC bytes desde HL
+C 0x4906 borra: pone a cero BC bytes desde HL
+C 0x490B guarda las 32 fichas de objeto de 16 bytes (las 4 primeras, el jugador)
+C 0x491E guarda el disparo pulsado
+C 0x492A guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x4934 borra: pone a cero BC bytes desde HL
+C 0x493D borra: pone a cero BC bytes desde HL
+C 0x494D vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
+C 0x4975 lee_tabla: HL = HL + A y A = (HL)
+C 0x49AD pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0x49C1 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0x49CB lee_tabla: HL = HL + A y A = (HL)
+C 0x4AD5 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0x4B4E pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0x4B83 copia_sprites: copia y, x y dibujo de las 32 fichas de 0xE300 a la tabla de 0xE100
+C 0x4B98 guarda la copia de los atributos de sprite (32 x 4 bytes)
+C 0x4BA7 apunta a la copia de los atributos de sprite (32 x 4 bytes)
+C 0x4BBB apunta a las 32 fichas de objeto de 16 bytes (las 4 primeras, el jugador)
+C 0x4BBE apunta a la copia de los atributos de sprite (32 x 4 bytes)
+C 0x4BEF lee la copia del banco de 0x6000
+C 0x4BF3 lee la copia del banco de 0x8000
+C 0x4BF9 guarda la copia del banco de 0x6000
+C 0x4BFC el mapper: pone en 0x6000 el banco de A
+C 0x4C00 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x4C07 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x4C0B pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x4C22 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x4C26 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x4C2E pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x4C32 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x4C41 lee el disparo pulsado
+C 0x4C83 lee_tabla: HL = HL + A y A = (HL)
+C 0x4C92 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4C9C vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
+C 0x4CDE guarda las vidas que quedan (en BCD)
+C 0x4CF2 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4CF5 apunta a la fase (0-19; la 8 se salta)
+C 0x4D00 guarda la energia del jugador
+C 0x4D21 lee la energia del jugador
+C 0x4D28 lee las vidas que quedan (en BCD)
+C 0x4D2E lee la fase (0-19; la 8 se salta)
+C 0x4D34 lee la energia del jugador
+C 0x4D3A lee el tramo: la pantalla de la lista de la fase
+C 0x4D60 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4D8F escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4DBE guarda la ranura del otro cartucho (el que contesta Y y Z por RDSLT)
+C 0x4DD2 lee la ranura del otro cartucho (el que contesta Y y Z por RDSLT)
+C 0x4DD9 lee la copia del banco de 0x8000
+C 0x4DF3 lee la ranura del cartucho (para devolverla tras usar el otro)
+C 0x4DFE pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x4E32 copia_sprites: copia y, x y dibujo de las 32 fichas de 0xE300 a la tabla de 0xE100
+C 0x4E39 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x4E44 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x4E50 lee 1 en la demostracion (la palanca sale de su grabacion)
+C 0x4E7B pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4ED7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x4EEF escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x4F62 guarda la palanca 0 (los cursores)
+C 0x4F6B lee la palanca 0 (los cursores)
+C 0x4F74 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x4F78 guarda el banco de graficos puesto en 0x6000
+C 0x4F7B el mapper: pone en 0x6000 el banco de A
+C 0x4F7E guarda la copia del banco de 0x6000
+C 0x4F82 lee 1 en la demostracion (la palanca sale de su grabacion)
+C 0x4F94 pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0x4F97 lee los cuadros que le quedan al paso de la demostracion
+C 0x4F9F guarda los cuadros que le quedan al paso de la demostracion
+C 0x4FA2 lee el puntero de la grabacion de la demostracion y el byte siguiente (16 bits)
+C 0x4FB3 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0x4FB8 lee_disparo: el disparo: GTTRIG(1) o el espacio (fila 8 de SNSMAT), en 0xE066
+C 0x4FC1 guarda el puntero de la grabacion de la demostracion y el byte siguiente (16 bits)
+C 0x4FC4 lee los cuadros que le quedan al paso de la demostracion
+C 0x4FC8 guarda los cuadros que le quedan al paso de la demostracion
+C 0x4FCE devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0x4FF1 guarda el disparo pulsado
+C 0x5014 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x5058 lee la copia del banco de 0x8000
+C 0x505C lee la copia del banco de 0x6000
+C 0x5062 pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x5066 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x506E pon_banco_6000: pone el banco A en 0x6000 (y su copia en 0xE202)
+C 0x5072 pon_banco_8000: pone el banco A en 0x8000 (y su copia en 0xE203)
+C 0x507B apunta a la orden del VDP que se manda (registros 32-46)
+C 0x50F1 vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
+C 0x5104 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x510E orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x511B apunta a la orden del VDP que se manda (registros 32-46)
+C 0x5125 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x512E escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x5137 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x513A lee la fase (0-19; la 8 se salta)
+C 0x5147 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x514A lee la fase (0-19; la 8 se salta)
+C 0x5157 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x5160 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x516F pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0x519B apunta a la orden del VDP que se manda (registros 32-46)
+C 0x51A5 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x51C2 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x51CF orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x51EE apunta a la orden del VDP que se manda (registros 32-46)
+C 0x51FB lee_tabla: HL = HL + A y A = (HL)
+C 0x51FE guarda la orden del VDP que se manda (registros 32-46)
+C 0x5205 lee_tabla: HL = HL + A y A = (HL)
+C 0x5210 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x526D lee_tabla: HL = HL + A y A = (HL)
+C 0x528A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x5293 lee la fase (0-19; la 8 se salta)
+C 0x529A lee el tramo: la pantalla de la lista de la fase
+C 0x52AC apunta a la orden del VDP que se manda (registros 32-46)
+C 0x52C4 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x52CB orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x52CF apunta a la orden del VDP que se manda (registros 32-46)
+C 0x52D6 orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+C 0x5304 lee las vidas que quedan (en BCD)
+C 0x530E guarda las vidas que quedan (en BCD)
+C 0x5313 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x531B lee la fase (0-19; la 8 se salta)
+C 0x54DF es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x54F7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x5506 despacha_e: salta por la tabla que va detras del call, con el indice en E
+C 0x58D1 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x58DF pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x5911 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x5A76 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x5B8D lee la copia del banco de 0x6000
+C 0x5B9A pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x5DB1 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0x5F0C lee la fase (0-19; la 8 se salta)
+C 0x5FE3 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+# --- fin de las anotaciones de anota.py ---

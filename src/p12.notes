@@ -1,0 +1,31 @@
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x943C borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+C 0x943F apunta a el mapa de la pantalla: 32 x 24 dibujos
+C 0x947C pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
+C 0x94B7 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x94E0 lee_tabla: HL = HL + A y A = (HL)
+C 0x94EA lee_tabla: HL = HL + A y A = (HL)
+C 0x94F1 lee_tabla: HL = HL + A y A = (HL)
+C 0x9500 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x9510 lee_tabla: HL = HL + A y A = (HL)
+C 0x955E pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0x95D4 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0x98C2 guarda la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
+C 0x9904 lee la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
+C 0x990D guarda la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
+C 0x991B escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x9924 lee la fase (0-19; la 8 se salta)
+C 0x992B lee_tabla: HL = HL + A y A = (HL)
+C 0x9934 escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
+C 0x9943 lee la fase (0-19; la 8 se salta)
+C 0x994B lee_tabla: HL = HL + A y A = (HL)
+C 0x9966 lee la fase (0-19; la 8 se salta)
+C 0x9984 lee el tramo: la pantalla de la lista de la fase
+C 0x999C lee el tramo: la pantalla de la lista de la fase
+C 0x99AB lee el tramo: la pantalla de la lista de la fase
+C 0x99BD lee el tramo: la pantalla de la lista de la fase
+C 0x99DC lee el tramo: la pantalla de la lista de la fase
+C 0x99EC lee el tramo: la pantalla de la lista de la fase
+C 0x99F8 lee el tramo: la pantalla de la lista de la fase
+# --- fin de las anotaciones de anota.py ---

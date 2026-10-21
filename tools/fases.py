@@ -28,6 +28,10 @@ RAIZ = os.path.dirname(AQUI)
 ROM = open(os.path.join(RAIZ, "contra.rom"), "rb").read()
 
 FASE, TRAMO = 0xE020, 0xE022
+# 0xE006 = 1 en la demostracion: p00:4F82 lee entonces la palanca de su
+# grabacion (p00:4FF8-5014) y no del mando; la fase solo se pone en una
+# partida de verdad
+DEMO = 0xE006
 CARGA_FASE = 0x4277                  # p00:4277, el bucle de cada fase
 CONSTRUYE = 0xBB3C                   # p03:BB3C
 BANCO_DE_FASE = 0xBAE4               # p03:BAE4, el banco de fase (13, 14 o 15)
@@ -71,7 +75,7 @@ def partida_en(f, cuadros=1000):
     paso = m.paso
 
     def paso_con_fase():
-        if m.pc == CARGA_FASE and not puesto[0]:
+        if m.pc == CARGA_FASE and not puesto[0] and m.mem[DEMO] == 0:
             m.mem[FASE] = f
             puesto[0] = True
         paso()

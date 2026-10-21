@@ -34,11 +34,12 @@ def partida(f, tramo=None):
     """El juego arrancado hasta el titulo; la fase (y el tramo) se ponen
     cuando el programa llega a p00:4277, donde empieza a cargar la fase."""
     m = fases.partida_en(f, 1)
+    m.paso = m.paso.__self__.__class__.paso.__get__(m)
     paso = m.paso
     puesto = [False]
 
     def paso_con_fase():
-        if m.pc == fases.CARGA_FASE and not puesto[0]:
+        if m.pc == fases.CARGA_FASE and not puesto[0] and m.mem[fases.DEMO] == 0:
             m.mem[fases.FASE] = f
             if tramo is not None:
                 m.mem[fases.TRAMO] = tramo
@@ -61,6 +62,9 @@ def clip(f, segundos=8, tramo=None, cada=2, espera=fases.PULSA + 160):
         m.teclas = {8: 0xFE} if fases.PULSA <= m.cuadro < fases.PULSA + 6 else {}
         m.mem[VIDAS] = 3
         m.mem[ENERGIA] = 0x10
+        if m.cuadro < fases.PULSA + 60:     # nada pulsado en el titulo
+            m.palanca, m.botones = {}, set()
+            return
         d = HACIA.get(f, 3)
         m.palanca = {1: d} if d else {}
         m.botones = {1} | ({3} if n[0] % 45 < 8 else set())

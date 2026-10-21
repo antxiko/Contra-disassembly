@@ -376,8 +376,8 @@ L_942E:
 	pop bc			;9436
 	djnz L_9409		;9437
 	call 00041h		;9439   ; BIOS DISSCR - Inhibits the screen display
-	call 050c5h		;943c
-	ld hl,0c300h		;943f
+	call 050c5h		;943c   ; borra_vram_ff: llena de 0xFF los 0x6800 primeros bytes de la VRAM
+	ld hl,0c300h		;943f   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
 	ld de,0c301h		;9442
 	ld bc,00200h		;9445
 	ld (hl),0ffh		;9448
@@ -397,7 +397,7 @@ L_942E:
 	ld (ix+03ch),003h		;9472
 	ld (ix-001h),000h		;9476
 	ld a,001h		;947a
-	call 0468eh		;947c
+	call 0468eh		;947c   ; pon_paleta: pone la paleta A (16 colores de 0x46BE + 32 x A) con SETPLT de la SUB-ROM
 	xor a			;947f
 	call L_95BE		;9480
 	ld hl,0e305h		;9483
@@ -424,7 +424,7 @@ L_9497:
 	jr z,L_9497		;94b0
 	call 00041h		;94b2   ; BIOS DISSCR - Inhibits the screen display
 	ld a,001h		;94b5
-	call 05052h		;94b7
+	call 05052h		;94b7   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ret			;94ba
 L_94BB:
 	ld iy,0e305h		;94bb
@@ -444,14 +444,14 @@ L_94C8:
 L_94DA:
 	ld a,(iy+003h)		;94da
 	ld hl,095cch		;94dd
-	call 051b8h		;94e0
+	call 051b8h		;94e0   ; lee_tabla: HL = HL + A y A = (HL)
 	ld b,a			;94e3
 	ld hl,095f6h		;94e4
 	ld a,(iy+003h)		;94e7
-	call 051b8h		;94ea
+	call 051b8h		;94ea   ; lee_tabla: HL = HL + A y A = (HL)
 	ld hl,095fch		;94ed
 	add a,a			;94f0
-	call 051b8h		;94f1
+	call 051b8h		;94f1   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,(hl)			;94f4
 	inc hl			;94f5
 	ld d,(hl)			;94f6
@@ -461,7 +461,7 @@ L_94DA:
 L_94FE:
 	push bc			;94fe
 	push hl			;94ff
-	call 048d3h		;9500
+	call 048d3h		;9500   ; escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 	ld hl,(0e282h)		;9503
 	ld e,(hl)			;9506
 	inc hl			;9507
@@ -470,7 +470,7 @@ L_94FE:
 	ld (0e282h),hl		;950a
 	pop hl			;950d
 	ld a,040h		;950e
-	call 051b8h		;9510
+	call 051b8h		;9510   ; lee_tabla: HL = HL + A y A = (HL)
 	pop bc			;9513
 	djnz L_94FE		;9514
 	inc (iy+002h)		;9516
@@ -505,7 +505,7 @@ L_9542:
 	cp 006h		;9559
 	ret c			;955b
 	ld a,083h		;955c
-	call 05052h		;955e
+	call 05052h		;955e   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ret			;9561
 L_9562:
 	ld a,(iy+005h)		;9562
@@ -573,7 +573,7 @@ DATA_95CC:
 
 L_95D2:
 	ld a,003h		;95d2
-	ld (0e180h),a		;95d4
+	ld (0e180h),a		;95d4   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ret			;95d7
 
 ; ----------------------------------------------------------------------
@@ -634,7 +634,7 @@ DATA_95D8:
 
 L_98BF:
 	ld hl,06c00h		;98bf
-	ld (0e0d0h),hl		;98c2
+	ld (0e0d0h),hl		;98c2   ; guarda la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
 	ld de,09a3ah		;98c5
 L_98C8:
 	ld a,(de)			;98c8
@@ -680,12 +680,12 @@ L_98FF:
 	ld a,(de)			;9900
 	cp 0ffh		;9901
 	ret z			;9903
-	ld hl,(0e0d0h)		;9904
+	ld hl,(0e0d0h)		;9904   ; lee la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
 	push de			;9907
 	ld de,00080h		;9908
 	add hl,de			;990b
 	pop de			;990c
-	ld (0e0d0h),hl		;990d
+	ld (0e0d0h),hl		;990d   ; guarda la orden del VDP que se manda (registros 32-46) y el byte siguiente (16 bits)
 	ld b,004h		;9910
 	jr L_98CF		;9912
 
@@ -702,18 +702,18 @@ DATA_9914:
 L_9915:
 	ld hl,00109h		;9915
 	ld de,04508h		;9918
-	call 048d3h		;991b
+	call 048d3h		;991b   ; escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 	ld hl,00113h		;991e
 	call 04576h		;9921
-	ld a,(0e020h)		;9924
+	ld a,(0e020h)		;9924   ; lee la fase (0-19; la 8 se salta)
 	ld hl,0974ch		;9927
 	add a,a			;992a
-	call 051b8h		;992b
+	call 051b8h		;992b   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,(hl)			;992e
 	inc hl			;992f
 	ld d,(hl)			;9930
 	ld hl,00167h		;9931
-	call 048d3h		;9934
+	call 048d3h		;9934   ; escribe: escribe la cadena DE (acaba en 0xFF) en la casilla HL con la letra de la fila 0xD8
 	xor a			;9937
 	ld (0e1c3h),a		;9938
 L_993B:
@@ -722,11 +722,11 @@ L_993B:
 	jr c,L_993B		;9940
 	ret			;9942
 L_9943:
-	ld a,(0e020h)		;9943
+	ld a,(0e020h)		;9943   ; lee la fase (0-19; la 8 se salta)
 	push af			;9946
 	add a,a			;9947
 	ld hl,09a12h		;9948
-	call 051b8h		;994b
+	call 051b8h		;994b   ; lee_tabla: HL = HL + A y A = (HL)
 	ld (ix+00ah),a		;994e
 	inc hl			;9951
 	ld a,(hl)			;9952
@@ -740,7 +740,7 @@ L_9943:
 	ld (ix+00fh),000h		;9961
 	ret			;9965
 L_9966:
-	ld a,(0e020h)		;9966
+	ld a,(0e020h)		;9966   ; lee la fase (0-19; la 8 se salta)
 	cp 007h		;9969
 	jr z,L_999C		;996b
 	cp 012h		;996d
@@ -755,7 +755,7 @@ L_9966:
 	jr z,L_99F8		;997f
 	cp 00dh		;9981
 	ret nz			;9983
-	ld a,(0e022h)		;9984
+	ld a,(0e022h)		;9984   ; lee el tramo: la pantalla de la lista de la fase
 	cp 002h		;9987
 	jr z,L_9998		;9989
 	cp 001h		;998b
@@ -768,7 +768,7 @@ L_9998:
 	ld (0c46bh),a		;9998
 	ret			;999b
 L_999C:
-	ld a,(0e022h)		;999c
+	ld a,(0e022h)		;999c   ; lee el tramo: la pantalla de la lista de la fase
 	cp 005h		;999f
 	ret nz			;99a1
 	sub 003h		;99a2
@@ -776,7 +776,7 @@ L_999C:
 	ld (0c5b1h),a		;99a7
 	ret			;99aa
 L_99AB:
-	ld a,(0e022h)		;99ab
+	ld a,(0e022h)		;99ab   ; lee el tramo: la pantalla de la lista de la fase
 	cp 001h		;99ae
 	jr z,L_99B9		;99b0
 	cp 002h		;99b2
@@ -787,7 +787,7 @@ L_99B9:
 	ld (0c3d2h),a		;99b9
 	ret			;99bc
 L_99BD:
-	ld a,(0e022h)		;99bd
+	ld a,(0e022h)		;99bd   ; lee el tramo: la pantalla de la lista de la fase
 	cp 004h		;99c0
 	jr z,L_99D0		;99c2
 	cp 006h		;99c4
@@ -806,7 +806,7 @@ L_99D7:
 	djnz L_99D7		;99d9
 	ret			;99db
 L_99DC:
-	ld a,(0e022h)		;99dc
+	ld a,(0e022h)		;99dc   ; lee el tramo: la pantalla de la lista de la fase
 	cp 004h		;99df
 	ret nz			;99e1
 	sub 003h		;99e2
@@ -815,14 +815,14 @@ L_99DC:
 	ld (0c575h),a		;99e8
 	ret			;99eb
 L_99EC:
-	ld a,(0e022h)		;99ec
+	ld a,(0e022h)		;99ec   ; lee el tramo: la pantalla de la lista de la fase
 	cp 003h		;99ef
 	ret nz			;99f1
 	sub 001h		;99f2
 	ld (0c3b6h),a		;99f4
 	ret			;99f7
 L_99F8:
-	ld a,(0e022h)		;99f8
+	ld a,(0e022h)		;99f8   ; lee el tramo: la pantalla de la lista de la fase
 	and a			;99fb
 	jr z,L_9A0A		;99fc
 	cp 004h		;99fe

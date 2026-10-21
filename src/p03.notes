@@ -1,0 +1,164 @@
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0xA03E despacha_estado salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+L 0xA041 despacha_e salta por la tabla que va detras del call, con el indice en E
+L 0xB14A sale_izquierda en una base: sale por la puerta izquierda a la sala de la tabla (FF: no hay)
+L 0xB191 sale_derecha en una base: sale por la puerta derecha a la sala de la tabla (FF: no hay)
+L 0xB58B cambia_tramo suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
+L 0xBB0C pantalla_nueva construye la pantalla del tramo y sus objetos
+L 0xBB3C construye_pantalla construye la pantalla del tramo 0xE022: mapa 0xC300 y dibujos en la VRAM
+C 0xA0DF pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xA0E8 lee la copia del banco de 0x6000
+C 0xA0EE guarda la copia del banco de 0x6000
+C 0xA0F1 el mapper: pone en 0x6000 el banco de A
+C 0xA0F8 guarda la copia del banco de 0x6000
+C 0xA0FB el mapper: pone en 0x6000 el banco de A
+C 0xA10A despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0xA292 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0xA29E lee la fase (0-19; la 8 se salta)
+C 0xA2D1 lee la fase (0-19; la 8 se salta)
+C 0xA2E5 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xA31D lee la fase (0-19; la 8 se salta)
+C 0xA456 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xA4A3 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xA4BD despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0xA60E despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0xA6D2 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0xA74A despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0xAE4D pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0xAE53 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0xAE57 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAE66 guarda la energia del jugador
+C 0xAE75 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xAE8A lee la fase (0-19; la 8 se salta)
+C 0xAEDE guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAEF3 guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAEFC guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAF11 lee la energia del jugador
+C 0xAF18 guarda la energia del jugador
+C 0xAF29 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xAF2C lee las vidas que quedan (en BCD)
+C 0xAF32 guarda las vidas que quedan (en BCD)
+C 0xAF49 borra_b: pone a cero B bytes desde HL
+C 0xAF5B guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAF74 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xAF7E lee_tabla: HL = HL + A y A = (HL)
+C 0xAFA3 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xAFB6 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xAFC7 lee el tramo: la pantalla de la lista de la fase
+C 0xAFCD lee la fase (0-19; la 8 se salta)
+C 0xB02A lee la fase (0-19; la 8 se salta)
+C 0xB046 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB074 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB086 lee la fase (0-19; la 8 se salta)
+C 0xB098 lee la fase (0-19; la 8 se salta)
+C 0xB0A0 cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
+C 0xB0AB pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xB0CB es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB0DD lee la fase (0-19; la 8 se salta)
+C 0xB0EB cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
+C 0xB0F6 pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xB107 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xB117 sale_derecha: en una base: sale por la puerta derecha a la sala de la tabla (FF: no hay)
+C 0xB14D lee la fase (0-19; la 8 se salta)
+C 0xB165 lee el tramo: la pantalla de la lista de la fase
+C 0xB168 lee_tabla: HL = HL + A y A = (HL)
+C 0xB16F guarda el tramo: la pantalla de la lista de la fase
+C 0xB180 pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xB194 lee la fase (0-19; la 8 se salta)
+C 0xB235 lee la fase (0-19; la 8 se salta)
+C 0xB257 lee_tabla: HL = HL + A y A = (HL)
+C 0xB280 lee_tabla: HL = HL + A y A = (HL)
+C 0xB284 lee la fase (0-19; la 8 se salta)
+C 0xB2AC pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xB2C1 lee la fase (0-19; la 8 se salta)
+C 0xB2FE lee_tabla: HL = HL + A y A = (HL)
+C 0xB310 lee_tabla: HL = HL + A y A = (HL)
+C 0xB58F lee la fase (0-19; la 8 se salta)
+C 0xB592 lee_tabla: HL = HL + A y A = (HL)
+C 0xB595 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0xB598 lee el tramo: la pantalla de la lista de la fase
+C 0xB5A0 guarda el tramo: la pantalla de la lista de la fase
+C 0xB5A7 lee la fase (0-19; la 8 se salta)
+C 0xB5B2 lee_tabla: HL = HL + A y A = (HL)
+C 0xB5B8 lee el tramo: la pantalla de la lista de la fase
+C 0xB5BC guarda el tramo: la pantalla de la lista de la fase
+C 0xB5D0 apunta a el mapa de la pantalla: 32 x 24 dibujos
+C 0xB5EB lee_tabla: HL = HL + A y A = (HL)
+C 0xB62B lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xB681 lee_tabla: HL = HL + A y A = (HL)
+C 0xB6C1 lee la fase (0-19; la 8 se salta)
+C 0xB6CE cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
+C 0xB6D8 pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xB6EE lee_tabla: HL = HL + A y A = (HL)
+C 0xB740 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xB7E1 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xB7EB lee_tabla: HL = HL + A y A = (HL)
+C 0xB809 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB82A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB851 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB86C es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB891 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB8BA lee la fase (0-19; la 8 se salta)
+C 0xB8C8 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB90B es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB926 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB94B es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB98A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xB9CF es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xBA54 borra_b: pone a cero B bytes desde HL
+C 0xBAAA pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xBABD lee la fase (0-19; la 8 se salta)
+C 0xBACC cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
+C 0xBAD6 pantalla_nueva: construye la pantalla del tramo y sus objetos
+C 0xBAFA pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0xBB15 construye_pantalla: construye la pantalla del tramo 0xE022: mapa 0xC300 y dibujos en la VRAM
+C 0xBB18 es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xBB1D lee el tramo: la pantalla de la lista de la fase
+C 0xBB2E pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
+C 0xBB34 devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
+C 0xBB47 apaga_pantalla: apaga la pantalla (DISSCR)
+C 0xBB4A es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
+C 0xBB59 apunta a el mapa de la pantalla: 32 x 24 dibujos
+C 0xBB6C lee la fase (0-19; la 8 se salta)
+C 0xBB6F lee_tabla: HL = HL + A y A = (HL)
+C 0xBB72 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0xBB7F vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
+C 0xBB85 lee la fase (0-19; la 8 se salta)
+C 0xBB8F lee el tramo: la pantalla de la lista de la fase
+C 0xBB92 lee_tabla: HL = HL + A y A = (HL)
+C 0xBB9C lee_tabla: HL = HL + A y A = (HL)
+C 0xBBEB orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
+C 0xBBF3 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0xBC39 orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
+C 0xBC41 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0xBC79 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBCE8 apunta a el mapa de la pantalla: 32 x 24 dibujos
+C 0xBCFB lee_tabla: HL = HL + A y A = (HL)
+C 0xBD3A guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0xBD47 orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
+C 0xBD5E pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBDEF lee_tabla: HL = HL + A y A = (HL)
+C 0xBE21 lee la fase (0-19; la 8 se salta)
+C 0xBE47 lee_tabla: HL = HL + A y A = (HL)
+C 0xBE4C lee el tramo: la pantalla de la lista de la fase
+C 0xBE4F lee_tabla: HL = HL + A y A = (HL)
+C 0xBE69 pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+C 0xBEC3 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xBEC9 lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
+C 0xBEEA lee la fase (0-19; la 8 se salta)
+C 0xBF04 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBF0B pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBF2A lee la fase (0-19; la 8 se salta)
+C 0xBF39 lee la fase (0-19; la 8 se salta)
+C 0xBF4E pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBF55 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBF79 lee_tabla: HL = HL + A y A = (HL)
+C 0xBF8C pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xBFA5 pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+C 0xBFBC lee la fase (0-19; la 8 se salta)
+C 0xBFC5 lee la fase (0-19; la 8 se salta)
+C 0xBFD4 guarda la fila de la hoja de dibujos (0xD8 la de las letras)
+C 0xBFE4 pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+C 0xBFEA pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
+# --- fin de las anotaciones de anota.py ---

@@ -1,0 +1,7 @@
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x7874 despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
+C 0x798A lee el tramo: la pantalla de la lista de la fase
+C 0x7A71 apunta a la orden del VDP que se manda (registros 32-46)
+C 0x7A7B orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
+# --- fin de las anotaciones de anota.py ---

@@ -50,9 +50,9 @@ L_A01A:
 	add a,004h		;a038
 	ld (iy+032h),a		;a03a
 	ret			;a03d
-L_A03E:
+despacha_estado:		; salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 	ld e,(iy+005h)		;a03e
-L_A041:
+despacha_e:		; salta por la tabla que va detras del call, con el indice en E
 	pop hl			;a041
 	rlc e		;a042
 	ld d,000h		;a044
@@ -126,28 +126,28 @@ L_A0D7:
 	ld a,(0e2d2h)		;a0da
 	and a			;a0dd
 	ret z			;a0de
-	call 05052h		;a0df
+	call 05052h		;a0df   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	xor a			;a0e2
 	ret			;a0e3
 L_A0E4:
 	xor a			;a0e4
 	ld (0e2d2h),a		;a0e5
-	ld a,(0e202h)		;a0e8
+	ld a,(0e202h)		;a0e8   ; lee la copia del banco de 0x6000
 	push af			;a0eb
 	ld a,00eh		;a0ec
-	ld (0e202h),a		;a0ee
-	ld (07000h),a		;a0f1
+	ld (0e202h),a		;a0ee   ; guarda la copia del banco de 0x6000
+	ld (07000h),a		;a0f1   ; el mapper: pone en 0x6000 el banco de A
 	call 07800h		;a0f4
 	pop af			;a0f7
-	ld (0e202h),a		;a0f8
-	ld (07000h),a		;a0fb
+	ld (0e202h),a		;a0f8   ; guarda la copia del banco de 0x6000
+	ld (07000h),a		;a0fb   ; el mapper: pone en 0x6000 el banco de A
 	ret			;a0fe
 L_A0FF:
 	ld (iy+004h),00bh		;a0ff
 	ld (iy+005h),000h		;a103
 	jp L_A8AF		;a107
 L_A10A:
-	call L_A03E		;a10a
+	call despacha_estado		;a10a   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa10d..0xa115  (8 bytes)
@@ -345,7 +345,7 @@ L_A28B:
 	ld a,(0e18bh)		;a28b
 	and a			;a28e
 	jp nz,L_A8BD		;a28f
-	call L_A03E		;a292
+	call despacha_estado		;a292   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa295..0xa29b  (6 bytes)
@@ -359,7 +359,7 @@ DATA_A295:
 
 L_A29B:
 	inc (iy+005h)		;a29b
-	ld a,(0e020h)		;a29e
+	ld a,(0e020h)		;a29e   ; lee la fase (0-19; la 8 se salta)
 	cp 006h		;a2a1
 	jr z,L_A2AD		;a2a3
 	ld a,(iy+000h)		;a2a5
@@ -379,7 +379,7 @@ L_A2AD:
 	ld a,010h		;a2c8
 	ld (iy+008h),a		;a2ca
 	ld (iy+002h),0fch		;a2cd
-	ld a,(0e020h)		;a2d1
+	ld a,(0e020h)		;a2d1   ; lee la fase (0-19; la 8 se salta)
 	cp 006h		;a2d4
 	jp nz,05cb6h		;a2d6
 	ld (iy+002h),0f4h		;a2d9
@@ -387,7 +387,7 @@ L_A2AD:
 L_A2E0:
 	inc (iy+005h)		;a2e0
 	ld a,03ah		;a2e3
-	call 05052h		;a2e5
+	call 05052h		;a2e5   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 L_A2E8:
 	dec (iy+001h)		;a2e8
 	dec (iy+00eh)		;a2eb
@@ -411,7 +411,7 @@ L_A312:
 	ld a,(iy+001h)		;a315
 	cp 0e8h		;a318
 	jp nc,L_A8A9		;a31a
-	ld a,(0e020h)		;a31d
+	ld a,(0e020h)		;a31d   ; lee la fase (0-19; la 8 se salta)
 	cp 006h		;a320
 	jr z,L_A332		;a322
 	ld a,(iy+000h)		;a324
@@ -569,7 +569,7 @@ L_A424:
 	ld (iy+00ah),002h		;a44c
 	ld (iy+00dh),003h		;a450
 	ld a,02ah		;a454
-	call 05052h		;a456
+	call 05052h		;a456   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 L_A459:
 	call L_A74A		;a459
 	inc (iy+00bh)		;a45c
@@ -603,7 +603,7 @@ L_A499:
 	ld (iy+004h),020h		;a499
 	ld (iy+005h),000h		;a49d
 	ld a,030h		;a4a1
-	jp 05052h		;a4a3
+	jp 05052h		;a4a3   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa4a6..0xa4aa  (4 bytes)
@@ -623,7 +623,7 @@ L_A4AA:
 	ld a,(iy+003h)		;a4b5
 	and 00fh		;a4b8
 	call 05e57h		;a4ba
-	call L_A03E		;a4bd
+	call despacha_estado		;a4bd   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa4c0..0xa4c6  (6 bytes)
@@ -809,7 +809,7 @@ DATA_A608:
 
 
 L_A60E:
-	call L_A03E		;a60e
+	call despacha_estado		;a60e   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa611..0xa61f  (14 bytes)
@@ -905,7 +905,7 @@ DATA_A6CE:
 
 
 L_A6D2:
-	call L_A03E		;a6d2
+	call despacha_estado		;a6d2   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa6d5..0xa6db  (6 bytes)
@@ -976,7 +976,7 @@ L_A731:
 	ld (ix+002h),0f8h		;a745
 	ret			;a749
 L_A74A:
-	call L_A03E		;a74a
+	call despacha_estado		;a74a   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xa74d..0xa753  (6 bytes)
@@ -1290,18 +1290,18 @@ L_AE38:
 	ei			;ae45
 	ld (ix+00ah),0fch		;ae46
 	call L_BA10		;ae4a
-	call 04532h		;ae4d
+	call 04532h		;ae4d   ; pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 	call 09943h		;ae50
-	jp 0452dh		;ae53
+	jp 0452dh		;ae53   ; devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 L_AE56:
 	xor a			;ae56
-	ld (0e180h),a		;ae57
+	ld (0e180h),a		;ae57   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ld (ix+009h),a		;ae5a
 	ld (ix+01bh),a		;ae5d
 	inc a			;ae60
 	ld (0e062h),a		;ae61
 	ld a,010h		;ae64
-	ld (0e2c9h),a		;ae66
+	ld (0e2c9h),a		;ae66   ; guarda la energia del jugador
 	ei			;ae69
 	call 045c3h		;ae6a
 	call L_BFF1		;ae6d
@@ -1309,7 +1309,7 @@ L_AE56:
 	ld (0e2cdh),a		;ae71
 L_AE74:
 	ei			;ae74
-	call 0531bh		;ae75
+	call 0531bh		;ae75   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr c,L_AE8A		;ae78
 	ld a,(0e033h)		;ae7a
 	and a			;ae7d
@@ -1319,7 +1319,7 @@ L_AE74:
 	ld (0e2c8h),a		;ae84
 	jp c,L_B1F2		;ae87
 L_AE8A:
-	ld a,(0e020h)		;ae8a
+	ld a,(0e020h)		;ae8a   ; lee la fase (0-19; la 8 se salta)
 	cp 00dh		;ae8d
 	jr z,L_AE95		;ae8f
 	cp 011h		;ae91
@@ -1357,7 +1357,7 @@ L_AED7:
 	ld a,(ix-005h)		;aed7
 	and a			;aeda
 	jp z,L_AF61		;aedb
-	ld (0e180h),a		;aede
+	ld (0e180h),a		;aede   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	dec (ix-006h)		;aee1
 	jr z,L_AF01		;aee4
 	ld a,(ix-006h)		;aee6
@@ -1365,10 +1365,10 @@ L_AED7:
 	cp 02fh		;aeeb
 	jp c,L_B1F2		;aeed
 	ld a,(ix-005h)		;aef0
-	ld (0e180h),a		;aef3
+	ld (0e180h),a		;aef3   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	call L_AF61		;aef6
 	ld a,(ix-005h)		;aef9
-	ld (0e180h),a		;aefc
+	ld (0e180h),a		;aefc   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	jr L_AF61		;aeff
 L_AF01:
 	ld a,(0e025h)		;af01
@@ -1381,12 +1381,12 @@ L_AF01:
 	dec c			;af0f
 	dec c			;af10
 L_AF11:
-	ld a,(0e2c9h)		;af11
+	ld a,(0e2c9h)		;af11   ; lee la energia del jugador
 	sub c			;af14
 	jr nc,L_AF18		;af15
 	xor a			;af17
 L_AF18:
-	ld (0e2c9h),a		;af18
+	ld (0e2c9h),a		;af18   ; guarda la energia del jugador
 	push af			;af1b
 	call 045dah		;af1c
 	pop af			;af1f
@@ -1395,11 +1395,11 @@ L_AF22:
 	ld a,001h		;af22
 	ld (0e2ceh),a		;af24
 	ld a,027h		;af27
-	call 05052h		;af29
-	ld a,(0e021h)		;af2c
+	call 05052h		;af29   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
+	ld a,(0e021h)		;af2c   ; lee las vidas que quedan (en BCD)
 	sub 001h		;af2f
 	daa			;af31
-	ld (0e021h),a		;af32
+	ld (0e021h),a		;af32   ; guarda las vidas que quedan (en BCD)
 	jr nz,L_AF3F		;af35
 	ld (0e094h),a		;af37
 	inc a			;af3a
@@ -1410,7 +1410,7 @@ L_AF3F:
 	ld (0e2cdh),a		;af41
 	ld b,005h		;af44
 	ld hl,0e030h		;af46
-	call 051b2h		;af49
+	call 051b2h		;af49   ; borra_b: pone a cero B bytes desde HL
 	call 045aah		;af4c
 	ld (ix-002h),080h		;af4f
 L_AF53:
@@ -1418,7 +1418,7 @@ L_AF53:
 	cpl			;af56
 	ld (ix+00fh),a		;af57
 	xor a			;af5a
-	ld (0e180h),a		;af5b
+	ld (0e180h),a		;af5b   ; guarda la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ld (ix-005h),a		;af5e
 L_AF61:
 	ld a,(ix-007h)		;af61
@@ -1430,11 +1430,11 @@ L_AF61:
 	ld a,(0e5c2h)		;af6e
 	and a			;af71
 	jr nz,$+38		;af72
-	ld a,(0e180h)		;af74
+	ld a,(0e180h)		;af74   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ld (ix+019h),a		;af77
 	ld hl,0af86h		;af7a
 	add a,a			;af7d
-	call 051b8h		;af7e
+	call 051b8h		;af7e   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,a			;af81
 	inc hl			;af82
 	ld d,(hl)			;af83
@@ -1457,7 +1457,7 @@ L_AF98:
 	ld a,(ix-007h)		;af9c
 	and a			;af9f
 	jp nz,L_B0FC		;afa0
-	call 0531bh		;afa3
+	call 0531bh		;afa3   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr nc,L_AFAC		;afa6
 	ld (ix+005h),017h		;afa8
 L_AFAC:
@@ -1466,7 +1466,7 @@ L_AFAF:
 	ld a,(ix-007h)		;afaf
 	and a			;afb2
 	jp nz,L_B0FC		;afb3
-	call 0531bh		;afb6
+	call 0531bh		;afb6   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr c,L_AFC1		;afb9
 	ld (ix+005h),00dh		;afbb
 	jr L_AFAC		;afbf
@@ -1474,10 +1474,10 @@ L_AFC1:
 	ld a,(ix+006h)		;afc1
 	and a			;afc4
 	jr nz,L_AFAC		;afc5
-	ld a,(0e022h)		;afc7
+	ld a,(0e022h)		;afc7   ; lee el tramo: la pantalla de la lista de la fase
 	and a			;afca
 	jr nz,L_AFD4		;afcb
-	ld a,(0e020h)		;afcd
+	ld a,(0e020h)		;afcd   ; lee la fase (0-19; la 8 se salta)
 	cp 00eh		;afd0
 	jr c,L_AFDA		;afd2
 L_AFD4:
@@ -1521,7 +1521,7 @@ L_B01E:
 	ld a,(ix+006h)		;b024
 	and a			;b027
 	jr nz,L_B03B		;b028
-	ld a,(0e020h)		;b02a
+	ld a,(0e020h)		;b02a   ; lee la fase (0-19; la 8 se salta)
 	and a			;b02d
 	jr nz,L_B042		;b02e
 	ld a,(ix+00ah)		;b030
@@ -1534,7 +1534,7 @@ L_B03B:
 	jp L_B1F2		;b03f
 L_B042:
 	ld (ix+005h),00ch		;b042
-	call 0531bh		;b046
+	call 0531bh		;b046   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr nc,L_B03B		;b049
 	ld (ix+005h),018h		;b04b
 	jr L_B03B		;b04f
@@ -1557,27 +1557,27 @@ L_B06E:
 	call L_B3A2		;b06e
 	ld (ix+005h),a		;b071
 L_B074:
-	call 0531bh		;b074
+	call 0531bh		;b074   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	call c,L_B065		;b077
 	ld (ix+00fh),000h		;b07a
 	ld a,(ix+00bh)		;b07e
 	cp 0eah		;b081
 	jp c,L_B38A		;b083
-	ld a,(0e020h)		;b086
+	ld a,(0e020h)		;b086   ; lee la fase (0-19; la 8 se salta)
 	ld hl,0b18bh		;b089
 	ld bc,00006h		;b08c
 	cpir		;b08f
 	jp nz,L_B1F2		;b091
 	ld a,(0e045h)		;b094
 	and a			;b097
-	ld a,(0e020h)		;b098
+	ld a,(0e020h)		;b098   ; lee la fase (0-19; la 8 se salta)
 	jp nz,L_B1F2		;b09b
 	ld b,001h		;b09e
-	call L_B58B		;b0a0
+	call cambia_tramo		;b0a0   ; cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	and a			;b0a3
 	jp z,L_B1F2		;b0a4
 	ld (ix+00bh),00ch		;b0a7
-	call L_BB0C		;b0ab
+	call pantalla_nueva		;b0ab   ; pantalla_nueva: construye la pantalla del tramo y sus objetos
 	jp L_B1F2		;b0ae
 L_B0B1:
 	call L_B3A2		;b0b1
@@ -1593,37 +1593,37 @@ L_B0C5:
 	call L_B3A2		;b0c5
 	ld (ix+005h),a		;b0c8
 L_B0CB:
-	call 0531bh		;b0cb
+	call 0531bh		;b0cb   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	call c,L_B065		;b0ce
 	ld (ix+00fh),0ffh		;b0d1
 	ld a,(ix+00bh)		;b0d5
 	cp 00ah		;b0d8
 	jp nc,L_B396		;b0da
-	ld a,(0e020h)		;b0dd
+	ld a,(0e020h)		;b0dd   ; lee la fase (0-19; la 8 se salta)
 	cp 00dh		;b0e0
 	jr z,L_B0E9		;b0e2
 	cp 011h		;b0e4
 	jp nz,L_B1F2		;b0e6
 L_B0E9:
 	ld b,0ffh		;b0e9
-	call L_B58B		;b0eb
+	call cambia_tramo		;b0eb   ; cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	and a			;b0ee
 	jp z,L_B1F2		;b0ef
 	ld (ix+00bh),0e8h		;b0f2
-	call L_BB0C		;b0f6
+	call pantalla_nueva		;b0f6   ; pantalla_nueva: construye la pantalla del tramo y sus objetos
 	jp L_B1F2		;b0f9
 L_B0FC:
 	call L_BA10		;b0fc
 	ld a,(ix-007h)		;b0ff
 	cp 001h		;b102
 	jp z,L_B1AE		;b104
-	ld a,(0e180h)		;b107
+	ld a,(0e180h)		;b107   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	cp 003h		;b10a
 	jr nz,L_B11F		;b10c
 	ld (ix+00fh),000h		;b10e
 	ld a,(ix+00bh)		;b112
 	cp 090h		;b115
-	jp nc,L_B191		;b117
+	jp nc,sale_derecha		;b117   ; sale_derecha: en una base: sale por la puerta derecha a la sala de la tabla (FF: no hay)
 	inc (ix+00bh)		;b11a
 	jr L_B137		;b11d
 L_B11F:
@@ -1632,7 +1632,7 @@ L_B11F:
 	ld (ix+00fh),0ffh		;b123
 	ld a,(ix+00bh)		;b127
 	cp 060h		;b12a
-	jr c,L_B14A		;b12c
+	jr c,sale_izquierda		;b12c
 	dec (ix+00bh)		;b12e
 	jr L_B137		;b131
 L_B133:
@@ -1648,9 +1648,9 @@ L_B137:
 L_B144:
 	ld (ix+005h),a		;b144
 	jp L_B247		;b147
-L_B14A:
+sale_izquierda:		; en una base: sale por la puerta izquierda a la sala de la tabla (FF: no hay)
 	ld hl,0b45dh		;b14a
-	ld a,(0e020h)		;b14d
+	ld a,(0e020h)		;b14d   ; lee la fase (0-19; la 8 se salta)
 	cp 001h		;b150
 	jr z,L_B165		;b152
 	ld hl,0b467h		;b154
@@ -1661,16 +1661,16 @@ L_B14A:
 	jr z,L_B165		;b160
 	ld hl,0b489h		;b162
 L_B165:
-	ld a,(0e022h)		;b165
-	call 051b8h		;b168
+	ld a,(0e022h)		;b165   ; lee el tramo: la pantalla de la lista de la fase
+	call 051b8h		;b168   ; lee_tabla: HL = HL + A y A = (HL)
 	cp 0ffh		;b16b
 	jr z,L_B137		;b16d
-	ld (0e022h),a		;b16f
+	ld (0e022h),a		;b16f   ; guarda el tramo: la pantalla de la lista de la fase
 	ld (ix-007h),000h		;b172
 	ld (ix+00ah),09fh		;b176
 	ld (ix+00bh),078h		;b17a
 	set 0,a		;b17e
-	call L_BB0C		;b180
+	call pantalla_nueva		;b180   ; pantalla_nueva: construye la pantalla del tramo y sus objetos
 	xor a			;b183
 	ld (0e060h),a		;b184
 	ld (0e062h),a		;b187
@@ -1686,9 +1686,9 @@ DATA_B18B:
 ; ======================================================================
 
 
-L_B191:
+sale_derecha:		; en una base: sale por la puerta derecha a la sala de la tabla (FF: no hay)
 	ld hl,0b462h		;b191
-	ld a,(0e020h)		;b194
+	ld a,(0e020h)		;b194   ; lee la fase (0-19; la 8 se salta)
 	cp 001h		;b197
 	jr z,$-52		;b199
 	ld hl,0b46eh		;b19b
@@ -1766,7 +1766,7 @@ L_B22D:
 	jr c,L_B235		;b231
 	ld b,012h		;b233
 L_B235:
-	ld a,(0e020h)		;b235
+	ld a,(0e020h)		;b235   ; lee la fase (0-19; la 8 se salta)
 	and a			;b238
 	jr nz,L_B244		;b239
 	ld a,(ix+00ah)		;b23b
@@ -1784,7 +1784,7 @@ L_B247:
 L_B253:
 	ld a,(ix+005h)		;b253
 	add a,a			;b256
-	call 051b8h		;b257
+	call 051b8h		;b257   ; lee_tabla: HL = HL + A y A = (HL)
 	ld (ix+00ch),a		;b25a
 	inc hl			;b25d
 	ld a,(hl)			;b25e
@@ -1803,9 +1803,9 @@ L_B262:
 	cp 00eh		;b27b
 	jp nc,L_B310		;b27d
 L_B280:
-	call 051b8h		;b280
+	call 051b8h		;b280   ; lee_tabla: HL = HL + A y A = (HL)
 	ld b,(hl)			;b283
-	ld a,(0e020h)		;b284
+	ld a,(0e020h)		;b284   ; lee la fase (0-19; la 8 se salta)
 	and a			;b287
 	jr nz,L_B2B8		;b288
 	ld a,(ix+00ah)		;b28a
@@ -1826,7 +1826,7 @@ L_B29D:
 	and a			;b2a7
 	jr nz,L_B2B4		;b2a8
 	ld a,039h		;b2aa
-	call 05052h		;b2ac
+	call 05052h		;b2ac   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ld a,001h		;b2af
 	ld (0e2cfh),a		;b2b1
 L_B2B4:
@@ -1841,7 +1841,7 @@ L_B2BF:
 	sub b			;b2bf
 	ld b,a			;b2c0
 L_B2C1:
-	ld a,(0e020h)		;b2c1
+	ld a,(0e020h)		;b2c1   ; lee la fase (0-19; la 8 se salta)
 	cp 012h		;b2c4
 	jr nz,L_B2CC		;b2c6
 	ld a,b			;b2c8
@@ -1868,7 +1868,7 @@ L_B2EA:
 	ld a,(ix+00ah)		;b2fa
 	ret			;b2fd
 L_B2FE:
-	call 051b8h		;b2fe
+	call 051b8h		;b2fe   ; lee_tabla: HL = HL + A y A = (HL)
 	ld b,(hl)			;b301
 	ld a,(ix+00ah)		;b302
 	sub b			;b305
@@ -1878,7 +1878,7 @@ L_B2FE:
 	jp nz,L_B375		;b30b
 	jr L_B33A		;b30e
 L_B310:
-	call 051b8h		;b310
+	call 051b8h		;b310   ; lee_tabla: HL = HL + A y A = (HL)
 	ld b,(hl)			;b313
 	ld a,(ix+00ah)		;b314
 	sub b			;b317
@@ -2099,20 +2099,20 @@ L_B583:
 L_B589:
 	scf			;b589
 	ret			;b58a
-L_B58B:
+cambia_tramo:		; suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	di			;b58b
 	ld hl,0bae4h		;b58c
-	ld a,(0e020h)		;b58f
-	call 051b8h		;b592
-	call 04f78h		;b595
-	ld a,(0e022h)		;b598
+	ld a,(0e020h)		;b58f   ; lee la fase (0-19; la 8 se salta)
+	call 051b8h		;b592   ; lee_tabla: HL = HL + A y A = (HL)
+	call 04f78h		;b595   ; pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
+	ld a,(0e022h)		;b598   ; lee el tramo: la pantalla de la lista de la fase
 	add a,b			;b59b
 	cp 0f0h		;b59c
 	jr nc,L_B5BF		;b59e
-	ld (0e022h),a		;b5a0
+	ld (0e022h),a		;b5a0   ; guarda el tramo: la pantalla de la lista de la fase
 	push af			;b5a3
 	ld hl,06000h		;b5a4
-	ld a,(0e020h)		;b5a7
+	ld a,(0e020h)		;b5a7   ; lee la fase (0-19; la 8 se salta)
 	add a,a			;b5aa
 	add a,l			;b5ab
 	ld l,a			;b5ac
@@ -2121,12 +2121,12 @@ L_B58B:
 	ld d,(hl)			;b5af
 	ex de,hl			;b5b0
 	pop af			;b5b1
-	call 051b8h		;b5b2
+	call 051b8h		;b5b2   ; lee_tabla: HL = HL + A y A = (HL)
 	and a			;b5b5
 	jr nz,L_B5C2		;b5b6
-	ld a,(0e022h)		;b5b8
+	ld a,(0e022h)		;b5b8   ; lee el tramo: la pantalla de la lista de la fase
 	sub b			;b5bb
-	ld (0e022h),a		;b5bc
+	ld (0e022h),a		;b5bc   ; guarda el tramo: la pantalla de la lista de la fase
 L_B5BF:
 	ei			;b5bf
 	xor a			;b5c0
@@ -2143,7 +2143,7 @@ L_B5C6:
 	add a,c			;b5ce
 	ld c,a			;b5cf
 L_B5D0:
-	ld hl,0c300h		;b5d0
+	ld hl,0c300h		;b5d0   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
 	ld a,b			;b5d3
 	srl a		;b5d4
 	srl a		;b5d6
@@ -2160,7 +2160,7 @@ L_B5E4:
 	srl a		;b5e5
 	srl a		;b5e7
 	srl a		;b5e9
-	jp 051b8h		;b5eb
+	jp 051b8h		;b5eb   ; lee_tabla: HL = HL + A y A = (HL)
 L_B5EE:
 	ld a,(ix+00ch)		;b5ee
 	cp 00dh		;b5f1
@@ -2193,7 +2193,7 @@ L_B5FE:
 	ld (ix+01bh),000h		;b622
 	ld a,001h		;b626
 	call 049a0h		;b628
-	ld a,(0e180h)		;b62b
+	ld a,(0e180h)		;b62b   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	cp 002h		;b62e
 	jr c,L_B642		;b630
 	cp 005h		;b632
@@ -2232,7 +2232,7 @@ L_B677:
 	cp 020h		;b67a
 	jr nc,L_B6DF		;b67c
 	inc (ix+007h)		;b67e
-	call 051b8h		;b681
+	call 051b8h		;b681   ; lee_tabla: HL = HL + A y A = (HL)
 	and a			;b684
 	jp z,L_B746		;b685
 	ld b,a			;b688
@@ -2271,18 +2271,18 @@ L_B6B5:
 	add a,0f8h		;b6be
 	ret			;b6c0
 L_B6C1:
-	ld a,(0e020h)		;b6c1
+	ld a,(0e020h)		;b6c1   ; lee la fase (0-19; la 8 se salta)
 	cp 003h		;b6c4
 	jr z,L_B6CC		;b6c6
 	cp 012h		;b6c8
 	jr nz,L_B6DD		;b6ca
 L_B6CC:
 	ld b,001h		;b6cc
-	call L_B58B		;b6ce
+	call cambia_tramo		;b6ce   ; cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	and a			;b6d1
 	jr z,L_B6DD		;b6d2
 	ld (ix+00ah),090h		;b6d4
-	call L_BB0C		;b6d8
+	call pantalla_nueva		;b6d8   ; pantalla_nueva: construye la pantalla del tramo y sus objetos
 	xor a			;b6db
 	ret			;b6dc
 L_B6DD:
@@ -2296,7 +2296,7 @@ L_B6E2:
 	jr z,L_B720		;b6e6
 	dec (ix+007h)		;b6e8
 	ld a,(ix+007h)		;b6eb
-	call 051b8h		;b6ee
+	call 051b8h		;b6ee   ; lee_tabla: HL = HL + A y A = (HL)
 	ld (ix+01dh),a		;b6f1
 	and a			;b6f4
 	jp z,L_B746		;b6f5
@@ -2339,7 +2339,7 @@ L_B720:
 	xor a			;b73a
 	ld (0e2ceh),a		;b73b
 	ld a,015h		;b73e
-	call 05052h		;b740
+	call 05052h		;b740   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	jp 0499ch		;b743
 L_B746:
 	ld a,(0e1c2h)		;b746
@@ -2389,11 +2389,11 @@ L_B7C4:
 	ret nz			;b7da
 	ld a,(ix+005h)		;b7db
 	ld (ix+004h),a		;b7de
-	ld a,(0e180h)		;b7e1
+	ld a,(0e180h)		;b7e1   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	ld (ix+019h),a		;b7e4
 	ld hl,0b7f3h		;b7e7
 	add a,a			;b7ea
-	call 051b8h		;b7eb
+	call 051b8h		;b7eb   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,(hl)			;b7ee
 	inc hl			;b7ef
 	ld d,(hl)			;b7f0
@@ -2413,7 +2413,7 @@ DATA_B7F3:
 
 L_B805:
 	ld (ix+019h),003h		;b805
-	call 0531bh		;b809
+	call 0531bh		;b809   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr nc,L_B81D		;b80c
 	ld (ix+019h),009h		;b80e
 	ld a,(ix+00ah)		;b812
@@ -2428,7 +2428,7 @@ L_B81D:
 	ld (ix+019h),007h		;b823
 	jp L_B926		;b827
 L_B82A:
-	call 0531bh		;b82a
+	call 0531bh		;b82a   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr c,L_B805		;b82d
 	ld a,(ix+006h)		;b82f
 	and a			;b832
@@ -2450,7 +2450,7 @@ L_B849:
 L_B84E:
 	jp L_B97D		;b84e
 L_B851:
-	call 0531bh		;b851
+	call 0531bh		;b851   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jp c,L_B805		;b854
 	ld a,(ix+00ah)		;b857
 	sub 024h		;b85a
@@ -2463,7 +2463,7 @@ L_B851:
 	ld c,a			;b869
 	jr L_B8DA		;b86a
 L_B86C:
-	call 0531bh		;b86c
+	call 0531bh		;b86c   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jp c,L_B805		;b86f
 	ld a,(ix+006h)		;b872
 	and a			;b875
@@ -2481,7 +2481,7 @@ L_B87C:
 	ld c,a			;b88e
 	jr L_B8DA		;b88f
 L_B891:
-	call 0531bh		;b891
+	call 0531bh		;b891   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jp c,L_B805		;b894
 	ld a,(ix+00ah)		;b897
 	sub 01ah		;b89a
@@ -2500,14 +2500,14 @@ L_B8AC:
 	ld a,(ix+009h)		;b8b3
 	and a			;b8b6
 	jp nz,L_B966		;b8b7
-	ld a,(0e020h)		;b8ba
+	ld a,(0e020h)		;b8ba   ; lee la fase (0-19; la 8 se salta)
 	and a			;b8bd
 	jr nz,L_B8C8		;b8be
 	ld a,(ix+00ah)		;b8c0
 	cp 0afh		;b8c3
 	jp z,L_B805		;b8c5
 L_B8C8:
-	call 0531bh		;b8c8
+	call 0531bh		;b8c8   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr nc,L_B8DD		;b8cb
 	ld (ix+019h),009h		;b8cd
 	ld a,(ix+00ah)		;b8d1
@@ -2541,7 +2541,7 @@ L_B904:
 	ld c,a			;b908
 	jr L_B97D		;b909
 L_B90B:
-	call 0531bh		;b90b
+	call 0531bh		;b90b   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jp c,L_B805		;b90e
 	ld a,(ix+00ah)		;b911
 	sub 01ah		;b914
@@ -2554,7 +2554,7 @@ L_B90B:
 	ld c,a			;b923
 	jr L_B97D		;b924
 L_B926:
-	call 0531bh		;b926
+	call 0531bh		;b926   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jp c,L_B805		;b929
 	ld a,(ix+006h)		;b92c
 	and a			;b92f
@@ -2572,7 +2572,7 @@ L_B936:
 	ld c,a			;b948
 	jr L_B97D		;b949
 L_B94B:
-	call 0531bh		;b94b
+	call 0531bh		;b94b   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jp c,L_B805		;b94e
 	ld a,(ix+00ah)		;b951
 	sub 024h		;b954
@@ -2603,7 +2603,7 @@ L_B983:
 	and a			;b986
 	jr z,L_B9C3		;b987
 	push bc			;b989
-	call 0531bh		;b98a
+	call 0531bh		;b98a   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	pop bc			;b98d
 	jr c,L_B99C		;b98e
 	ld a,(0e032h)		;b990
@@ -2643,7 +2643,7 @@ L_B9C3:
 	and a			;b9cb
 	jr z,L_B9D9		;b9cc
 	push bc			;b9ce
-	call 0531bh		;b9cf
+	call 0531bh		;b9cf   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	pop bc			;b9d2
 	jr nc,L_B9D9		;b9d3
 	ld (iy+004h),004h		;b9d5
@@ -2712,7 +2712,7 @@ L_BA4F:
 	push iy		;ba4f
 	pop hl			;ba51
 	ld b,010h		;ba52
-	call 051b2h		;ba54
+	call 051b2h		;ba54   ; borra_b: pone a cero B bytes desde HL
 	ld (iy+000h),0ech		;ba57
 	ret			;ba5b
 L_BA5C:
@@ -2754,7 +2754,7 @@ L_BA9E:
 	ld (ix+009h),a		;baa2
 	ld (ix+008h),a		;baa5
 	ld a,015h		;baa8
-	jp 05052h		;baaa
+	jp 05052h		;baaa   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 L_BAAD:
 	ld a,(ix+00ah)		;baad
 	cp 0afh		;bab0
@@ -2774,19 +2774,19 @@ DATA_BAB9:
 
 
 L_BABD:
-	ld a,(0e020h)		;babd
+	ld a,(0e020h)		;babd   ; lee la fase (0-19; la 8 se salta)
 	ld hl,0bab9h		;bac0
 	ld bc,00004h		;bac3
 	cpir		;bac6
 	scf			;bac8
 	ret nz			;bac9
 	ld b,0ffh		;baca
-	call L_B58B		;bacc
+	call cambia_tramo		;bacc   ; cambia_tramo: suma B al tramo (0xE022) si la lista de la fase sigue; acarreo si no
 	and a			;bacf
 	scf			;bad0
 	ret z			;bad1
 	ld (ix+00ah),010h		;bad2
-	call L_BB0C		;bad6
+	call pantalla_nueva		;bad6   ; pantalla_nueva: construye la pantalla del tramo y sus objetos
 	xor a			;bad9
 	ret			;bada
 L_BADB:
@@ -2809,7 +2809,7 @@ DATA_BAE4:
 
 L_BAF8:
 	ld a,00eh		;baf8
-	call 04f78h		;bafa
+	call 04f78h		;bafa   ; pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 	ld a,(0e023h)		;bafd
 	ld hl,06040h		;bb00
 	jp L_BB98		;bb03
@@ -2824,15 +2824,15 @@ DATA_BB06:
 ; ======================================================================
 
 
-L_BB0C:
+pantalla_nueva:		; construye la pantalla del tramo y sus objetos
 	ld a,(0e093h)		;bb0c
 	push af			;bb0f
 	ld a,001h		;bb10
 	ld (0e093h),a		;bb12
-	call L_BB3C		;bb15
-	call 0531bh		;bb18
+	call construye_pantalla		;bb15   ; construye_pantalla: construye la pantalla del tramo 0xE022: mapa 0xC300 y dibujos en la VRAM
+	call 0531bh		;bb18   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr nc,L_BB26		;bb1b
-	ld a,(0e022h)		;bb1d
+	ld a,(0e022h)		;bb1d   ; lee el tramo: la pantalla de la lista de la fase
 	and a			;bb20
 	jr nz,L_BB26		;bb21
 	call 051bfh		;bb23
@@ -2841,26 +2841,26 @@ L_BB26:
 	ld (0e33ch),a		;bb27
 	pop af			;bb2a
 	ld (0e093h),a		;bb2b
-	call 04532h		;bb2e
+	call 04532h		;bb2e   ; pon_banco_12: guarda en 0xE2CC el banco de 0x8000 y pone el 12
 	call 09966h		;bb31
-	call 0452dh		;bb34
+	call 0452dh		;bb34   ; devuelve_banco_8000: devuelve a 0x8000 el banco guardado en 0xE2CC
 	xor a			;bb37
 	ld (0e30fh),a		;bb38
 	ret			;bb3b
-L_BB3C:
+construye_pantalla:		; construye la pantalla del tramo 0xE022: mapa 0xC300 y dibujos en la VRAM
 	xor a			;bb3c
 	ld (0e18ah),a		;bb3d
 	ld (0e18bh),a		;bb40
 	dec a			;bb43
 	ld (0e30fh),a		;bb44
-	call 050d6h		;bb47
-	call 0531bh		;bb4a
+	call 050d6h		;bb47   ; apaga_pantalla: apaga la pantalla (DISSCR)
+	call 0531bh		;bb4a   ; es_base_3d: acarreo si la fase es una base en 3D (la lista p00:532C: 1, 4, 11 y 14)
 	jr c,L_BB66		;bb4d
 	ld hl,00000h		;bb4f
 	ld bc,05c00h		;bb52
 	xor a			;bb55
 	call 00056h		;bb56   ; BIOS FILVRM - Fills VRAM with value
-	ld hl,0c300h		;bb59
+	ld hl,0c300h		;bb59   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
 	ld de,0c301h		;bb5c
 	ld bc,002ffh		;bb5f
 	ld (hl),0ffh		;bb62
@@ -2868,15 +2868,15 @@ L_BB3C:
 L_BB66:
 	call L_BFD2		;bb66
 	ld hl,0bae4h		;bb69
-	ld a,(0e020h)		;bb6c
-	call 051b8h		;bb6f
-	call 04f78h		;bb72
+	ld a,(0e020h)		;bb6c   ; lee la fase (0-19; la 8 se salta)
+	call 051b8h		;bb6f   ; lee_tabla: HL = HL + A y A = (HL)
+	call 04f78h		;bb72   ; pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 	ld (ix-001h),001h		;bb75
 	call 0492eh		;bb79
 	call 04937h		;bb7c
-	call 04b86h		;bb7f
+	call 04b86h		;bb7f   ; vuelca_sprites: lleva la tabla de 0xE100 a los atributos de sprite de la VRAM (0x7600)
 	ld hl,06000h		;bb82
-	ld a,(0e020h)		;bb85
+	ld a,(0e020h)		;bb85   ; lee la fase (0-19; la 8 se salta)
 	add a,a			;bb88
 	add a,l			;bb89
 	ld l,a			;bb8a
@@ -2884,15 +2884,15 @@ L_BB66:
 	inc hl			;bb8c
 	ld d,(hl)			;bb8d
 	ex de,hl			;bb8e
-	ld a,(0e022h)		;bb8f
-	call 051b8h		;bb92
+	ld a,(0e022h)		;bb8f   ; lee el tramo: la pantalla de la lista de la fase
+	call 051b8h		;bb92   ; lee_tabla: HL = HL + A y A = (HL)
 	ld hl,06100h		;bb95
 L_BB98:
 	add a,a			;bb98
 	jr nc,L_BB9C		;bb99
 	inc h			;bb9b
 L_BB9C:
-	call 051b8h		;bb9c
+	call 051b8h		;bb9c   ; lee_tabla: HL = HL + A y A = (HL)
 	ld e,(hl)			;bb9f
 	inc hl			;bba0
 	ld d,(hl)			;bba1
@@ -2946,13 +2946,13 @@ L_BBC8:
 	call 0485eh		;bbe6
 	jr L_BBEE		;bbe9
 L_BBEB:
-	call 0484eh		;bbeb
+	call 0484eh		;bbeb   ; orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
 L_BBEE:
 	pop de			;bbee
 	ld a,(de)			;bbef
 	inc de			;bbf0
 	and 0f0h		;bbf1
-	ld (0e01fh),a		;bbf3
+	ld (0e01fh),a		;bbf3   ; guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 	ld a,(de)			;bbf6
 	inc de			;bbf7
 	ld (0e1a1h),a		;bbf8
@@ -2989,12 +2989,12 @@ L_BC14:
 	push af			;bc34
 	call z,0485eh		;bc35
 	pop af			;bc38
-	call nz,0484eh		;bc39
+	call nz,0484eh		;bc39   ; orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
 	pop de			;bc3c
 	ld a,(de)			;bc3d
 	inc de			;bc3e
 	and 0f0h		;bc3f
-	ld (0e01fh),a		;bc41
+	ld (0e01fh),a		;bc41   ; guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 	ld a,(de)			;bc44
 	inc de			;bc45
 	ld (0e1a5h),a		;bc46
@@ -3025,7 +3025,7 @@ L_BC68:
 	add a,h			;bc76
 	ld h,a			;bc77
 	ld a,(de)			;bc78
-	call 0486eh		;bc79
+	call 0486eh		;bc79   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	pop bc			;bc7c
 	pop de			;bc7d
 	pop hl			;bc7e
@@ -3085,7 +3085,7 @@ L_BCD7:
 	ld (0e1b3h),de		;bce1
 	jp L_BCB9		;bce5
 L_BCE8:
-	ld hl,0c300h		;bce8
+	ld hl,0c300h		;bce8   ; apunta a el mapa de la pantalla: 32 x 24 dibujos
 	and a			;bceb
 	ld c,a			;bcec
 	jr z,L_BCF8		;bced
@@ -3100,7 +3100,7 @@ L_BCF8:
 	ld a,(de)			;bcf8
 	inc de			;bcf9
 	ld b,a			;bcfa
-	call 051b8h		;bcfb
+	call 051b8h		;bcfb   ; lee_tabla: HL = HL + A y A = (HL)
 	push hl			;bcfe
 	ld hl,00000h		;bcff
 	ld a,c			;bd02
@@ -3142,7 +3142,7 @@ L_BD30:
 	ld (0e1a5h),hl		;bd34
 	ld a,(de)			;bd37
 	and 0f0h		;bd38
-	ld (0e01fh),a		;bd3a
+	ld (0e01fh),a		;bd3a   ; guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 	ld a,(de)			;bd3d
 	inc de			;bd3e
 	and 00fh		;bd3f
@@ -3150,7 +3150,7 @@ L_BD30:
 	push af			;bd42
 	call z,0485eh		;bd43
 	pop af			;bd46
-	call nz,0484eh		;bd47
+	call nz,0484eh		;bd47   ; orden_copia: prepara en 0xE0D0 la orden HMMM de copiar un dibujo de 8 x 8
 	ld a,(de)			;bd4a
 	inc de			;bd4b
 	ld b,a			;bd4c
@@ -3165,7 +3165,7 @@ L_BD52:
 L_BD5C:
 	ld a,(de)			;bd5c
 	and a			;bd5d
-	call nz,0486eh		;bd5e
+	call nz,0486eh		;bd5e   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	inc de			;bd61
 	ld hl,(0e1b5h)		;bd62
 	inc hl			;bd65
@@ -3250,7 +3250,7 @@ L_BDDF:
 	ld (iy+004h),a		;bde8
 	inc de			;bdeb
 	ld hl,0534ah		;bdec
-	call 051b8h		;bdef
+	call 051b8h		;bdef   ; lee_tabla: HL = HL + A y A = (HL)
 	ld (iy+003h),a		;bdf2
 	inc de			;bdf5
 	ld a,(de)			;bdf6
@@ -3277,7 +3277,7 @@ L_BE13:
 	jr L_BDDF		;be1c
 L_BE1E:
 	ld hl,0be83h		;be1e
-	ld a,(0e020h)		;be21
+	ld a,(0e020h)		;be21   ; lee la fase (0-19; la 8 se salta)
 	cp 006h		;be24
 	jr z,L_BE4C		;be26
 	ld hl,0be8bh		;be28
@@ -3293,11 +3293,11 @@ L_BE1E:
 	cp 011h		;be40
 	jr z,L_BE4C		;be42
 	ld hl,0be6fh		;be44
-	call 051b8h		;be47
+	call 051b8h		;be47   ; lee_tabla: HL = HL + A y A = (HL)
 	jr L_BE52		;be4a
 L_BE4C:
-	ld a,(0e022h)		;be4c
-	call 051b8h		;be4f
+	ld a,(0e022h)		;be4c   ; lee el tramo: la pantalla de la lista de la fase
+	call 051b8h		;be4f   ; lee_tabla: HL = HL + A y A = (HL)
 L_BE52:
 	ld b,(hl)			;be52
 	ld a,(0e097h)		;be53
@@ -3310,7 +3310,7 @@ L_BE60:
 	ld (ix-001h),000h		;be60
 	call 05df4h		;be64
 	ld a,001h		;be67
-	call 04f78h		;be69
+	call 04f78h		;be69   ; pon_banco_6000_graficos: apunta A en 0xE017 y lo pone en 0x6000
 	jp 00044h		;be6c   ; BIOS ENASCR - Displays the screen
 
 ; ----------------------------------------------------------------------
@@ -3336,10 +3336,10 @@ L_BEAC:
 	ld (ix-001h),001h		;beba
 	call 050e0h		;bebe
 	ld a,021h		;bec1
-	call 05052h		;bec3
+	call 05052h		;bec3   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	jp 04e35h		;bec6
 L_BEC9:
-	ld a,(0e180h)		;bec9
+	ld a,(0e180h)		;bec9   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	and a			;becc
 	jp z,L_BF61		;becd
 	cp 005h		;bed0
@@ -3354,7 +3354,7 @@ L_BEC9:
 	jr nz,L_BEF9		;bee5
 	push af			;bee7
 	ld b,080h		;bee8
-	ld a,(0e020h)		;beea
+	ld a,(0e020h)		;beea   ; lee la fase (0-19; la 8 se salta)
 	and a			;beed
 	jr z,L_BEF8		;beee
 	ld b,060h		;bef0
@@ -3371,11 +3371,11 @@ L_BEF9:
 	ld h,000h		;beff
 	ld l,a			;bf01
 	ld a,00bh		;bf02
-	call 0486eh		;bf04
+	call 0486eh		;bf04   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	pop af			;bf07
 	ld l,a			;bf08
 	ld a,010h		;bf09
-	call 0486eh		;bf0b
+	call 0486eh		;bf0b   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	ld a,001h		;bf0e
 	ld (0e2c6h),a		;bf10
 	pop hl			;bf13
@@ -3390,7 +3390,7 @@ L_BF1A:
 	jr nz,L_BF34		;bf25
 	push af			;bf27
 	ld b,080h		;bf28
-	ld a,(0e020h)		;bf2a
+	ld a,(0e020h)		;bf2a   ; lee la fase (0-19; la 8 se salta)
 	cp 003h		;bf2d
 	jr c,L_BF33		;bf2f
 	ld b,020h		;bf31
@@ -3400,7 +3400,7 @@ L_BF34:
 	cp 062h		;bf34
 	jr nz,L_BF43		;bf36
 	push af			;bf38
-	ld a,(0e020h)		;bf39
+	ld a,(0e020h)		;bf39   ; lee la fase (0-19; la 8 se salta)
 	cp 006h		;bf3c
 	jr nc,L_BF42		;bf3e
 	ld b,060h		;bf40
@@ -3414,11 +3414,11 @@ L_BF43:
 	ld h,000h		;bf49
 	ld l,a			;bf4b
 	ld a,00bh		;bf4c
-	call 0486eh		;bf4e
+	call 0486eh		;bf4e   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	pop af			;bf51
 	ld l,a			;bf52
 	ld a,010h		;bf53
-	call 0486eh		;bf55
+	call 0486eh		;bf55   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	ld a,001h		;bf58
 	ld (0e2c6h),a		;bf5a
 	pop hl			;bf5d
@@ -3436,14 +3436,14 @@ L_BF61:
 	rlca			;bf73
 	sub 002h		;bf74
 	ld hl,0bfabh		;bf76
-	call 051b8h		;bf79
+	call 051b8h		;bf79   ; lee_tabla: HL = HL + A y A = (HL)
 	call L_BFB0		;bf7c
 	jp c,04e35h		;bf7f
 	ld (0e032h),a		;bf82
 	ld a,002h		;bf85
 	ld (0e283h),a		;bf87
 	ld a,023h		;bf8a
-	call 05052h		;bf8c
+	call 05052h		;bf8c   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	jp 04e35h		;bf8f
 L_BF92:
 	di			;bf92
@@ -3457,7 +3457,7 @@ L_BFA1:
 	push hl			;bfa1
 	push af			;bfa2
 	ld a,022h		;bfa3
-	call 05052h		;bfa5
+	call 05052h		;bfa5   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	pop af			;bfa8
 	pop hl			;bfa9
 	ret			;bfaa
@@ -3480,12 +3480,12 @@ L_BFB0:
 	jr z,L_BFCC		;bfb6
 	cp 005h		;bfb8
 	jr z,L_BFC5		;bfba
-	ld a,(0e020h)		;bfbc
+	ld a,(0e020h)		;bfbc   ; lee la fase (0-19; la 8 se salta)
 	cp 006h		;bfbf
 	jr nc,L_BFCC		;bfc1
 	jr L_BFCF		;bfc3
 L_BFC5:
-	ld a,(0e020h)		;bfc5
+	ld a,(0e020h)		;bfc5   ; lee la fase (0-19; la 8 se salta)
 	cp 002h		;bfc8
 	jr c,L_BFCF		;bfca
 L_BFCC:
@@ -3498,17 +3498,17 @@ L_BFCF:
 	ret			;bfd1
 L_BFD2:
 	ld a,0d8h		;bfd2
-	ld (0e01fh),a		;bfd4
+	ld (0e01fh),a		;bfd4   ; guarda la fila de la hoja de dibujos (0xD8 la de las letras)
 	call 04867h		;bfd7
 	ld hl,00000h		;bfda
 	ld de,0001fh		;bfdd
 	ld b,01ah		;bfe0
 L_BFE2:
 	ld a,010h		;bfe2
-	call 0486eh		;bfe4
+	call 0486eh		;bfe4   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	add hl,de			;bfe7
 	ld a,010h		;bfe8
-	call 0486eh		;bfea
+	call 0486eh		;bfea   ; pinta_dibujo: pinta el dibujo A (de la hoja de la fila 0xE01F) en la casilla HL de la pantalla
 	inc hl			;bfed
 	djnz L_BFE2		;bfee
 	ret			;bff0

@@ -16,7 +16,7 @@
 
 L_8000:
 	ld e,(iy+004h)		;8000
-	call 0a041h		;8003
+	call 0a041h		;8003   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8006..0x8062  (92 bytes)
@@ -37,7 +37,7 @@ L_8062:
 	ret			;8062
 L_8063:
 	ld e,(iy+004h)		;8063
-	call 0a041h		;8066
+	call 0a041h		;8066   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8069..0x80b3  (74 bytes)
@@ -144,7 +144,7 @@ L_817F:
 L_8180:
 	jp 0a8bdh		;8180
 L_8183:
-	call 0a03eh		;8183
+	call 0a03eh		;8183   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8186..0x818a  (4 bytes)
@@ -193,7 +193,7 @@ L_81BB:
 	ld (iy+001h),a		;81be
 	ret			;81c1
 L_81C2:
-	call 0a03eh		;81c2
+	call 0a03eh		;81c2   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x81c5..0x81cd  (8 bytes)
@@ -207,7 +207,7 @@ DATA_81C5:
 
 L_81CD:
 	ld a,02ch		;81cd
-	call 05052h		;81cf
+	call 05052h		;81cf   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ld a,001h		;81d2
 	ld (0e045h),a		;81d4
 	ld (iy+006h),0d8h		;81d7
@@ -293,7 +293,7 @@ L_8274:
 L_8292:
 	call 05f19h		;8292
 	ld a,037h		;8295
-	call 05052h		;8297
+	call 05052h		;8297   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ld a,000h		;829a
 	ld (0e045h),a		;829c
 	ret			;829f
@@ -345,7 +345,7 @@ DATA_82E0:
 
 
 L_82E4:
-	call 0a03eh		;82e4
+	call 0a03eh		;82e4   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x82e7..0x82ed  (6 bytes)
@@ -656,7 +656,7 @@ DATA_850A:
 
 
 L_850E:
-	call 0a03eh		;850e
+	call 0a03eh		;850e   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8511..0x8517  (6 bytes)
@@ -722,7 +722,7 @@ L_8570:
 	ld a,(0e18bh)		;8570
 	and a			;8573
 	jr nz,$+99		;8574
-	call 0a03eh		;8576
+	call 0a03eh		;8576   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8579..0x8581  (8 bytes)
@@ -808,7 +808,7 @@ DATA_860F:
 
 
 L_8613:
-	call 0a03eh		;8613
+	call 0a03eh		;8613   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8616..0x8620  (10 bytes)
@@ -916,7 +916,7 @@ L_86E3:
 	cp 006h		;86f0
 	ret c			;86f2
 	ld a,028h		;86f3
-	call 05052h		;86f5
+	call 05052h		;86f5   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ld (iy+004h),000h		;86f8
 	ld hl,0f800h		;86fc
 	ld c,00bh		;86ff
@@ -1004,7 +1004,7 @@ L_87AF:
 	ld a,040h		;87c3
 	call 05f33h		;87c5
 	ld a,030h		;87c8
-	jp 05052h		;87ca
+	jp 05052h		;87ca   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x87cd..0x87d1  (4 bytes)
@@ -1021,7 +1021,7 @@ L_87D1:
 L_87D2:
 	ret			;87d2
 L_87D3:
-	call 0a03eh		;87d3
+	call 0a03eh		;87d3   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x87d6..0x87dc  (6 bytes)
@@ -1037,7 +1037,7 @@ L_87DC:
 	inc (iy+005h)		;87dc
 	ld (iy+00fh),080h		;87df
 L_87E3:
-	ld a,(0e020h)		;87e3
+	ld a,(0e020h)		;87e3   ; lee la fase (0-19; la 8 se salta)
 	and a			;87e6
 	jr z,L_8801		;87e7
 	cp 003h		;87e9
@@ -1079,7 +1079,7 @@ L_881E:
 	ld a,(iy+000h)		;883c
 	add a,004h		;883f
 	ld (iy+000h),a		;8841
-	ld a,(0e020h)		;8844
+	ld a,(0e020h)		;8844   ; lee la fase (0-19; la 8 se salta)
 	and a			;8847
 	jr z,L_8860		;8848
 	cp 003h		;884a
@@ -1112,7 +1112,7 @@ DATA_886C:
 L_8870:
 	ret			;8870
 L_8871:
-	call 0a03eh		;8871
+	call 0a03eh		;8871   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8874..0x8878  (4 bytes)
@@ -1186,7 +1186,7 @@ L_88FD:
 	ld e,007h		;88fd
 	jp 0a0e4h		;88ff
 L_8902:
-	ld a,(0e020h)		;8902
+	ld a,(0e020h)		;8902   ; lee la fase (0-19; la 8 se salta)
 	cp 00ch		;8905
 	jr nz,L_890E		;8907
 	ld a,(0e2d4h)		;8909
@@ -1201,17 +1201,17 @@ L_890E:
 	ld (0e5c7h),a		;8919
 	inc a			;891c
 	ld (0e184h),a		;891d
-	ld a,(0e020h)		;8920
+	ld a,(0e020h)		;8920   ; lee la fase (0-19; la 8 se salta)
 	cp 013h		;8923
 	jr z,L_8931		;8925
 	cp 013h		;8927
 	jr z,L_8931		;8929
 	ld a,00eh		;892b
-	call 05052h		;892d
+	call 05052h		;892d   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ret			;8930
 L_8931:
 	ld a,00fh		;8931
-	jp 05052h		;8933
+	jp 05052h		;8933   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 L_8936:
 	ld a,(0e18ah)		;8936
 	cp 006h		;8939
@@ -1459,7 +1459,7 @@ L_8B7A:
 	call L_8B72		;8b7a
 	jp L_81A8		;8b7d
 L_8B80:
-	call 0a03eh		;8b80
+	call 0a03eh		;8b80   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8b83..0x8b89  (6 bytes)
@@ -1593,7 +1593,7 @@ DATA_8C83:
 
 
 L_8C8B:
-	call 0a03eh		;8c8b
+	call 0a03eh		;8c8b   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8c8e..0x8c9c  (14 bytes)
@@ -1782,7 +1782,7 @@ L_8E10:
 	ld a,(iy+003h)		;8e10
 	and 00fh		;8e13
 	ld e,a			;8e15
-	call 0a041h		;8e16
+	call 0a041h		;8e16   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8e19..0x8e37  (30 bytes)
@@ -1829,7 +1829,7 @@ L_8E74:
 	cp 030h		;8e77
 	ret c			;8e79
 L_8E7A:
-	ld a,(0e020h)		;8e7a
+	ld a,(0e020h)		;8e7a   ; lee la fase (0-19; la 8 se salta)
 	ld c,a			;8e7d
 	ld a,022h		;8e7e
 	sub c			;8e80
@@ -1993,7 +1993,7 @@ DATA_8FB3:
 L_8FB7:
 	nop			;8fb7
 L_8FB8:
-	call 0a03eh		;8fb8
+	call 0a03eh		;8fb8   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8fbb..0x8fc3  (8 bytes)
@@ -2007,7 +2007,7 @@ DATA_8FBB:
 
 L_8FC3:
 	inc (iy+005h)		;8fc3
-	ld a,(0e020h)		;8fc6
+	ld a,(0e020h)		;8fc6   ; lee la fase (0-19; la 8 se salta)
 	ld c,a			;8fc9
 	ld a,r		;8fca
 	and 01fh		;8fcc
@@ -2176,11 +2176,11 @@ L_90DF:
 	ld (iy+003h),000h		;90fe
 	call 05f21h		;9102
 	ld hl,09118h		;9105
-	ld de,0e0d0h		;9108
+	ld de,0e0d0h		;9108   ; apunta a la orden del VDP que se manda (registros 32-46)
 	ld bc,0000fh		;910b
 	ldir		;910e
 	ld b,020h		;9110
-	call 0507bh		;9112
+	call 0507bh		;9112   ; orden_vdp: manda al VDP la orden de 0xE0D0 (registros 32-46) y espera a que acabe
 	jp L_88FD		;9115
 
 ; ----------------------------------------------------------------------
@@ -2233,7 +2233,7 @@ L_9161:
 	and 01fh		;9171
 	add a,060h		;9173
 	ld (iy+00eh),a		;9175
-	ld a,(0e020h)		;9178
+	ld a,(0e020h)		;9178   ; lee la fase (0-19; la 8 se salta)
 	srl a		;917b
 	ld c,a			;917d
 	ld a,r		;917e
@@ -2333,7 +2333,7 @@ L_923E:
 	ld (iy+00fh),001h		;9242
 	jr $+20		;9246
 L_9248:
-	call 0a03eh		;9248
+	call 0a03eh		;9248   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x924b..0x9251  (6 bytes)
@@ -2348,7 +2348,7 @@ DATA_924B:
 L_9251:
 	ld (iy+00fh),000h		;9251
 	ld a,029h		;9255
-	call 05052h		;9257
+	call 05052h		;9257   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 L_925A:
 	inc (iy+005h)		;925a
 	ld a,(iy+001h)		;925d
@@ -2368,7 +2368,7 @@ L_9270:
 	jr nz,L_9286		;927a
 	ld a,029h		;927c
 	push bc			;927e
-	call 05052h		;927f
+	call 05052h		;927f   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	pop bc			;9282
 	inc (iy+00eh)		;9283
 L_9286:
@@ -2411,7 +2411,7 @@ DATA_92BA:
 
 
 L_92D2:
-	call 0a03eh		;92d2
+	call 0a03eh		;92d2   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x92d5..0x92db  (6 bytes)
@@ -2425,7 +2425,7 @@ DATA_92D5:
 
 L_92DB:
 	ld hl,0e2d3h		;92db
-	ld a,(0e020h)		;92de
+	ld a,(0e020h)		;92de   ; lee la fase (0-19; la 8 se salta)
 	cp 00ch		;92e1
 	jr nz,L_92FD		;92e3
 	ld a,(iy+00eh)		;92e5
@@ -2445,7 +2445,7 @@ L_92F9:
 	inc (hl)			;92fc
 L_92FD:
 	ld a,029h		;92fd
-	call 05052h		;92ff
+	call 05052h		;92ff   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	push ix		;9302
 	call L_930D		;9304
 	inc (iy+005h)		;9307
@@ -2540,7 +2540,7 @@ DATA_9385:
 
 
 L_93F4:
-	call 0a03eh		;93f4
+	call 0a03eh		;93f4   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x93f7..0x9407  (16 bytes)
@@ -2592,7 +2592,7 @@ L_945E:
 	ld (iy+005h),001h		;9466
 	ret			;946a
 L_946B:
-	call 0a03eh		;946b
+	call 0a03eh		;946b   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x946e..0x947e  (16 bytes)
@@ -2636,7 +2636,7 @@ L_94CA:
 	inc (iy+005h)		;94cc
 	jp L_9FA4		;94cf
 L_94D2:
-	call 0a03eh		;94d2
+	call 0a03eh		;94d2   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x94d5..0x94df  (10 bytes)
@@ -2674,12 +2674,12 @@ L_9517:
 	dec (iy+00ch)		;9517
 	ret nz			;951a
 	ld (iy+00ah),004h		;951b
-	ld a,(0e020h)		;951f
+	ld a,(0e020h)		;951f   ; lee la fase (0-19; la 8 se salta)
 	cp 011h		;9522
 	jr z,L_9537		;9524
 	cp 012h		;9526
 	jr nz,L_9546		;9528
-	ld a,(0e022h)		;952a
+	ld a,(0e022h)		;952a   ; lee el tramo: la pantalla de la lista de la fase
 	dec a			;952d
 	jr z,L_9542		;952e
 	dec a			;9530
@@ -2687,7 +2687,7 @@ L_9517:
 	ld a,0b0h		;9533
 	jr L_9553		;9535
 L_9537:
-	ld a,(0e022h)		;9537
+	ld a,(0e022h)		;9537   ; lee el tramo: la pantalla de la lista de la fase
 	cp 004h		;953a
 	jr nz,L_9546		;953c
 	ld a,0b0h		;953e
@@ -2755,7 +2755,7 @@ DATA_9595:
 
 
 L_9599:
-	call 0a03eh		;9599
+	call 0a03eh		;9599   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x959c..0x95a8  (12 bytes)
@@ -2832,7 +2832,7 @@ DATA_9619:
 
 
 L_961D:
-	call 0a03eh		;961d
+	call 0a03eh		;961d   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9620..0x9626  (6 bytes)
@@ -2902,7 +2902,7 @@ L_96A6:
 	ld a,(iy+00ah)		;96a6
 	ld (iy+000h),a		;96a9
 L_96AC:
-	ld a,(0e020h)		;96ac
+	ld a,(0e020h)		;96ac   ; lee la fase (0-19; la 8 se salta)
 	cp 00dh		;96af
 	jr z,L_96BD		;96b1
 	cp 011h		;96b3
@@ -2969,7 +2969,7 @@ L_9721:
 	ld (iy+005h),001h		;9721
 	call L_9A24		;9725
 	ld bc,0976dh		;9728
-	ld a,(0e020h)		;972b
+	ld a,(0e020h)		;972b   ; lee la fase (0-19; la 8 se salta)
 	cp 007h		;972e
 	jr nz,L_9735		;9730
 	ld bc,0976fh		;9732
@@ -3085,7 +3085,7 @@ L_980C:
 	inc (iy+00eh)		;980c
 	call 05c53h		;980f
 L_9812:
-	ld a,(0e020h)		;9812
+	ld a,(0e020h)		;9812   ; lee la fase (0-19; la 8 se salta)
 	cp 001h		;9815
 	jr z,L_982B		;9817
 	cp 004h		;9819
@@ -3118,7 +3118,7 @@ L_984E:
 	ld a,(ix+006h)		;984e
 	and a			;9851
 	jr nz,L_985A		;9852
-	ld a,(0e180h)		;9854
+	ld a,(0e180h)		;9854   ; lee la direccion de la palanca (GTSTCK: 1 arriba, 3 derecha, 5 abajo, 7 izquierda)
 	cp 005h		;9857
 	ret z			;9859
 L_985A:
@@ -3156,7 +3156,7 @@ L_988A:
 	cp 019h		;9894
 	ret z			;9896
 	ld b,09dh		;9897
-	ld a,(0e020h)		;9899
+	ld a,(0e020h)		;9899   ; lee la fase (0-19; la 8 se salta)
 	and a			;989c
 	jr z,L_98A1		;989d
 	ld b,0adh		;989f
@@ -3234,7 +3234,7 @@ L_9921:
 	dec iy		;9926
 	ret			;9928
 L_9929:
-	call 0a03eh		;9929
+	call 0a03eh		;9929   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x992c..0x993c  (16 bytes)
@@ -3365,7 +3365,7 @@ L_9A24:
 	ld (iy+00ah),a		;9a2d
 	ret			;9a30
 L_9A31:
-	call 0a03eh		;9a31
+	call 0a03eh		;9a31   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9a34..0x9a3c  (8 bytes)
@@ -3457,7 +3457,7 @@ L_9AD2:
 L_9AD5:
 	jp 0a889h		;9ad5
 L_9AD8:
-	call 0a03eh		;9ad8
+	call 0a03eh		;9ad8   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9adb..0x9ae5  (10 bytes)
@@ -3562,7 +3562,7 @@ DATA_9BA8:
 
 
 L_9BAC:
-	call 0a03eh		;9bac
+	call 0a03eh		;9bac   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9baf..0x9bbf  (16 bytes)
@@ -3575,7 +3575,7 @@ DATA_9BAF:
 
 
 L_9BBF:
-	call 0a03eh		;9bbf
+	call 0a03eh		;9bbf   ; despacha_estado: salta por la tabla que va detras del call, con el estado del objeto (IY+5)
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9bc2..0x9bca  (8 bytes)
@@ -3721,7 +3721,7 @@ L_9CC5:
 L_9CE3:
 	ld e,(iy+005h)		;9ce3
 	res 7,e		;9ce6
-	call 0a041h		;9ce8
+	call 0a041h		;9ce8   ; despacha_e: salta por la tabla que va detras del call, con el indice en E
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9ceb..0x9cfb  (16 bytes)
@@ -3842,7 +3842,7 @@ L_9DD2:
 	ld (iy+016h),000h		;9dd2
 	ld (iy+017h),000h		;9dd6
 	ld a,03bh		;9dda
-	call 05052h		;9ddc
+	call 05052h		;9ddc   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ld a,(iy+004h)		;9ddf
 	cp 017h		;9de2
 	jr nz,L_9DF0		;9de4
@@ -3851,7 +3851,7 @@ L_9DD2:
 	jr nz,L_9DF0		;9dea
 	ld (iy+005h),002h		;9dec
 L_9DF0:
-	ld a,(0e020h)		;9df0
+	ld a,(0e020h)		;9df0   ; lee la fase (0-19; la 8 se salta)
 	cp 005h		;9df3
 	jr nz,L_9DFF		;9df5
 	ld a,(iy+00ah)		;9df7
@@ -4002,7 +4002,7 @@ L_9F2E:
 	ld (iy+004h),00bh		;9f3a
 	ld (iy+002h),018h		;9f3e
 	ld a,030h		;9f42
-	call 05052h		;9f44
+	call 05052h		;9f44   ; pide_sonido: pide el sonido A al motor (p04:6003, con los bancos 4-5)
 	ld a,(0e5c3h)		;9f47
 	inc a			;9f4a
 	ld (0e5c3h),a		;9f4b
@@ -4052,7 +4052,7 @@ L_9F94:
 L_9FA1:
 	call 0a01ah		;9fa1
 L_9FA4:
-	ld a,(0e020h)		;9fa4
+	ld a,(0e020h)		;9fa4   ; lee la fase (0-19; la 8 se salta)
 	and a			;9fa7
 	jr z,L_9FB8		;9fa8
 	cp 00ah		;9faa
