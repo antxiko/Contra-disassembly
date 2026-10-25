@@ -81,3 +81,30 @@ Data is declared because something reads it: a reader that walks its format, an 
 ### The names
 
 The names of the routines and of the RAM are in `tools/anotaciones.py`, and `tools/anota.py` carries them to every call and every access in the listing.
+
+## Code shared with other Konami cartridges
+
+This disassembly has been compared, instruction by instruction, with
+every other Konami one in the series. A block counts when the same
+instructions, at least six of them from a label to its `ret` or its
+unconditional jump, are in both cartridges; the addresses are left
+aside, because they change from one cartridge to the next. Of the
+other 57, **13** have at least one block in common with this one;
+these are the ones that share the most:
+
+| Cartridge | Blocks | Instructions | For example (here = there) |
+|---|---:|---:|---|
+| [King's Valley II](https://antxiko.github.io/KingsValley2-disassembly/) | 66 | 1,277 | p04:6CED |
+| [The Pro Yakyuu Gekitotsu Pennant Race](https://antxiko.github.io/PennantRace-disassembly/) | 56 | 1,007 | p04:6516 = `nota_empieza` |
+| [Parodius](https://antxiko.github.io/Parodius-disassembly/) | 53 | 1,010 | p04:679B = `orden` |
+| [Salamander - Operation X](https://antxiko.github.io/Salamander-disassembly/) | 50 | 941 | `lee_tabla` (p00:51B8) = `byte_de_tabla` |
+| [Nemesis 3 - The Eve of Destruction](https://antxiko.github.io/Nemesis3-disassembly/) | 46 | 805 | `lee_tabla` (p00:51B8) = `lee_byte` |
+| [F-1 Spirit — The Way to Formula 1](https://antxiko.github.io/F1Spirit-disassembly/) | 39 | 738 | p04:6412 = `NOTA_CRUDA` |
+| [Gekitotsu Pennant Race 2](https://antxiko.github.io/PennantRace2-disassembly/) | 36 | 570 | p04:68A0 = `orden_eb` |
+| [Nemesis 2](https://antxiko.github.io/Nemesis2-disassembly/) | 26 | 467 | `lee_tabla` (p00:51B8) = `byte_a` |
+| [Shalom: Knightmare III](https://antxiko.github.io/Shalom-disassembly/) | 24 | 328 | p04:68A0 = `orden_eb` |
+| [Konami’s Game Master 2](https://antxiko.github.io/GameMaster2-disassembly/) | 23 | 295 | p04:6B08 = `sonido_envolvente` |
+
+The whole matrix, the 58 cartridges against each other, is on
+[The routines](https://antxiko.github.io/MSX-disassembly-database/THE-ROUTINES.html) in the series database, along
+with the method and the program that measures it.

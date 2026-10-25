@@ -81,3 +81,30 @@ Los datos se declaran porque algo los lee: un lector que recorre su formato, una
 ### Los nombres
 
 Los nombres de las rutinas y de la RAM están en `tools/anotaciones.py`, y `tools/anota.py` los lleva a cada llamada y a cada acceso del listado.
+
+## Código compartido con otros cartuchos de Konami
+
+Este desensamblado se ha comparado, instrucción por instrucción, con
+todos los demás de Konami de la serie. Cuenta un bloque cuando las
+mismas instrucciones, al menos seis desde una etiqueta hasta su `ret`
+o su salto sin condición, están en los dos cartuchos; las direcciones
+no se miran, porque cambian de un cartucho a otro. De los otros 57,
+**13** tienen al menos un bloque en común con este; estos son los
+que más comparten:
+
+| Cartucho | Bloques | Instrucciones | Por ejemplo (aquí = allí) |
+|---|---:|---:|---|
+| [King's Valley II](https://antxiko.github.io/KingsValley2-disassembly/es/) | 66 | 1.277 | p04:6CED |
+| [The Pro Yakyuu Gekitotsu Pennant Race](https://antxiko.github.io/PennantRace-disassembly/es/) | 56 | 1.007 | p04:6516 = `nota_empieza` |
+| [Parodius](https://antxiko.github.io/Parodius-disassembly/es/) | 53 | 1.010 | p04:679B = `orden` |
+| [Salamander - Operation X](https://antxiko.github.io/Salamander-disassembly/es/) | 50 | 941 | `lee_tabla` (p00:51B8) = `byte_de_tabla` |
+| [Nemesis 3 - The Eve of Destruction](https://antxiko.github.io/Nemesis3-disassembly/es/) | 46 | 805 | `lee_tabla` (p00:51B8) = `lee_byte` |
+| [F-1 Spirit — The Way to Formula 1](https://antxiko.github.io/F1Spirit-disassembly/es/) | 39 | 738 | p04:6412 = `NOTA_CRUDA` |
+| [Gekitotsu Pennant Race 2](https://antxiko.github.io/PennantRace2-disassembly/es/) | 36 | 570 | p04:68A0 = `orden_eb` |
+| [Nemesis 2](https://antxiko.github.io/Nemesis2-disassembly/es/) | 26 | 467 | `lee_tabla` (p00:51B8) = `byte_a` |
+| [Shalom: Knightmare III](https://antxiko.github.io/Shalom-disassembly/es/) | 24 | 328 | p04:68A0 = `orden_eb` |
+| [Konami’s Game Master 2](https://antxiko.github.io/GameMaster2-disassembly/es/) | 23 | 295 | p04:6B08 = `sonido_envolvente` |
+
+La matriz entera, los 58 cartuchos entre sí, está en
+[Las rutinas](https://antxiko.github.io/MSX-disassembly-database/es/LAS-RUTINAS.html) de la base de datos de la
+serie, con el método y el programa que la mide.
